@@ -35,7 +35,7 @@ public class PostServiceImplementation implements PostService {
 
     @Override
     public List<Post> findAllPosts() throws PostException {
-        return postRepository.findAllByIsPostTureOrderByCreatedAtDesc();
+        return postRepository.findAllByIsPostTrueOrderByCreatedAtDesc();
     }
     
     @Override
