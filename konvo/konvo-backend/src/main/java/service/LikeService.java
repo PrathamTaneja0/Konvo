@@ -1,0 +1,16 @@
+package service;
+
+import exception.PostException;
+import exception.UserException;
+import model.Like;
+import model.Post;
+import model.User;
+import java.util.List;
+
+public interface LikeService {
+    
+    public Like likePost(Long postId, User user) throws UserException, PostException;
+    
+    public List<Like> getAllLikes(Long postId) throws PostException;
+    
+}
