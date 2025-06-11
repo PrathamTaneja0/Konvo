@@ -8,16 +8,22 @@ public class PostUtil {
 
 
     public static boolean isLikedByReqUser(User reqUser, Post post) {
-        for(Like like:)
-        return null;
+        for (Like like : post.getLikes()) {
+            if (like.getUser().getId().equals(reqUser.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
     public static boolean isRepostedByReqUser(User reqUser, Post post) {
-        if (reqUser == null || post == null) {
-            return false;
+        for(User user : post.getRepostUser()) {
+            if(user.getId().equals(reqUser.getId())) {
+                return true;
+            }
         }
 
-        return post.getRepostUser().contains(reqUser);
+        return false;
     }
 }

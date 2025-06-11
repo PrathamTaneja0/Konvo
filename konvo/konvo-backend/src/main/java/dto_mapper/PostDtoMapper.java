@@ -5,57 +5,80 @@ import dto.UserDto;
 import model.Like;
 import model.Post;
 import model.User;
+import util.PostUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PostDtoMapper {
     public static PostDto toPostDto(Post post, User reqUser) {
-        PostDto postDto = new PostDto();
 
-        // Set basic post information
+        UserDto user = UserDtoMapper.toUserDto(post.getUser());
+        boolean isLiked = PostUtil.isLikedByReqUser(reqUser, post);
+        boolean isReposted = PostUtil.isRepostedByReqUser(reqUser, post);
+
+        List<Long> repostUserId = new ArrayList<>();
+        for(User user1 : post.getRepostUser()) {
+            repostUserId.add(user1.getId());
+        }
+
+        PostDto postDto = new PostDto();
         postDto.setId(post.getId());
-        postDto.setContent(post.getContent());
+        postDto.setCreatedAt(post.getCreatedAt());
         postDto.setImage(post.getImage());
         postDto.setVideo(post.getVideo());
-        postDto.setCreatedAt(post.getCreatedAt());
-
-        // Convert User to UserDto
-        UserDto userDto = UserDtoMapper.toUserDto(post.getUser());
-        postDto.setUser(userDto);
-
-        // Set counts
+        postDto.setContent(post.getContent());
         postDto.setTotalLikes(post.getLikes().size());
         postDto.setTotalReplies(post.getReplyPosts().size());
         postDto.setTotalRePosts(post.getRepostUser().size());
-
-        // Check if the post is liked by the requesting user
-        boolean isLiked = util.PostUtil.isLikedByReqUser(reqUser, post);
+        postDto.setUser(user);
         postDto.setLiked(isLiked);
-
-        // Check if the post is reposted by the requesting user
-        boolean isReposted = util.PostUtil.isRepostedByReqUser(reqUser, post);
         postDto.setReposted(isReposted);
+        postDto.setRepostUserid(repostUserId);
+        postDto.setReplyPosts(toPostDtos(post.getReplyPosts(), reqUser));
+        postDto.setVideo(post.getVideo());
 
-        // Set repost user IDs
-        List<Long> repostUserIds = post.getRepostUser().stream()
-                .map(User::getId)
-                .collect(Collectors.toList());
-        postDto.setRepostUserid(repostUserIds);
-
-        // Set reply posts (if needed)
-        // This could lead to recursion, so you might want to handle it differently
-        // or limit the depth of recursion
 
         return postDto;
     }
 
-    private static boolean isLikedByReqUser(User reqUser, Post post) {
-        if (reqUser == null || post == null) {
-            return false;
+    public static List<PostDto> toPostDtos(List<Post> posts, User reqUser) {
+        List<PostDto> postDtos = new ArrayList<>();
+        for (Post post : posts) {
+            PostDto postDto = toReplyPostDto(post,reqUser);
+            postDtos.add(postDto);
+        }
+        return postDtos;
+    }
+
+    private static PostDto toReplyPostDto(Post post, User reqUser) {
+
+        UserDto user = UserDtoMapper.toUserDto(post.getUser());
+        boolean isLiked = PostUtil.isLikedByReqUser(reqUser, post);
+        boolean isReposted = PostUtil.isRepostedByReqUser(reqUser, post);
+
+        List<Long> repostUserId = new ArrayList<>();
+        for(User user1 : post.getRepostUser()) {
+            repostUserId.add(user1.getId());
         }
 
-        return post.getLikes().stream()
-                .anyMatch(like -> like.getUser().getId().equals(reqUser.getId()));
+        PostDto postDto = new PostDto();
+        postDto.setId(post.getId());
+        postDto.setCreatedAt(post.getCreatedAt());
+        postDto.setImage(post.getImage());
+        postDto.setVideo(post.getVideo());
+        postDto.setContent(post.getContent());
+        postDto.setTotalLikes(post.getLikes().size());
+        postDto.setTotalReplies(post.getReplyPosts().size());
+        postDto.setTotalRePosts(post.getRepostUser().size());
+        postDto.setUser(user);
+        postDto.setLiked(isLiked);
+        postDto.setReposted(isReposted);
+        postDto.setRepostUserid(repostUserId);
+        postDto.setVideo(post.getVideo());
+
+
+        return postDto;
     }
 }

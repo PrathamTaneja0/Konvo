@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "config", "service", "model", "repository"})
+@ComponentScan(basePackages = {"controller", "config", "service", "model", "repository", "dto", "dto_mapper"})
 @EntityScan("model")
 @EnableJpaRepositories("repository")
 public class KonvoBackendApplication {
