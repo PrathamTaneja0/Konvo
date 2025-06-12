@@ -1,0 +1,14 @@
+
+import { combineReducers, applyMiddleware, legacy_createStore } from 'redux';
+import {thunk} from 'redux-thunk';
+import {authReducer} from './Auth/Reducer.jsx';
+
+// Fix: Remove the nested "reducer" object
+export const rootReducer = combineReducers({
+    auth: authReducer,
+    // Add other reducers here directly
+});
+
+const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
+
+export default store;
