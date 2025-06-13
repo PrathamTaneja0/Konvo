@@ -6,7 +6,7 @@ import { Button, Avatar, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-const Navigation = () => {
+const Navigation = ({ onNavItemClick }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,9 +27,10 @@ const Navigation = () => {
           <img
             src={logo}
             alt="logo"
-            className=" "
+            className="cursor-pointer"
             width={50}
             height={50}
+            onClick={() => navigate("/home")}
           />
         </div>
         <div className="space-y-6">
@@ -37,21 +38,27 @@ const Navigation = () => {
             <div
               key={item.path}
               className="cursor-pointer flex space-x-3 items-center"
-              onClick={() =>
-                item.title === "Profile"
-                  ? navigate(`/profile/${50}`)
-                  : navigate(item.path)
-              }
+              onClick={() => {
+                if (item.title === "Profile") {
+                  navigate(`/profile/${50}`);
+                } else {
+                  navigate(item.path);
+                }
+                // Call the callback if provided
+                if (onNavItemClick) {
+                  onNavItemClick();
+                }
+              }}
             >
               {item.icon}
               <p className="text-xl">{item.title}</p>
             </div>
           ))}
         </div>
-        <div className="py-6 flex justify-center">
+        <div className="py-6 flex ">
           <Button
               sx={{
-                width: "100%",
+                width: "80%",
                 borderRadius: "29px",
                 py: "15px",
                 px: 3,

@@ -4,7 +4,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness6';
 import { Button } from '@mui/material';
 import SubscriptionM from '../SubscriptionM/SubscriptionM';
 
-const RightPart = () => {
+const RightPart = ({ onItemClick }) => {
   const [openSubscriptionM, setOpenSubscriptionM] = React.useState(false);
 
   const handleOpenSubscriptionM = () => setOpenSubscriptionM(true);
@@ -53,17 +53,26 @@ const RightPart = () => {
       <section className='bg-gray-50 rounded-xl p-4'>
         <h1 className='text-xl font-bold mb-4'>What's happening</h1>
         <div className='space-y-4'>
-          <div className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'>
+          <div 
+            className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'
+            onClick={() => onItemClick && onItemClick()}
+          >
             <p className='text-sm text-gray-500'>Sports · Live</p>
             <p className='font-semibold'>FIFA Women's World Cup Live</p>
             <p className='text-sm text-gray-500'>Trending with #FIFAWWC</p>
           </div>
-          <div className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'>
+          <div 
+            className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'
+            onClick={() => onItemClick && onItemClick()}
+          >
             <p className='text-sm text-gray-500'>Technology · Trending</p>
             <p className='font-semibold'>AI Revolution</p>
             <p className='text-sm text-gray-500'>2.5M posts</p>
           </div>
-          <div className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'>
+          <div 
+            className='cursor-pointer hover:bg-gray-100 transition-colors p-2 rounded-lg'
+            onClick={() => onItemClick && onItemClick()}
+          >
             <p className='text-sm text-gray-500'>Entertainment · Trending</p>
             <p className='font-semibold'>Latest Movie Releases</p>
             <p className='text-sm text-gray-500'>1.2M posts</p>
