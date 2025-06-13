@@ -50,8 +50,18 @@ const Navigation = () => {
         </div>
         <div className="py-6 flex justify-center">
           <Button
-            sx={{ width: "100%", borderRadius: "29px", py: "15px", bgcolor: 'light blue', px: 3 }}
-            variant="contained"
+              sx={{
+                width: "100%",
+                borderRadius: "29px",
+                py: "15px",
+                px: 3,
+                bgcolor: "#000000",
+                // bgcolor: "#1DA1F2",
+                "&:hover": {
+                          bgcolor: "#1a91da",
+                        },
+              }}
+              variant="contained"
           >
             Post
           </Button>
@@ -79,9 +89,7 @@ const Navigation = () => {
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
+          aria-labelledby= 'basic-button'
         >
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>

@@ -7,19 +7,22 @@ import SignupForm from './SignupForm';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 550,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  borderRadius: 2,
-  outline: 'none',
-  p: 4,
-};
-
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 550,
+    maxHeight: '90vh',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    borderRadius: 2,
+    outline: 'none',
+    p: 4,
+  };
 export default function AuthModal({ open, handleClose }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,6 +55,9 @@ export default function AuthModal({ open, handleClose }) {
     if (isSigninPage) return "Sign up";
     return "";
   };
+
+  
+
 
   return (
     <div>

@@ -38,7 +38,9 @@ const RightPart = () => {
             padding: "10px", 
             paddingX: "20px", 
             borderRadius: "25px",
-            bgcolor: "#1da1f2",
+            // bgcolor: "#1da1f2",
+              bgcolor: "#000000",
+            
             "&:hover": {
               bgcolor: "#1a91da"
             }

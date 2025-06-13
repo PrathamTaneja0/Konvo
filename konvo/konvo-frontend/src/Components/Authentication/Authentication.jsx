@@ -93,7 +93,7 @@ const Authentication = () => {
               <div className="w-full mb-8">
                 <div style={{ marginBottom: '16px' }}>
                   <GoogleLogin
-                    width={330}
+                    fullWidth
                     theme="outline"
                     shape="rectangular"
                     text="signin_with"
