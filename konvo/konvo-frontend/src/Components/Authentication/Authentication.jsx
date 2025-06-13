@@ -1,45 +1,51 @@
 import React, { useState } from 'react';
-// Import images correctly
 import bg_auth from '../../Assets/bg_auth.jpg';
 import logo_auth from '../../Assets/logo_auth.png';
 import Grid from '@mui/material/Grid';
-import { Button, useScrollTrigger } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import AuthModal from './AuthModel';
 
 const Authentication = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const [openAuthModel, setOpenAuthModel] = useState(false);
+
+  // Check if we're on signup or signin routes
+  const isSignupRoute = location.pathname === '/signup';
+  const isSigninRoute = location.pathname === '/signin';
+  const shouldShowModal = isSignupRoute || isSigninRoute;
 
   const handleCreateAccount = () => {
-    navigate('/register');
+    navigate('/signup');
+    setOpenAuthModel(true);
   };
+
 
   const handleSignIn = () => {
-    navigate('/login');
+    navigate('/signin');
+    setOpenAuthModel(true);
   };
 
-  const [openAuthModel,setOpenAuthModel] = useState(false);
-  const handleOpenAuthModel = () => setOpenAuthModel(true);
-  const handleCloseAuthModel = () => setOpenAuthModel(false);
+  const handleCloseAuthModel = () => {
+    setOpenAuthModel(false);
+    navigate('/auth'); // Navigate back to main auth page when modal is closed
+  };
 
-  // const handleGoogleSuccess = (credentialResponse) => {
-  //   console.log(credentialResponse);
-  //   // Handle the Google login response
-  //   // Example: dispatch(loginWithGoogle(credentialResponse));
-  // };
-
-  // const handleGoogleError = () => {
-  //   console.log('Google Sign In was unsuccessful');
-  //   // Handle login error
-  // };
+  // Auto-open modal if we're on signup/signin routes
+  React.useEffect(() => {
+    if (shouldShowModal) {
+      setOpenAuthModel(true);
+    }
+  }, [shouldShowModal]);
 
   return (
     <div className="h-screen w-screen overflow-hidden">
       <Grid container sx={{ height: '100%' }}>
         {/* Left section with background image */}
         <Grid 
-    
           size={{ xs: 0, sm: 0, md: 7, lg: 7 }}
           sx={{   
             position: 'relative',
@@ -47,7 +53,6 @@ const Authentication = () => {
             height: '100%'
           }}
         >
-          {/* Use inline style for background image as an alternative approach */}
           <div 
             className="absolute inset-0"
             style={{ 
@@ -58,7 +63,6 @@ const Authentication = () => {
               height: '100%'
             }}
           >
-            {/* Logo centered on background */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <img 
                 src={logo_auth} 
@@ -80,14 +84,13 @@ const Authentication = () => {
             padding: { xs: '20px', sm: '30px', md: '40px' }
           }}
         >
-          <div className="w-full max-w-md mx-auto ">
+          <div className="w-full max-w-md mx-auto">
             <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl mb-10 text-center">
               Welcome to Konvo
             </h1>
 
             <div className="w-full md:w-[80%] lg:w-[70%] mx-auto">
               <div className="w-full mb-8">
-                {/* Google login button with custom styling */}
                 <div style={{ marginBottom: '16px' }}>
                   <GoogleLogin
                     width={330}
@@ -95,7 +98,6 @@ const Authentication = () => {
                     shape="rectangular"
                     text="signin_with"
                     logo_alignment="center"
-                    // You can add onSuccess/onError handlers here
                   />
                 </div>
                 <p className="py-5 text-center font-medium">OR</p>
@@ -104,8 +106,7 @@ const Authentication = () => {
                   variant="contained"
                   size="large"
                   sx={{ borderRadius: "29px", py: "12px" }}
-                  onClick={handleOpenAuthModel}
-
+                  onClick={handleCreateAccount}
                 >
                   Create Account
                 </Button>
@@ -120,7 +121,7 @@ const Authentication = () => {
                   variant="outlined"
                   size="large"
                   sx={{ borderRadius: "29px", py: "12px" }}
-                  onClick={handleOpenAuthModel}
+                  onClick={handleSignIn}
                 >
                   Log in
                 </Button>
@@ -129,7 +130,11 @@ const Authentication = () => {
           </div>
         </Grid>
       </Grid>
-      <AuthModal open={openAuthModel} handleClose={handleCloseAuthModel} />
+      
+      <AuthModal 
+        open={openAuthModel} 
+        handleClose={handleCloseAuthModel} 
+      />
     </div>
   );
 };

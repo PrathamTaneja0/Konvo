@@ -45,7 +45,7 @@
 //         dispatch({type: 'GET_USER_PROFILE_FAILURE', payload: error.message});
 //     }
 // }
-import { API_BASE_URL } from '../Components/Config/api';
+import { API_BASE_URL } from '../../Components/Config/api.js';
 import axios from 'axios';
 
 export const loginUser = (loginData) => async (dispatch) => {

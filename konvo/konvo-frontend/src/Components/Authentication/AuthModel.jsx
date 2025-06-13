@@ -1,8 +1,10 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import SigninForm from './SigninForm';
+import SignupForm from './SignupForm';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const style = {
   position: 'absolute',
@@ -13,12 +15,43 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
-  borderRadus: 2,
+  borderRadius: 2,
   outline: 'none',
   p: 4,
 };
 
-export default function AuthModal(open, handleClose) {
+export default function AuthModal({ open, handleClose }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isSignupPage = location.pathname === "/signup";
+  const isSigninPage = location.pathname === "/signin";
+
+  const handleNavigate = () => {
+    if (isSignupPage) {
+      navigate("/signin");
+    } else {
+      navigate("/signup");
+    }
+  };
+
+  const getModalTitle = () => {
+    if (isSignupPage) return "Create your Account";
+    if (isSigninPage) return "Sign In to your Account";
+    return "Welcome";
+  };
+
+  const getToggleText = () => {
+    if (isSignupPage) return "Already have an Account?";
+    if (isSigninPage) return "Don't have an Account?";
+    return "";
+  };
+
+  const getButtonText = () => {
+    if (isSignupPage) return "Sign in";
+    if (isSigninPage) return "Sign up";
+    return "";
+  };
 
   return (
     <div>
@@ -29,15 +62,26 @@ export default function AuthModal(open, handleClose) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <h1 className='text-center font-bold text-3xl pb-20'>
+            {getModalTitle()}
+          </h1>
+          
+          {isSignupPage ? <SignupForm /> : <SigninForm />}
+          
+          <h1 className='text-center py-5 font-semibold text-lg text-gray-500'>
+            {getToggleText()}
+          </h1>
+
+          <Button 
+            variant='outlined' 
+            onClick={handleNavigate} 
+            fullWidth
+            sx={{ borderRadius: '29px', py: 1.5 }}
+          >
+            {getButtonText()}
+          </Button>
         </Box>
       </Modal>
     </div>
   );
 }
-
