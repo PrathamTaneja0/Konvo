@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import moon from "../../assets/moon.jpg";
-
+import useColorMode from "../../theme/useColorMode";
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,7 +31,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
   const [bannerPreview, setBannerPreview] = useState(initialValues?.backgroundImage || moon);
   const [avatarPreview, setAvatarPreview] = useState(initialValues?.profilePicture || "");
   const [saving, setSaving] = useState(false);
-
+  const { theme } = useColorMode();
   const handleSubmit = async (values) => {
     setSaving(true);
     // Prepare data for backend
@@ -102,18 +102,19 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       onClose={onClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+
     >
-      <Box sx={style}>
+      <Box sx={{ ...style, backgroundColor: theme.palette.background.default }}>
         <form onSubmit={formik.handleSubmit}>
           {/* Sticky Header with close and save */}
-          <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 sticky top-0 z-10 bg-white">
+          <div className="flex items-center justify-between px-4 py-2 border-b sticky top-0 z-10" style={{ borderColor: theme.palette.divider, backgroundColor: theme.palette.background.paper }}>
             <div className="flex items-center">
               <IconButton onClick={onClose} aria-label="close">
                 <CloseIcon />
               </IconButton>
               <Typography variant="subtitle1" className="ml-2">Edit Profile</Typography>
             </div>
-            <Button type="submit" sx={{ color: '#1da1f2', fontWeight: 600 }} disabled={uploadedImage || saving}>
+            <Button type="submit" variant = "contained "  color="inherit" sx={{ fontWeight: 600 }} disabled={uploadedImage || saving} >
               {saving ? 'Saving...' : 'Save'}
             </Button>
           </div>
@@ -121,7 +122,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
           {/* Scrollable Modal Content */}
           <div className="overflow-y-auto max-h-[80vh]">
             {/* Banner and Avatar */}
-            <div className="relative w-full h-[180px] bg-gray-200">
+            <div className="relative w-full h-[180px] ">
               <img
                 src={bannerPreview}
                 alt="Banner"

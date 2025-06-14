@@ -25,8 +25,8 @@ export default function HomePage() {
     <Container
       maxWidth="xl"
       sx={{
-        pl: { xs: 3, md: 8 },
-        pr: { xs: 1, md: 2 },
+        // pl: { xs: 3, md: 8 },
+        // pr: { xs: 1, md: 2 },
       }}
     >
       <Grid container columns={12}>

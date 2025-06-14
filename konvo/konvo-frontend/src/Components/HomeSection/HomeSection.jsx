@@ -7,7 +7,8 @@ import ImageIcon from "@mui/icons-material/Image";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import PostCard from "./PostCard";
-
+import useColorMode from "../../theme/useColorMode";
+import TextField from "@mui/material/TextField";
 const validationSchema = Yup.object().shape({
   content: Yup.string()
     .required("Post text is required")
@@ -17,7 +18,7 @@ const validationSchema = Yup.object().shape({
 const HomeSection = () => {
   const [uploadedImage, setUploadedImage] = React.useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = React.useState(null);
-
+  const { theme } = useColorMode();
   const handleSubmit = (values) => {
     console.log("Form submitted with values:", values);
   };
@@ -55,19 +56,46 @@ const HomeSection = () => {
           <h1 className="py-5 text-xl font-bold opacity-90">Home</h1>
         </section>
         
-        <section className="pb-5 border-b border-gray-100">
+        <section className="pb-5 border-b border-gray-100"    style={{ backgroundColor: theme.palette.background.default }}>
           <div className="flex space-x-5">
             <Avatar alt="username" src={user1} />
             <div className="w-full">
               <form onSubmit={formik.handleSubmit}>
                 <div>
-                  <input
-                    type="text"
-                    name="content"
-                    placeholder="What's happening?"
-                    className="border-none outline-none text-xl bg-transparent w-full h-10"
-                    {...formik.getFieldProps("content")}
+                  <TextField
+                      name="content"
+                      placeholder="What's happening?"
+                      variant="standard"
+                      fullWidth
+                      // sx={{
+                      //   '& .MuiInput-root': {
+                      //     fontSize: '1.25rem',
+                      //     '&:before': { display: 'none' },
+                      //     '&:after': { display: 'none' },
+                      //   },
+                      //   '& .MuiInputBase-input::placeholder': {
+                      //     color: theme.palette.text.secondary,
+                      //     opacity: 1
+                      //   }
+                      // }}
+                      sx={{
+                        '& input:-webkit-autofill': {
+                          WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
+                          WebkitTextFillColor: theme.palette.text.primary,
+                          transition: 'background-color 5000s ease-in-out 0s'
+                        },
+                        '& input:-webkit-autofill:hover': {
+                          WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
+                          WebkitTextFillColor: theme.palette.text.primary
+                        },
+                        '& input:-webkit-autofill:focus': {
+                          WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
+                          WebkitTextFillColor: theme.palette.text.primary
+                        }
+                      }}
+                      {...formik.getFieldProps("content")}
                   />
+
                   {formik.touched.content && formik.errors.content && (
                     <div className="text-red-500">{formik.errors.content}</div>
                   )}

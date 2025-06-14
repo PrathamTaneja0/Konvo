@@ -70,8 +70,10 @@ function PostCard() {
           <div className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
               <span className="font-semibold">Snax Dark</span>
-              <span className="text-gray-600">@Snax123 . 2m</span>
-              <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
+              <span className=" opacity-70">@Snax123 . 2m</span>
+
+              <img className="w-4 h-4 ml-2" src={verify} alt="verified"
+              />
             </div>
 
             <div>

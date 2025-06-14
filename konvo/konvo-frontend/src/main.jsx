@@ -6,17 +6,18 @@ import './index.css'
 import {Provider} from "react-redux";
 import store from "./Store/store.jsx";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import ThemeProvider from './theme/ThemeProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-        <Provider store = {store}>
+        <Provider store={store}>
           <GoogleOAuthProvider>
-            <App />
-
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
           </GoogleOAuthProvider>
         </Provider>
-
     </BrowserRouter>
   </React.StrictMode>
 )

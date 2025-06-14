@@ -10,7 +10,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import verify from '../../assets/verify.png';
 import PostCard from '../HomeSection/PostCard';
 import ProfileModal from './ProfileModal';
-
+import useColorMode from "../../theme/useColorMode";
 const defaultProfile = {
   fullName: "Snax Dark",
   bio: "Hello, I am Snax Dark",
@@ -22,6 +22,7 @@ const defaultProfile = {
 };
 
 const Profile = () => {
+    const { theme } = useColorMode();
   const [tabValue, setTabValue] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -67,7 +68,9 @@ const Profile = () => {
 
   return (
     <div className="w-full">
-        <section className= {'bg-white z-50 flex items-center sticky top-0 bg-opacity-95 bg-white'}>
+        {/*<section className= {' z-50 flex items-center sticky top-0 bg-opacity-95 bg-white'}>*/}
+            <section className= {' z-50 flex items-center sticky top-0 bg-opacity-95 ' } style={{backgroundColor: theme.palette.background.default}}>
+
             <KeyboardBackspaceIcon className = 'cursor-pointer' onClick={handleBack} />
             <h1 className= {'text-xl font-bold py-5 opacity-90 ml-5'}>Profile</h1>
         </section>
@@ -91,13 +94,20 @@ const Profile = () => {
             <Button
                 onClick={isFollowing ? handleFollowUser : handleOpenProfileModel}
                 variant='contained'
+                color='primary'
                 sx={{
-                  borderRadius: '20px',
-                  position: 'absolute',
-                  right: '2rem',
-                  bottom: '-4rem',
-                  paddingX: '1.5rem',
-                  paddingY: '0.5rem',
+                    borderRadius: '20px',
+                    position: 'absolute',
+                    right: '2rem',
+                    bottom: '-4rem',
+                    paddingX: '1.5rem',
+                    paddingY: '0.5rem',
+                    bgcolor: "#000000",
+
+                    "&:hover": {
+                        bgcolor: "#1a91da",
+                    },
+
                 }}
             >
                 {isFollowing ? "Unfollow" : "Edit Profile"}
