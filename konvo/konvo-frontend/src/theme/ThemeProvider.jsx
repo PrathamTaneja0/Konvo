@@ -2,6 +2,9 @@ import * as React from 'react';
 import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
+
+//Fixed and Cleaned
+
 // Create a theme context
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
