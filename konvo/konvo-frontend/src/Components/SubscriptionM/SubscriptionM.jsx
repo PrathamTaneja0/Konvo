@@ -83,14 +83,11 @@ export default function SubscriptionM({ open, handleClose }) {
             variant="contained"
             color="primary"
             sx={{
-              backgroundColor: "#000000",
-              borderRadius: "9999px",
               width: "60%",
               maxWidth: "xs",
               py: 2,
               minWidth: { xs: 250, sm: 300 }, // Responsive minWidth
-              "&:focus": { outline: "none" },
-              "&:hover": { backgroundColor: "#1e293b" }
+              borderRadius: "9999px",
             }}
           >
             <span style={{ 

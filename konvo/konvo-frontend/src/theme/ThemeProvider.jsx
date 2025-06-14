@@ -25,9 +25,47 @@ export default function ThemeProvider({ children }) {
     [],
   );
 
+  // Define button styles for each mode
+  const lightModeCustomColors = {
+    cardBackground: '#f9fafb',
+    cardHover: '#374151',
+    searchBackground: '#374151',
+    // Button colors for light mode
+    buttonBackground: '#000000',
+    buttonHover: '#1a91da',
+    buttonText: '#FFFFFF',
+    containedButtonBorder: '#000000',
+    containedButtonText: '#000000',
+    // Outlined button colors for light mode
+    outlinedButtonBorder: '#1DA1F2',
+    outlinedButtonText: '#1DA1F2',
+    outlinedButtonHoverBg: 'rgba(29, 161, 242, 0.08)',
+    outlinedButtonHoverBorder: '#0c7abf',
+  };
+
+  const darkModeCustomColors = {
+    cardBackground: 'rgb(42 42 47)',
+    cardHover: '#374151',
+    searchBackground: '#374151',
+    // Button colors for dark mode
+    buttonBackground: '#000000',
+    buttonHover: '#1a91da',
+    buttonText: '#FFFFFF',
+    containedButtonBorder: '#FFFFFF',
+    containedButtonText: '#FFFFFF',
+    // Outlined button colors for dark mode
+    outlinedButtonBorder: '#1DA1F2',
+    outlinedButtonText: '#1DA1F2',
+    outlinedButtonHoverBg: 'rgba(29, 161, 242, 0.08)',
+    outlinedButtonHoverBorder: '#0c7abf',
+  };
+
   const theme = React.useMemo(
-    () =>
-      createTheme({
+    () => {
+      // Select the appropriate custom colors based on mode
+      const customColors = mode === 'light' ? lightModeCustomColors : darkModeCustomColors;
+
+      return createTheme({
         palette: {
           mode,
           ...(mode === 'light'
@@ -35,28 +73,19 @@ export default function ThemeProvider({ children }) {
                 // Light mode palette
                 primary: {
                   main: '#1DA1F2',
-                  contrastText: '#FFFFFF', // Ensures text on primary buttons is white
+                  contrastText: '#FFFFFF',
                 },
                 background: {
-                  // default: '#f5f5f5',
                   default: '#ffffff',
                   paper: '#ffffff',
                 },
-
-                  custom: {
-                      cardBackground: '#f9fafb', // dark gray
-                      cardHover: '#374151', // darker gray
-                      searchBackground: '#374151',
-                  }
-
-
+                custom: customColors,
               }
             : {
                 // Dark mode palette
                 primary: {
                   main: '#1DA1F2',
-                  contrastText: '#FFFFFF', // Ensures text on primary buttons is white
-
+                  contrastText: '#FFFFFF',
                 },
                 background: {
                   default: '#151a1f',
@@ -66,18 +95,35 @@ export default function ThemeProvider({ children }) {
                   primary: '#ffffff',
                   secondary: '#8899A6',
                 },
-                  custom: {
-                      // cardBackground: '#1f2937', // dark gray
-                      cardBackground: 'rgb(42 42 47)', // dark gray
-
-                      cardHover: '#374151', // darker gray
-                      searchBackground: '#374151',
-                  }
-
+                custom: customColors,
               }),
         },
-      }),
-    [mode],
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              // Contained primary button styling
+              containedPrimary: {
+                backgroundColor: customColors.buttonBackground,
+                color: customColors.buttonText,
+                '&:hover': {
+                  backgroundColor: customColors.buttonHover,
+                },
+              },
+              // Outlined primary button styling
+              outlinedPrimary: {
+                borderColor: customColors.outlinedButtonBorder,
+                color: customColors.outlinedButtonText,
+                '&:hover': {
+                  backgroundColor: customColors.outlinedButtonHoverBg,
+                  borderColor: customColors.outlinedButtonHoverBorder,
+                },
+              }
+            },
+          },
+        },
+      });
+    },
+    [mode], // Re-compute the theme only when the mode changes
   );
 
   return (

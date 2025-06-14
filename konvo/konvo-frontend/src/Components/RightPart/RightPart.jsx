@@ -51,17 +51,12 @@ const RightPart = ({ onItemClick }) => {
         <h1 className='font-bold my-2'>Subscribe to unlock new Features</h1>
         <Button 
           variant='contained' 
+          color='primary'
           onClick={handleOpenSubscriptionM}
           sx={{ 
             padding: "10px", 
             paddingX: "20px", 
             borderRadius: "25px",
-            // bgcolor: "#1da1f2",
-              bgcolor: "#000000",
-            
-            "&:hover": {
-              bgcolor: "#1a91da"
-            }
           }}
         >
           Get Verified

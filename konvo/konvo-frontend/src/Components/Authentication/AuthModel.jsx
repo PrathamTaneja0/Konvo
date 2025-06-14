@@ -90,13 +90,7 @@ export default function AuthModal({ open, handleClose }) {
             fullWidth
             sx={{ 
               borderRadius: '29px', 
-              py: 1.5,
-              borderColor: theme.palette.primary.main,
-              color: theme.palette.primary.main,
-              '&:hover': {
-                borderColor: theme.palette.primary.dark,
-                backgroundColor: 'rgba(29, 161, 242, 0.04)'
-              }
+              py: 1.5
             }}
           >
             {getButtonText()}

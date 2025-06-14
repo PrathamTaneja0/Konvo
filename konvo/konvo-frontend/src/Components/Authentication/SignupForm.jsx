@@ -303,6 +303,7 @@ const SignupForm = ({ onSubmit }) => {
                         <Button
                             type="submit"
                             variant="contained"
+                            color="primary"
                             fullWidth
                             disabled={loading}
                             sx={{ borderRadius: "29px", py: 1.5 }}

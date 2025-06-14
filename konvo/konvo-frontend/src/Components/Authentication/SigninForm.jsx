@@ -88,6 +88,7 @@ const SigninForm = ({ onSubmit }) => {
           <Button
             type="submit"
             variant="contained"
+            color="primary"
             fullWidth
             sx={{ borderRadius: "29px", py: 1.5 }}
           >
