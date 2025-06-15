@@ -35,10 +35,7 @@ public class JwtProvider {
         return jwt;
     }
 
-//    public String getEmailFromToken(String jwt) {
-//        return Jwts.parser().verifyWith(key).build()
-//                .parseSignedClaims(jwt).getBody().get("email").toString();
-//    }
+
 
 public String getEmailFromToken(String jwt) {
     // Handle Bearer prefix and whitespace

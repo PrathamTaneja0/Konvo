@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 .junie
+.idea
 
 
 # Dependency directories
 node_modules/
+    

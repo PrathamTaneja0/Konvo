@@ -1,4 +1,3 @@
-
 import {
     LOGIN_USER_REQUEST,
     LOGIN_USER_SUCCESS,
@@ -49,9 +48,10 @@ export const authReducer = (state = initialState, action) => {
                 error: action.payload
             };
         case 'GET_USER_PROFILE_SUCCESS':
+            console.log("GET_USER_PROFILE_SUCCESS payload:", action.payload);
             return {
                 ...state,
-                user: action.payload.user,
+                user: action.payload,
                 loading: false,
                 error: null
             };

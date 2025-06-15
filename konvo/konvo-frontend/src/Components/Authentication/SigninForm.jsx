@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid"; // Grid2 stable in v7
 import TextField from "@mui/material/TextField";
 import { Button, InputAdornment, IconButton } from "@mui/material";
@@ -6,12 +6,21 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {loginUser} from "../../Store/Auth/Action.jsx";
+import {useNavigate} from "react-router-dom";
 
 const SigninForm = ({ onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {auth} = useSelector(store=>store);
+
+  useEffect(()=>{
+    if(auth.user){
+      navigate("/home"); // Redirect to /home page
+    }
+  }, [auth.user, navigate]);
 
   const validationSchema = Yup.object({
     email: Yup.string()

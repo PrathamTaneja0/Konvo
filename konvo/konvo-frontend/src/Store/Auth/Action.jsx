@@ -8,6 +8,7 @@ export const loginUser = (loginData) => async (dispatch) => {
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
             dispatch({type: 'LOGIN_USER_SUCCESS', payload: data});
+                dispatch(getUserProfile(data.jwt));
         }
     }
     catch (error) {
@@ -25,6 +26,7 @@ export const registerUser = (registerData) => async (dispatch) => {
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
             dispatch({type: 'REGISTER_USER_SUCCESS', payload: data});
+            dispatch(getUserProfile(data.jwt));
         }
     }
     catch (error) {
