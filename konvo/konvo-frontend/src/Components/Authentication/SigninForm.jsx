@@ -6,9 +6,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import {useDispatch} from "react-redux";
+import {loginUser} from "../../Store/Auth/Action.jsx";
 
 const SigninForm = ({ onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -22,6 +25,9 @@ const SigninForm = ({ onSubmit }) => {
     validationSchema,
     onSubmit: (values) => {
       if (onSubmit) onSubmit(values);
+      console.log("form values: ", values);
+      dispatch(loginUser(values));
+
     },
   });
 

@@ -5,9 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { Button, Avatar, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../Store/Auth/Action.jsx";
 
 const Navigation = ({ onNavItemClick }) => {
+
+
+    const {auth} = useSelector(store=>store);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const dispatch = useDispatch();
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -19,6 +28,7 @@ const Navigation = ({ onNavItemClick }) => {
   const handleLogout = () => {
     console.log("Logout");
     handleClose();
+    dispatch(logout());
   };
   return (
     <div className="h-screen sticky top-0 flex flex-col justify-between px-4">
@@ -79,8 +89,8 @@ const Navigation = ({ onNavItemClick }) => {
           <Avatar alt="username" src={userIcon} />
         </div>
         <div>
-          <span>Snax Dark</span>
-          <span className="opacity-70 ml-2 block">@Snax123</span>
+          <p>{auth.user?.fullName}</p>
+          <span className="opacity-70 ml-2 block">@{auth.user?.fullName?.split(" ").join("_").toLowerCase()}</span>
         </div>
         <Button
           id="basic-button"
