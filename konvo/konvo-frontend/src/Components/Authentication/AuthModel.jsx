@@ -38,7 +38,9 @@ export default function AuthModal({ open, handleClose }) {
   const handleNavigate = () => {
     if (isSignupPage) {
       navigate("/signin");
-    } else {
+    
+    } 
+    else {
       navigate("/signup");
     }
   };

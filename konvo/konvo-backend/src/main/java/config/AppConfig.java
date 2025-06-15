@@ -8,6 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+import java.util.List;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -25,7 +30,7 @@ public class AppConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class);
+            .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);
         
         return http.build();
     }
@@ -38,5 +43,19 @@ public class AppConfig {
     @Bean
     public JwtTokenValidator jwtTokenValidator() {
         return new JwtTokenValidator();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173")); // frontend origin
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // for cookies and auth headers
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 }

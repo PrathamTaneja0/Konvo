@@ -35,8 +35,23 @@ public class JwtProvider {
         return jwt;
     }
 
-    public String getEmailFromToken(String jwt) {
-        return Jwts.parser().verifyWith(key).build()
-                .parseSignedClaims(jwt).getBody().get("email").toString();
+//    public String getEmailFromToken(String jwt) {
+//        return Jwts.parser().verifyWith(key).build()
+//                .parseSignedClaims(jwt).getBody().get("email").toString();
+//    }
+
+public String getEmailFromToken(String jwt) {
+    // Handle Bearer prefix and whitespace
+    if (jwt != null) {
+        int bearerIndex = jwt.indexOf("Bearer ");
+        if (bearerIndex != -1) {
+            // Extract the token and remove ALL whitespace
+            jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
+        }
     }
+
+    // Now parse the cleaned token
+    return Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(jwt).getBody().get("email").toString();
+}
 }

@@ -27,10 +27,20 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
+        System.out.println("Raw Authorization Header received in JwtTokenValidator: " + jwt);
 
-        if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring(7); // "Bearer " hata ke token le lo
+        if (jwt != null) {
+            int bearerIndex = jwt.indexOf("Bearer ");
+            if (bearerIndex != -1) {
+                // Extract the token and aggressively remove ALL whitespace (visible or invisible)
+                jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
+            } else {
+                // If "Bearer " prefix is not found, treat it as an invalid JWT header format
+                jwt = null; // Will skip JWT parsing block below
+            }
+        }
 
+        if (jwt != null && !jwt.isEmpty()) {
             try {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
                 Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getBody();
@@ -43,11 +53,17 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
             } catch (Exception e) {
-                throw new BadCredentialsException("invalid token");
+                // Throw BadCredentialsException directly to be handled by Spring Security's ExceptionTranslationFilter
+                throw new BadCredentialsException("Invalid or expired token", e);
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getServletPath().startsWith("/auth/");
     }
 }
 
