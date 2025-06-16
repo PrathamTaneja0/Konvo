@@ -5,25 +5,34 @@ import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserProfile} from "./Store/Auth/Action.jsx";
 
-
 function App() {
   const jwt = localStorage.getItem("jwt");
   const {auth} = useSelector(store=>store);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-  useEffect(() => {
-  if(jwt){
-    dispatch(getUserProfile(jwt));
-  }
-  },[jwt, dispatch])
 
+  // First useEffect: Handle initial auth state and JWT
   useEffect(() => {
-    if (auth.user && window.location.pathname === "/") {
-      navigate("/home"); // Redirect to /home if authenticated and at root
+    if (jwt && !auth.user) {
+      dispatch(getUserProfile(jwt));
     }
-    if (!auth.user && window.location.pathname !== "/signin" && window.location.pathname !== "/signup") {
-      navigate("/auth"); // Redirect to /signin if not authenticated and not already on auth page
+  }, [jwt, dispatch, auth.user]);
+
+  // Second useEffect: Handle navigation based on auth state
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const isAuthRoute = currentPath === "/signin" || currentPath === "/signup" || currentPath === "/auth";
+    
+    if (auth.user) {
+      // If user is authenticated and on auth routes, redirect to home
+      if (isAuthRoute) {
+        navigate("/home");
+      }
+    } else {
+      // If user is not authenticated and not on auth routes, redirect to auth
+      if (!isAuthRoute) {
+        navigate("/auth");
+      }
     }
   }, [auth.user, navigate]);
 
@@ -34,7 +43,8 @@ function App() {
           <Route path="/signin" element={<Authentication />} />
           <Route path="/signup" element={<Authentication />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/*" element={auth.user ? <HomePage /> : <Authentication />} />
+          <Route path="/auth" element={<Authentication />} />
+          <Route path="/*" element={auth.user ? <HomePage/> : <Authentication />} />
         </Routes>
       </div>
     </>

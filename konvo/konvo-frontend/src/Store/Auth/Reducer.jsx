@@ -84,6 +84,7 @@ export const authReducer = (state = initialState, action) => {
                 ...initialState
             };
         default:
+            console.log("ye null kyu hora hai bhai"+ initialState);
             return state;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import bg_auth from '../../Assets/bg_auth.jpg';
 import logo_auth from '../../Assets/logo_auth.png';
 import Grid from '@mui/material/Grid';
@@ -6,8 +6,11 @@ import { Button } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import AuthModal from './AuthModel';
+import { useSelector } from 'react-redux';
+
 
 const Authentication = () => {
+  const {auth} = useSelector(store=>store);  
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -17,6 +20,12 @@ const Authentication = () => {
   const isSignupRoute = location.pathname === '/signup';
   const isSigninRoute = location.pathname === '/signin';
   const shouldShowModal = isSignupRoute || isSigninRoute;
+
+  useEffect(()=>{
+    if(auth.user){
+      navigate("/home"); // Redirect to /home page
+    }
+  },[auth.user]);
 
   const handleCreateAccount = () => {
     navigate('/signup');
@@ -31,7 +40,8 @@ const Authentication = () => {
 
   const handleCloseAuthModel = () => {
     setOpenAuthModel(false);
-    navigate('/auth'); // Navigate back to main auth page when modal is closed
+    // navigate('/auth'); // Navigate back to main auth page when modal is closed
+    console.log("dsamammamamamam");
   };
 
   // Auto-open modal if we're on signup/signin routes
@@ -39,6 +49,9 @@ const Authentication = () => {
     if (shouldShowModal) {
       setOpenAuthModel(true);
     }
+    console.log("hahahahaha")
+    console.log(shouldShowModal)
+
   }, [shouldShowModal]);
 
   return (
