@@ -12,6 +12,10 @@ const Navigation = ({ onNavItemClick }) => {
 
 
     const {auth} = useSelector(store=>store);
+    
+    // Debug logging
+    console.log("Navigation - auth state:", auth);
+    console.log("Navigation - user data:", auth.user);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -88,9 +92,11 @@ const Navigation = ({ onNavItemClick }) => {
         <div className="flex items-center space-x-3">
           <Avatar alt="username" src={userIcon} />
         </div>
-        <div>
+        <div> 
+          {/* {console.log(auth.user?.fullName)}; */}
           <p>{auth.user?.fullName}</p>
-          <span className="opacity-70 ml-2 block">@{auth.user?.fullName?.split(" ").join("_").toLowerCase()}</span>
+          {/* {console.log(auth.user?.fullName?.split(" ").join("_").toLowerCase())}; */}
+          <span className="opacity-70 ml-2 block">@{auth.user?.username}</span>
         </div>
         <Button
           id="basic-button"

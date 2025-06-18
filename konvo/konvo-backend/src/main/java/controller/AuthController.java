@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import config.JwtProvider;
+import dto.UserDto;
+import dto_mapper.UserDtoMapper;
 import exception.UserException;
 import model.User;
 import repository.UserRepository;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import request.LoginRequest;
 import response.AuthResponse;
 import service.CustomUserDetailsServiceImplementation;
+import service.UserService;
+import response.ApiResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,12 +41,16 @@ public class AuthController {
     @Autowired
     private CustomUserDetailsServiceImplementation customeUserDetails;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws UserException{
         String email = user.getEmail();
         String password = user.getPassword();
         String fullName = user.getFullName();
         String birthDate = user.getBirthDate();
+        String username = user.getUsername();
 
         User isEmailExist = userRepository.findByEmail(email);
 
@@ -50,11 +58,15 @@ public class AuthController {
             throw new UserException("Email is already used with another account");
         }
 
+        // Validate username
+        userService.validateUsername(username);
+
         User createdUser = new User();
         createdUser.setEmail(email);
         createdUser.setPassword(passwordEncoder.encode(password));
         createdUser.setBirthDate(birthDate);
         createdUser.setFullName(fullName);
+        createdUser.setUsername(username.trim());
         createdUser.setLogin_with_google(false);
 
         User savedUser = userRepository.save(createdUser);
@@ -64,7 +76,8 @@ public class AuthController {
 
         String token = jwtProvider.generateToken(authentication);
 
-        AuthResponse res = new AuthResponse(token, true);
+        UserDto userDto = UserDtoMapper.toUserDto(savedUser);
+        AuthResponse res = new AuthResponse(token, userDto, true);
 
         return new ResponseEntity<AuthResponse>(res, HttpStatus.CREATED);
     }
@@ -79,7 +92,9 @@ public class AuthController {
 
         String token = jwtProvider.generateToken(authentication);
 
-        AuthResponse res = new AuthResponse(token, true);
+        User userFromDb = userRepository.findByEmail(username);
+        UserDto userDto = UserDtoMapper.toUserDto(userFromDb);
+        AuthResponse res = new AuthResponse(token, userDto, true);
 
         return new ResponseEntity<AuthResponse>(res, HttpStatus.ACCEPTED);
     }
@@ -96,5 +111,19 @@ public class AuthController {
         }
 
         return new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<ApiResponse> checkUsernameAvailability(@RequestParam String username) {
+        boolean isAvailable = userService.isUsernameAvailable(username);
+        String message = isAvailable ? "Username is available" : "Username is already taken";
+        return new ResponseEntity<>(new ApiResponse(message, isAvailable), HttpStatus.OK);
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<ApiResponse> checkEmailAvailability(@RequestParam String email) {
+        boolean isAvailable = userRepository.findByEmail(email) == null;
+        String message = isAvailable ? "Email is available" : "Email is already registered";
+        return new ResponseEntity<>(new ApiResponse(message, isAvailable), HttpStatus.OK);
     }
 }

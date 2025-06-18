@@ -102,4 +102,37 @@ public class UserServiceImplementation implements UserService {
     public List<User> searchUser(String query) {
         return userRepository.searchUser(query);
     }
+    
+    @Override
+    public boolean isUsernameAvailable(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
+        return userRepository.findByUsername(username.trim()) == null;
+    }
+    
+    @Override
+    public void validateUsername(String username) throws UserException {
+        if (username == null || username.trim().isEmpty()) {
+            throw new UserException("Username is required");
+        }
+        
+        String trimmedUsername = username.trim();
+        
+        if (trimmedUsername.length() < 3) {
+            throw new UserException("Username must be at least 3 characters long");
+        }
+        
+        if (trimmedUsername.length() > 30) {
+            throw new UserException("Username must be less than 30 characters");
+        }
+        
+        if (!trimmedUsername.matches("^[a-zA-Z0-9_]+$")) {
+            throw new UserException("Username can only contain letters, numbers, and underscores");
+        }
+        
+        if (!isUsernameAvailable(trimmedUsername)) {
+            throw new UserException("Username is already taken");
+        }
+    }
 }

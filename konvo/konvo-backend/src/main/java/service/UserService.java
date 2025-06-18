@@ -11,10 +11,13 @@ public interface UserService {
     
     public User findUserProfileByJwt(String jwt) throws UserException;
     
-    public User updateUser(Long userId, User user) throws UserException;
+    public User updateUser(Long userId, User req) throws UserException;
     
-    public User followUser(Long userId, User reqUser) throws UserException;
+    public User followUser(Long userId, User user) throws UserException;
     
     public List<User> searchUser(String query);
     
+    public boolean isUsernameAvailable(String username);
+    
+    public void validateUsername(String username) throws UserException;
 }

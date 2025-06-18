@@ -8,25 +8,37 @@ export const loginUser = (loginData) => async (dispatch) => {
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
             dispatch({type: 'LOGIN_USER_SUCCESS', payload: data});
-                dispatch(getUserProfile(data.jwt));
         }
     }
     catch (error) {
         console.log(error);
-        dispatch({type: 'LOGIN_USER_FAILURE', payload: error.message});
+        let errorMsg = error.message;
+        if (error.response && error.response.status === 403) {
+            errorMsg = "Invalid username or password";
+        }
+        dispatch({type: 'LOGIN_USER_FAILURE', payload: errorMsg});
     }
 }
 
 export const registerUser = (registerData) => async (dispatch) => {
     try {
-        const {data} = await axios.post(`${API_BASE_URL}/auth/signup`, registerData);
+        // Transform the data to match backend expectations
+        const backendData = {
+            fullName: `${registerData.firstName} ${registerData.lastName}`,
+            username: registerData.username,
+            email: registerData.email,
+            password: registerData.password,
+            birthDate: registerData.dateOfBirth
+        };
+
+        const {data} = await axios.post(`${API_BASE_URL}/auth/signup`, backendData);
         console.log("Backend response data:", data);
         
 
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
             dispatch({type: 'REGISTER_USER_SUCCESS', payload: data});
-            dispatch(getUserProfile(data.jwt));
+            // No need to call getUserProfile since user data is already in the response
         }
     }
     catch (error) {
@@ -39,17 +51,21 @@ export const registerUser = (registerData) => async (dispatch) => {
 export const getUserProfile = (jwt) => async (dispatch) => {
     try {
         console.log("JWT token being sent:", jwt);
+        console.log("API_BASE_URL:", API_BASE_URL);
+        
         const {data} = await axios.get(`${API_BASE_URL}/api/users/profile`, {
             headers: {
                 Authorization: `Bearer ${jwt}`
             }
         });
 
+        console.log("User profile response:", data);
         dispatch({type: 'GET_USER_PROFILE_SUCCESS', payload: data});
 
     }
     catch (error) {
-        console.log(error);
+        console.log("Error fetching user profile:", error);
+        console.log("Error response:", error.response?.data);
         dispatch({type: 'GET_USER_PROFILE_FAILURE', payload: error.message});
     }
 }

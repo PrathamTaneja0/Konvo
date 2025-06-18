@@ -22,8 +22,12 @@ public class User {
     private String mobile;
     private String image;
     private String website;
+
+    @Column(unique = true)
     private String username;
+
     private String password;
+    @Column(unique = true)
     private String email;
     private String bio;
     private String backgroundImage;

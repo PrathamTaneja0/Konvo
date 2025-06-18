@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid"; // Grid2 stable in v7
 import TextField from "@mui/material/TextField";
-import { Button, InputAdornment, IconButton } from "@mui/material";
+import { Button, InputAdornment, IconButton, Alert } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -110,6 +110,11 @@ const SigninForm = ({ onSubmit }) => {
             Sign In
           </Button>
         </Grid>
+        {auth.error && (
+          <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+            <Alert severity="error">{auth.error}</Alert>
+          </Grid>
+        )}
       </Grid>
     </form>
   );

@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import { Box, Button, InputAdornment, IconButton, MenuItem, FormControl, FormHelperText } from "@mui/material";
+import { Box, Button, InputAdornment, IconButton, MenuItem, FormControl, FormHelperText, CircularProgress } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../Store/Auth/Action";
+import { API_BASE_URL } from "../Config/api";
+import axios from "axios";
 
 const SignupForm = ({ onSubmit }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [usernameChecking, setUsernameChecking] = useState(false);
+    const [usernameAvailable, setUsernameAvailable] = useState(null);
+    const [emailChecking, setEmailChecking] = useState(false);
+    const [emailAvailable, setEmailAvailable] = useState(null);
     const dispatch = useDispatch();
     const { loading, error } = useSelector(store => store.auth);
 
@@ -22,6 +28,11 @@ const SignupForm = ({ onSubmit }) => {
         lastName: Yup.string()
             .min(2, "Last name must be at least 2 characters")
             .required("Last name is required"),
+        username: Yup.string()
+            .min(3, "Username must be at least 3 characters")
+            .max(30, "Username must be less than 30 characters")
+            .matches(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores")
+            .required("Username is required"),
         email: Yup.string()
             .email("Invalid email address")
             .required("Email is required"),
@@ -49,6 +60,7 @@ const SignupForm = ({ onSubmit }) => {
         initialValues: {
             firstName: "",
             lastName: "",
+            username: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -61,12 +73,11 @@ const SignupForm = ({ onSubmit }) => {
             const registerData = {
                 firstName: values.firstName,
                 lastName: values.lastName,
+                username: values.username,
                 email: values.email,
                 password: values.password,
                 dateOfBirth: `${values.year}-${String(values.month).padStart(2, '0')}-${String(values.day).padStart(2, '0')}`
-                
             };
-
 
             dispatch(registerUser(registerData));
 
@@ -76,7 +87,65 @@ const SignupForm = ({ onSubmit }) => {
         },
     });
 
+    // Username availability check
+    const checkUsernameAvailability = async (username) => {
+        if (!username || username.length < 3) {
+            setUsernameAvailable(null);
+            return;
+        }
 
+        setUsernameChecking(true);
+        try {
+            const response = await axios.get(`${API_BASE_URL}/auth/check-username?username=${username}`);
+            setUsernameAvailable(response.data.status);
+        } catch (error) {
+            console.error("Error checking username availability:", error);
+            setUsernameAvailable(false);
+        } finally {
+            setUsernameChecking(false);
+        }
+    };
+
+    // Email availability check
+    const checkEmailAvailability = async (email) => {
+        if (!email || !email.includes('@')) {
+            setEmailAvailable(null);
+            return;
+        }
+
+        setEmailChecking(true);
+        try {
+            const response = await axios.get(`${API_BASE_URL}/auth/check-email?email=${email}`);
+            setEmailAvailable(response.data.status);
+        } catch (error) {
+            console.error("Error checking email availability:", error);
+            setEmailAvailable(false);
+        } finally {
+            setEmailChecking(false);
+        }
+    };
+
+    // Debounced username check
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (formik.values.username) {
+                checkUsernameAvailability(formik.values.username);
+            }
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [formik.values.username]);
+
+    // Debounced email check
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (formik.values.email) {
+                checkEmailAvailability(formik.values.email);
+            }
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [formik.values.email]);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -135,6 +204,41 @@ const SignupForm = ({ onSubmit }) => {
                     <Grid size={{ xs: 12 }}>
                         <TextField
                             fullWidth
+                            id="username"
+                            name="username"
+                            label="Username"
+                            value={formik.values.username}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.username && Boolean(formik.errors.username)}
+                            helperText={
+                                formik.touched.username && formik.errors.username
+                                    ? formik.errors.username
+                                    : usernameChecking
+                                    ? "Checking availability..."
+                                    : usernameAvailable === true
+                                    ? "Username is available ✓"
+                                    : usernameAvailable === false
+                                    ? "Username is already taken ✗"
+                                    : ""
+                            }
+                            variant="outlined"
+                            margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: usernameChecking && (
+                                        <InputAdornment position="end">
+                                            <CircularProgress size={20} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
                             id="email"
                             name="email"
                             label="Email"
@@ -142,9 +246,28 @@ const SignupForm = ({ onSubmit }) => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
+                            helperText={
+                                formik.touched.email && formik.errors.email
+                                    ? formik.errors.email
+                                    : emailChecking
+                                    ? "Checking availability..."
+                                    : emailAvailable === true
+                                    ? "Email is available ✓"
+                                    : emailAvailable === false
+                                    ? "Email is already registered ✗"
+                                    : ""
+                            }
                             variant="outlined"
                             margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: emailChecking && (
+                                        <InputAdornment position="end">
+                                            <CircularProgress size={20} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
                         />
                     </Grid>
 

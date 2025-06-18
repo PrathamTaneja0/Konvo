@@ -1,5 +1,6 @@
 package response;
 
+import dto.UserDto;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,7 @@ import lombok.*;
 public class AuthResponse {
 
     private String jwt;
+    private UserDto user;
     private boolean status;
 
 }
