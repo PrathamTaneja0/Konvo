@@ -20,7 +20,6 @@ public class UserDtoMapper {
         userDto.setBio(user.getBio());
         userDto.setBirthDate(user.getBirthDate());
         userDto.setLocation(user.getLocation());
-        userDto.setLogin_with_google(user.isLogin_with_google());
 
 //        userDto.set_verified();
 

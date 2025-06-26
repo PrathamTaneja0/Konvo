@@ -79,12 +79,12 @@ export const authReducer = (state = initialState, action) => {
                 loading: true,
                 error: null
             };
-        case 'LOGOUT':
+        case 'LOGOUT_USER':
             return {
                 ...initialState
             };
         default:
-            console.log("ye null kyu hora hai bhai"+ initialState);
+            console.log("why is it null"+ initialState);
             return state;
     }
 }

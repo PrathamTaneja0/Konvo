@@ -32,7 +32,6 @@ public class User {
     private String bio;
     private String backgroundImage;
     private boolean req_user;
-    private boolean login_with_google;
 
     public String getEmail() {
         return email;
@@ -40,10 +39,6 @@ public class User {
 
     public String getPassword() {
         return password;
-    }
-
-    public boolean isLogin_with_google() {
-        return login_with_google;
     }
 
     @JsonIgnore

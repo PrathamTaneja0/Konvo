@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+// import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +23,8 @@ public class JwtProvider {
 
     public String generateToken(Authentication authentication) {
         String jwt = Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                .claim("iat", System.currentTimeMillis() / 1000)
+                .claim("exp", (System.currentTimeMillis() + 1000 * 60 * 60 * 24) / 1000)
                 .claim("email", authentication.getName())
                 .claim("authorities", authentication.getAuthorities()
                         .stream()
@@ -35,20 +35,18 @@ public class JwtProvider {
         return jwt;
     }
 
-
-
-public String getEmailFromToken(String jwt) {
-    // Handle Bearer prefix and whitespace
-    if (jwt != null) {
-        int bearerIndex = jwt.indexOf("Bearer ");
-        if (bearerIndex != -1) {
-            // Extract the token and remove ALL whitespace
-            jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
+    public String getEmailFromToken(String jwt) {
+        // Handle Bearer prefix and whitespace
+        if (jwt != null) {
+            int bearerIndex = jwt.indexOf("Bearer ");
+            if (bearerIndex != -1) {
+                // Extract the token and remove ALL whitespace
+                jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
+            }
         }
-    }
 
-    // Now parse the cleaned token
-    return Jwts.parser().verifyWith(key).build()
-            .parseSignedClaims(jwt).getBody().get("email").toString();
-}
+        // Now parse the cleaned token
+        return Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(jwt).getPayload().get("email").toString();
+    }
 }

@@ -63,6 +63,7 @@ export const getUserProfile = (jwt) => async (dispatch) => {
         dispatch({type: 'GET_USER_PROFILE_SUCCESS', payload: data});
 
     }
+    
     catch (error) {
         console.log("Error fetching user profile:", error);
         console.log("Error response:", error.response?.data);
@@ -72,6 +73,5 @@ export const getUserProfile = (jwt) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
     localStorage.removeItem('jwt');
-    dispatch({type: 'LOGOUT', payload: null});
-
+    dispatch({type: 'LOGOUT_USER', payload: null});
 }

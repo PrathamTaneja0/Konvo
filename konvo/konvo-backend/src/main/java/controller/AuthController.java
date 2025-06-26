@@ -18,7 +18,7 @@ import exception.UserException;
 import model.User;
 import repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import request.LoginRequest;
+// import request.LoginRequest;
 import response.AuthResponse;
 import service.CustomUserDetailsServiceImplementation;
 import service.UserService;
@@ -67,7 +67,6 @@ public class AuthController {
         createdUser.setBirthDate(birthDate);
         createdUser.setFullName(fullName);
         createdUser.setUsername(username.trim());
-        createdUser.setLogin_with_google(false);
 
         User savedUser = userRepository.save(createdUser);
 

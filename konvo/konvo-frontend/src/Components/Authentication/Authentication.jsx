@@ -4,7 +4,6 @@ import logo_auth from '../../Assets/logo_auth.png';
 import Grid from '@mui/material/Grid';
 import { Button } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import AuthModal from './AuthModel';
 import { useSelector } from 'react-redux';
 
@@ -21,36 +20,40 @@ const Authentication = () => {
   const isSigninRoute = location.pathname === '/signin';
   const shouldShowModal = isSignupRoute || isSigninRoute;
 
-  useEffect(()=>{
-    if(auth.user){
-      navigate("/home"); // Redirect to /home page
+  useEffect(() => {
+    if (auth.user) {
+      navigate("/home");
     }
-  },[auth.user]);
+  }, [auth.user, navigate]);
 
   const handleCreateAccount = () => {
     navigate('/signup');
     setOpenAuthModel(true);
+    console.log("Modal opened");
+
   };
 
 
   const handleSignIn = () => {
     navigate('/signin');
     setOpenAuthModel(true);
+    console.log("Modal opened");
+
   };
 
   const handleCloseAuthModel = () => {
     setOpenAuthModel(false);
     // navigate('/auth'); // Navigate back to main auth page when modal is closed
-    console.log("dsamammamamamam");
+    console.log("Modal closed");
   };
 
   // Auto-open modal if we're on signup/signin routes
   React.useEffect(() => {
     if (shouldShowModal) {
       setOpenAuthModel(true);
+      console.log("Modal opened");
     }
-    console.log("hahahahaha")
-    console.log(shouldShowModal)
+    
 
   }, [shouldShowModal]);
 
@@ -105,15 +108,8 @@ const Authentication = () => {
             <div className="w-full md:w-[80%] lg:w-[70%] mx-auto">
               <div className="w-full mb-8">
                 <div style={{ marginBottom: '16px' }}>
-                  <GoogleLogin
-                    fullWidth
-                    theme="outline"
-                    shape="rectangular"
-                    text="signin_with"
-                    logo_alignment="center"
-                  />
+                  {/* GoogleLogin button removed */}
                 </div>
-                <p className="py-5 text-center font-medium">OR</p>
                 <Button
                   fullWidth
                   variant="contained"

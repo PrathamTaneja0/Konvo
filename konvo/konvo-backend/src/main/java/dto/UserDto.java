@@ -19,7 +19,6 @@ public class UserDto {
     private String bio;
     private String username;
     private boolean req_user;
-    private boolean login_with_google;
     private List<UserDto> followers = new ArrayList<>();
     private List<UserDto> following = new ArrayList<>();
 
