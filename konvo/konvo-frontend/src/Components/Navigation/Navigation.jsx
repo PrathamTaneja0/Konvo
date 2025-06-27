@@ -7,6 +7,9 @@ import userIcon from "../../assets/userIcon.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../Store/Auth/Action.jsx";
+import PostForm from "../HomeSection/PostForm";
+import Modal from "@mui/material/Modal";
+import { getAllPosts } from "../../Store/Post/Action";
 
 const Navigation = ({ onNavItemClick }) => {
 
@@ -33,6 +36,12 @@ const Navigation = ({ onNavItemClick }) => {
     console.log("Logout");
     handleClose();
     dispatch(logout());
+  };
+  const [postModalOpen, setPostModalOpen] = React.useState(false);
+  const handleOpenPostModal = () => setPostModalOpen(true);
+  const handleClosePostModal = () => {
+    setPostModalOpen(false);
+    dispatch(getAllPosts());
   };
   return (
     <div className="h-screen sticky top-0 flex flex-col justify-between px-4">
@@ -69,53 +78,69 @@ const Navigation = ({ onNavItemClick }) => {
             </div>
           ))}
         </div>
-        <div className="py-6 flex ">
-          <Button
-              sx={{
-                width: "80%",
-                borderRadius: "29px",
-                py: "15px",
-                px: 3,
-                bgcolor: "#000000",
-                // bgcolor: "#1DA1F2",
-                "&:hover": {
-                          bgcolor: "#1a91da",
-                        },
-              }}
-              variant="contained"
-          >
-            Post
-          </Button>
-        </div>
       </div>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <Avatar alt="username" src={userIcon} />
-        </div>
-        <div> 
-          {/* {console.log(auth.user?.fullName)}; */}
-          <p>{auth.user?.fullName}</p>
-          {/* {console.log(auth.user?.fullName?.split(" ").join("_").toLowerCase())}; */}
-          <span className="opacity-70 ml-2 block">@{auth.user?.username}</span>
-        </div>
+      {/* User info section with Post button just above */}
+      <div className="flex flex-col items-center mb-4">
         <Button
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
+          sx={{
+            width: "80%",
+            borderRadius: "29px",
+            py: "15px",
+            px: 3,
+            bgcolor: "#000000",
+            mb: 2,
+            "&:hover": {
+              bgcolor: "#1a91da",
+            },
+          }}
+          variant="contained"
+          onClick={handleOpenPostModal}
         >
-          <MoreHorizIcon />
+          Post
         </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          aria-labelledby= 'basic-button'
-        >
-          <MenuItem onClick={handleLogout}>Log out</MenuItem>
-        </Menu>
+        <Modal open={postModalOpen} onClose={handleClosePostModal}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'white',
+            borderRadius: 16,
+            boxShadow: 24,
+            padding: 24,
+            minWidth: 350,
+            outline: 'none',
+          }}>
+            <PostForm onPostSuccess={handleClosePostModal} />
+          </div>
+        </Modal>
+        <div className="flex items-center justify-between w-full mt-2">
+          <div className="flex items-center space-x-3">
+            <Avatar alt="username" src={userIcon} />
+          </div>
+          <div>
+            <p>{auth.user?.fullName}</p>
+            <span className="opacity-70 ml-2 block">@{auth.user?.username}</span>
+          </div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            <MoreHorizIcon />
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            aria-labelledby= 'basic-button'
+          >
+            <MenuItem onClick={handleLogout}>Log out</MenuItem>
+          </Menu>
+        </div>
       </div>
     </div>
   );
