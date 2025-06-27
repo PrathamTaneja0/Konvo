@@ -27,8 +27,8 @@ public class CustomUserDetailsServiceImplementation implements UserDetailsServic
         // username = email in our case
         User user = userRepository.findByEmail(username);
 
-        // agar user null hai ya Google se login kara tha (normal password login allow nahi)
-        if (user == null || user.isLogin_with_google()) {
+        // agar user null hai (normal password login allow nahi)
+        if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + username);
         }
 

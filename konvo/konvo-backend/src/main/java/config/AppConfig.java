@@ -28,6 +28,7 @@ public class AppConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/test/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/news").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);

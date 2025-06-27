@@ -6,12 +6,33 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { Button, IconButton, Tooltip } from '@mui/material';
 import SubscriptionM from '../SubscriptionM/SubscriptionM';
 import useColorMode from '../../theme/useColorMode';
+import Box from '@mui/material/Box';
 
 
 
 
-const RightPart = ({ onItemClick }) => {
+const RightPart = () => {
   const [openSubscriptionM, setOpenSubscriptionM] = React.useState(false);
+  const [news, setNews] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    setLoading(true);
+    fetch('/api/news')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch news');
+        return res.json();
+      })
+      .then(data => {
+        setNews(data.slice(0, 3));
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Could not load news');
+        setLoading(false);
+      });
+  }, []);
 
   const handleOpenSubscriptionM = () => setOpenSubscriptionM(true);
   const handleCloseSubscriptionM = () => setOpenSubscriptionM(false);
@@ -68,29 +89,30 @@ const RightPart = ({ onItemClick }) => {
       }}>
 
         <h1 className='text-xl font-bold mb-4'>Trending</h1>
-        <div className='space-y-4' style={{color: theme.palette.text.primary}}>
-          <div 
-            className='cursor-pointer  transition-colors p-2 rounded-lg'
-            onClick={() => onItemClick && onItemClick()}
-          >
-            <p className='text-sm opacity-60 '>Sports · Live</p>
-            <p className='font-semibold'>FIFA Women's World Cup Live</p>
-          </div>
-          <div 
-            className='cursor-pointer  transition-colors p-2 rounded-lg'
-            onClick={() => onItemClick && onItemClick()}
-          >
-            <p className='text-sm opacity-60 '>Technology · Trending</p>
-            <p className='font-semibold'>AI Revolution</p>
-          </div>
-          <div 
-            className='cursor-pointer  transition-colors p-2 rounded-lg'
-            onClick={() => onItemClick && onItemClick()}
-          >
-            <p className='text-sm opacity-60 '>Entertainment · Trending</p>
-            <p className='font-semibold'>Latest Movie Releases</p>
-          </div>
-        </div>
+        <Box
+          className='space-y-4'
+          sx={{
+            color: theme.palette.text.primary,
+            height: { xs: '30vh', sm: '35vh', md: '40vh' },
+            overflowY: 'auto',
+            scrollbarWidth: 'none', // Firefox
+            '&::-webkit-scrollbar': { display: 'none' }, // Chrome, Safari, Edge
+          }}
+        >
+          {loading && <p>Loading news...</p>}
+          {error && <p className='text-red-500'>{error}</p>}
+          {!loading && !error && news.map((article, idx) => (
+            <div 
+              key={idx}
+              className='cursor-pointer transition-colors p-2 rounded-lg'
+              onClick={() => window.open(article.url, '_blank')}
+            >
+              <p className='text-sm opacity-60'>{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : ''}</p>
+              <p className='font-semibold'>{article.title}</p>
+              {article.description && <p className='text-xs opacity-80'>{article.description}</p>}
+            </div>
+          ))}
+        </Box>
       </section>
       <section>
         <SubscriptionM open={openSubscriptionM} handleClose={handleCloseSubscriptionM} />

@@ -9,6 +9,8 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import PostCard from "./PostCard";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
+import { useSelector } from "react-redux";
+
 const validationSchema = Yup.object().shape({
   content: Yup.string()
     .required("Post text is required")
@@ -19,9 +21,11 @@ const HomeSection = () => {
   const [uploadedImage, setUploadedImage] = React.useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = React.useState(null);
   const { theme } = useColorMode();
+  const { post } = useSelector(store => store);
   const handleSubmit = (values) => {
     console.log("Form submitted with values:", values);
   };
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -32,6 +36,9 @@ const HomeSection = () => {
     validationSchema,
   });
 
+    useEffect(()=>{
+    dispatch(getAllPosts())
+  }, [post.like, post.repost] )
   const handleSelectImage = (event) => {
     setUploadedImage(true);
     const imgFile = event.target.files[0];
@@ -67,17 +74,6 @@ const HomeSection = () => {
                       placeholder="What's happening?"
                       variant="standard"
                       fullWidth
-                      // sx={{
-                      //   '& .MuiInput-root': {
-                      //     fontSize: '1.25rem',
-                      //     '&:before': { display: 'none' },
-                      //     '&:after': { display: 'none' },
-                      //   },
-                      //   '& .MuiInputBase-input::placeholder': {
-                      //     color: theme.palette.text.secondary,
-                      //     opacity: 1
-                      //   }
-                      // }}
                       sx={{
                         '& input:-webkit-autofill': {
                           WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
@@ -155,11 +151,8 @@ const HomeSection = () => {
           </div>
         </section>
 
-        {/* Posts Section */}
         <section>
-          <PostCard />
-          <PostCard />
-          <PostCard />
+          {post.posts.map((item)=> <PostCard post={item}/>)}
         </section>
       </div>
     </div>

@@ -13,13 +13,14 @@ import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 
-function PostCard() {
+function PostCard({ post }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isLiked, setIsLiked] = React.useState(false);
   const [isReposted, setIsReposted] = React.useState(false);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -38,12 +39,14 @@ function PostCard() {
   };
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
+    // setIsLiked(!isLiked);
+    dispatch(likePost(item.id))
     console.log("Like toggled:", !isLiked);
   };
 
   const handleRepost = () => {
     setIsReposted(!isReposted);
+    dispatch(Repost(item.id))
     console.log("Repost toggled:", !isReposted);
   };
 
@@ -69,8 +72,8 @@ function PostCard() {
         <div className="w-full">
           <div className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
-              <span className="font-semibold">Snax Dark</span>
-              <span className=" opacity-70">@Snax123 . 2m</span>
+              <span className="font-semibold">{post.user?.fullName}</span>
+              <span className=" opacity-70">@{post.user?.username} . 2m</span>
 
               <img className="w-4 h-4 ml-2" src={verify} alt="verified"
               />
@@ -103,13 +106,15 @@ function PostCard() {
           </div>
 
           <div className="mt-2">
-            <div className="cursor-pointer" onClick={() => navigate(`/tweet/1`)}>
-              <p className="mb-2 p-0">Brain Rot code </p>
-              <img
-                className="w-full max-w-2xl border border-gray-400 p-5 rounded-md"
-                src={TeamIgris}
-                alt="Team Igris"
-              />
+            <div className="cursor-pointer" onClick={() => navigate(`/tweet/${post.id}`)}>
+              <p className="mb-2 p-0">{post.content}</p>
+              {post.image && (
+                <img
+                  className="w-full max-w-2xl border border-gray-400 p-5 rounded-md"
+                  src={post.image}
+                  alt="Post"
+                />
+              )}
             </div>
 
             <div className="py-5 flex flex-wrap justify-between items-center">
@@ -118,7 +123,7 @@ function PostCard() {
                   className="cursor-pointer"
                   onClick={handleOpenReplyModel}
                 />
-                <span>43</span>
+                <span>{post.replyCount ?? 0}</span>
               </div>
 
               <div
@@ -130,7 +135,7 @@ function PostCard() {
                   className="cursor-pointer"
                   onClick={handleRepost}
                 />
-                <span>53</span>
+                <span>{post.repostCount ?? 0}</span>
               </div>
 
               <div
@@ -149,12 +154,12 @@ function PostCard() {
                     onClick={handleLike}
                   />
                 )}
-                <span>53</span>
+                <span>{post.likeCount ?? 0}</span>
               </div>
 
               <div className="space-x-3 flex items-center text-gray-600">
                 <BarChartIcon className="cursor-pointer" />
-                <span>430</span>
+                <span>{post.viewCount ?? 0}</span>
               </div>
 
               <div className="flex items-center text-gray-600">
