@@ -165,9 +165,8 @@ const Profile = () => {
             <Box>
               {tabValue === 0 && (
                 <div>
-                  {[1,1,1,1].map((item, index) => (
-                    <PostCard key={index} />
-                  ))}
+                  {/* TODO: Replace with real user posts from Redux or props */}
+                  {/* Example: userPosts.map((post) => <PostCard key={post.id} post={post} />) */}
                 </div>
               )}
               {tabValue === 1 && <div>User's Replies</div>}

@@ -33,7 +33,7 @@ public class CustomUserDetailsServiceImplementation implements UserDetailsServic
         }
 
         // Abhi authorities empty de rahe hain
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        List<GrantedAuthority> authorities = new ArrayList<>(); // Always empty
 
         // Spring ke apne User class ko return kar rahe hain jisme:
         // username (email), password, authorities hoti hain

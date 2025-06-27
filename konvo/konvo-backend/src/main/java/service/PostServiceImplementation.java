@@ -21,12 +21,15 @@ public class PostServiceImplementation implements PostService {
     @Override
     public Post createPost(Post req, User user) throws UserException, PostException {
         Post post = new Post();
+//        System.out.println(req.getContent());
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post.setPost(true);
         post.setImage(req.getImage());
         post.setReply(false);
         post.setVideo(req.getVideo());
+
+        post.setContent(req.getContent());
 
         return postRepository.save(post);
     }

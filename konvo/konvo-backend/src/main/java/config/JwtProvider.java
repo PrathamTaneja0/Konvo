@@ -26,10 +26,6 @@ public class JwtProvider {
                 .claim("iat", System.currentTimeMillis() / 1000)
                 .claim("exp", (System.currentTimeMillis() + 1000 * 60 * 60 * 24) / 1000)
                 .claim("email", authentication.getName())
-                .claim("authorities", authentication.getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(",")))
                 .signWith(key)
                 .compact();
         return jwt;

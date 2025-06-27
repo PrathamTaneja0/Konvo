@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, Button } from "@mui/material";
 import user1 from "../../assets/user1.webp";
 import * as Yup from "yup";
@@ -9,7 +9,9 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import PostCard from "./PostCard";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllPosts } from "../../Store/Post/Action";
+import { api } from "../Config/api";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string()
@@ -18,43 +20,32 @@ const validationSchema = Yup.object().shape({
 });
 
 const HomeSection = () => {
-  const [uploadedImage, setUploadedImage] = React.useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState(null);
   const { theme } = useColorMode();
   const { post } = useSelector(store => store);
-  const handleSubmit = (values) => {
-    console.log("Form submitted with values:", values);
-  };
   const dispatch = useDispatch();
+
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      const response = await api.post("/api/posts/create", { content: values.content });
+      console.log("Post created:", response.data);
+      resetForm();
+      dispatch(getAllPosts());
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
       content: "",
-      image: "",
     },
     onSubmit: handleSubmit,
     validationSchema,
   });
 
-    useEffect(()=>{
+  useEffect(()=>{
     dispatch(getAllPosts())
   }, [post.like, post.repost] )
-  const handleSelectImage = (event) => {
-    setUploadedImage(true);
-    const imgFile = event.target.files[0];
-    formik.setFieldValue("image", imgFile);
-    setImagePreviewUrl(imgFile);
-    setUploadedImage(false);
-  };
-
-  // Clean up the object URL when component unmounts or image changes
-  React.useEffect(() => {
-    return () => {
-      if (imagePreviewUrl) {
-        URL.revokeObjectURL(imagePreviewUrl);
-      }
-    };
-  }, [imagePreviewUrl]);
 
   return (
     <div >
@@ -100,16 +91,6 @@ const HomeSection = () => {
                 <div className="mt-5">
                   <div className="flex justify-between items-center">
                     <div className="flex space-x-5 items-center">
-                      <label className="flex items-center space-x-2 cursor-pointer rounded-md">
-                        <ImageIcon />
-                        <input
-                          type="file"
-                          name="image"
-                          accept="image/*"
-                          onChange={handleSelectImage}
-                          className="hidden"
-                        />
-                      </label>
                       <FmdGoodIcon />
                       <TagFacesIcon />
                     </div>
@@ -119,32 +100,16 @@ const HomeSection = () => {
                       sx={{
                         borderRadius: "29px",
                         paddingX: "20px",
-                        // bgcolor: "#1da1f2",
                         bgcolor: "#000000",
 
                         "&:hover": {
                           bgcolor: "#1a91da",
                         },
                       }}
-                      disabled={uploadedImage}
                     >
-                      {uploadedImage ? "Uploading..." : "Post"}
+                      Post
                     </Button>
                   </div>
-
-                  {uploadedImage && (
-                    <div className="mt-4 text-blue-500 font-semibold">Uploading image...</div>
-                  )}
-
-                  {imagePreviewUrl && (
-                    <div className="mt-4">
-                      <img
-                        src={URL.createObjectURL(imagePreviewUrl)}
-                        alt="Preview"
-                        className="max-w-full rounded-2xl border border-gray-200"
-                      />
-                    </div>
-                  )}
                 </div>
               </form>
             </div>
@@ -152,7 +117,7 @@ const HomeSection = () => {
         </section>
 
         <section>
-          {post.posts.map((item)=> <PostCard post={item}/>)}
+          {post.posts.map((postItem) => <PostCard key={postItem.id} post={postItem} />)}
         </section>
       </div>
     </div>

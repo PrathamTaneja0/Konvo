@@ -55,10 +55,24 @@ const postReducer = (state = initialState, action) => {
             return { ...state, loading: false, error: null, likedPosts: action.payload };
 
         case LIKE_POST_SUCCESS:
-            return { ...state, loading: false, error: null, like: action.payload };
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                posts: state.posts.map((p) =>
+                  p.id === action.payload.id ? { ...p, ...action.payload } : p
+                ),
+            };
 
         case REPOST_SUCCESS:
-            return { ...state, loading: false, error: null, repost: action.payload };
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                posts: state.posts.map((p) =>
+                  p.id === action.payload.id ? { ...p, ...action.payload } : p
+                ),
+            };
 
         case FIND_POST_BY_ID_SUCCESS:
         case REPLY_POST_SUCCESS:

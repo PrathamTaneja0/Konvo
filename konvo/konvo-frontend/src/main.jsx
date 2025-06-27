@@ -8,7 +8,7 @@ import store from "./Store/store.jsx";
 import ThemeProvider from './theme/ThemeProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
         <Provider store={store}>
           <ThemeProvider>
@@ -16,5 +16,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </ThemeProvider>
         </Provider>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 )

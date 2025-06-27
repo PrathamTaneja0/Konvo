@@ -12,15 +12,16 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
+import { useDispatch, useSelector } from "react-redux";
+import { likePost, createRePost } from "../../Store/Post/Action";
 
 function PostCard({ post }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [isLiked, setIsLiked] = React.useState(false);
-  const [isReposted, setIsReposted] = React.useState(false);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const { auth } = useSelector((store) => store);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -39,24 +40,22 @@ function PostCard({ post }) {
   };
 
   const handleLike = () => {
-    // setIsLiked(!isLiked);
-    dispatch(likePost(item.id))
-    console.log("Like toggled:", !isLiked);
+    if (!auth.jwt) return;
+    dispatch(likePost(post.id));
   };
 
   const handleRepost = () => {
-    setIsReposted(!isReposted);
-    dispatch(Repost(item.id))
-    console.log("Repost toggled:", !isReposted);
+    if (!auth.jwt) return;
+    dispatch(createRePost(post.id));
   };
 
   const handleDeletePost = () => {
-    console.log("Delete Post");
+    // TODO: Implement delete logic
     handleClose();
   };
 
   const handleEdit = () => {
-    console.log("Edit Post");
+    // TODO: Implement edit logic
     handleClose();
   };
 
@@ -64,21 +63,20 @@ function PostCard({ post }) {
     <div className="border-b border-gray-200 p-4">
       <div className="flex space-x-5">
         <Avatar
-          onClick={() => navigate(`/profile/6`)}
+          onClick={() => navigate(`/profile/${post.user?.id}`)}
           className="cursor-pointer"
           alt="username"
-          src={userIcon}
+          src={post.user?.image || userIcon}
         />
         <div className="w-full">
           <div className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
               <span className="font-semibold">{post.user?.fullName}</span>
               <span className=" opacity-70">@{post.user?.username} . 2m</span>
-
-              <img className="w-4 h-4 ml-2" src={verify} alt="verified"
-              />
+              {post.user?.is_verified && (
+                <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
+              )}
             </div>
-
             <div>
               <Button
                 id="basic-button"
@@ -104,7 +102,6 @@ function PostCard({ post }) {
               </Menu>
             </div>
           </div>
-
           <div className="mt-2">
             <div className="cursor-pointer" onClick={() => navigate(`/tweet/${post.id}`)}>
               <p className="mb-2 p-0">{post.content}</p>
@@ -116,34 +113,31 @@ function PostCard({ post }) {
                 />
               )}
             </div>
-
             <div className="py-5 flex flex-wrap justify-between items-center">
               <div className="space-x-3 flex items-center text-gray-600">
                 <ChatBubbleOutlineIcon
                   className="cursor-pointer"
                   onClick={handleOpenReplyModel}
                 />
-                <span>{post.replyCount ?? 0}</span>
+                <span>{post.totalReplies ?? 0}</span>
               </div>
-
               <div
                 className={`space-x-3 flex items-center ${
-                  isReposted ? "text-green-500" : "text-gray-600"
+                  post.isReposted ? "text-green-500" : "text-gray-600"
                 }`}
               >
                 <RepeatIcon
                   className="cursor-pointer"
                   onClick={handleRepost}
                 />
-                <span>{post.repostCount ?? 0}</span>
+                <span>{post.totalRePosts ?? 0}</span>
               </div>
-
               <div
                 className={`space-x-3 flex items-center ${
-                  isLiked ? "text-pink-600" : "text-gray-600"
+                  post.isLiked ? "text-pink-600" : "text-gray-600"
                 }`}
               >
-                {isLiked ? (
+                {post.isLiked ? (
                   <FavouriteIcon
                     className="cursor-pointer"
                     onClick={handleLike}
@@ -154,14 +148,12 @@ function PostCard({ post }) {
                     onClick={handleLike}
                   />
                 )}
-                <span>{post.likeCount ?? 0}</span>
+                <span>{post.totalLikes ?? 0}</span>
               </div>
-
               <div className="space-x-3 flex items-center text-gray-600">
                 <BarChartIcon className="cursor-pointer" />
                 <span>{post.viewCount ?? 0}</span>
               </div>
-
               <div className="flex items-center text-gray-600">
                 <FileUploadIcon className="cursor-pointer" />
               </div>

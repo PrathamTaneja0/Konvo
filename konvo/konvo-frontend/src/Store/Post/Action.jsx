@@ -8,8 +8,8 @@ import {
     USER_LIKE_POST_FAILURE,
     FIND_POST_BY_ID_SUCCESS,
     FIND_POST_BY_ID_FAILURE,
-    CREATE_POST_SUCCESS,
-    CREATE_POST_FAILURE,
+    POST_CREATE_SUCCESS,
+    POST_CREATE_FAILURE,
     REPLY_POST_SUCCESS,
     REPLY_POST_FAILURE,
     REPOST_SUCCESS,
@@ -75,10 +75,10 @@ export const createPost = (postData) => async (dispatch) => {
     try {
         const { data } = await api.post(`/api/posts/create`, postData);
         console.log("created post: ", data);
-        dispatch({ type: CREATE_POST_SUCCESS, payload: data });
+        dispatch({ type: POST_CREATE_SUCCESS, payload: data });
     } catch (error) {
         console.log("catch error - ", error);
-        dispatch({ type: CREATE_POST_FAILURE, payload: error.message });
+        dispatch({ type: POST_CREATE_FAILURE, payload: error.message });
     }
 }
 
@@ -95,7 +95,7 @@ export const createPostReply = (postData) => async (dispatch) => {
 
 export const createRePost = (postId) => async (dispatch) => {
     try {
-        const { data } = await api.post(`/api/posts/${postId}/repost`);
+        const { data } = await api.put(`/api/posts/${postId}/repost`);
         console.log("created repost: ", data);
         dispatch({ type: REPOST_SUCCESS, payload: data });
     } catch (error) {
@@ -106,9 +106,9 @@ export const createRePost = (postId) => async (dispatch) => {
 
 export const likePost = (postId) => async (dispatch) => {
     try {
-        const { data } = await api.post(`/api/${postId}/like`);
+        const { data } = await api.post(`/api/posts/${postId}/like`);
         console.log("liked post: ", data);
-        dispatch({ type: LIKE_POST_SUCCESS, payload: data });
+        dispatch({ type: LIKE_POST_SUCCESS, payload: data.post });
     } catch (error) {
         console.log("catch error - ", error);
         dispatch({ type: LIKE_POST_FAILURE, payload: error.message });

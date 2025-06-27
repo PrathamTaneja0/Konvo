@@ -18,15 +18,11 @@ function PostDetails() {
             <h1 className='text-xl font-bold py-5 opacity-90 ml-5'>Post</h1>
         </section>
         <section>
-            <PostCard />
-            <Divider sx={{ margin: "2rem 0rem" }} />
+            {/* TODO: Pass the correct post object as prop */}
         </section>
         <section>
-            {[1,1,1,1].map((item, index) => (
-                <PostCard key={index} />
-            ))}
+            {/* TODO: Render replies or related posts with correct post prop */}
         </section>
-
     </React.Fragment>
   )
 }

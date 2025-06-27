@@ -10,3 +10,14 @@ export const api = axios.create({
   }
 });
 
+// Add a request interceptor to set JWT dynamically
+api.interceptors.request.use(
+  (config) => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      config.headers["Authorization"] = `Bearer ${jwt}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);

@@ -73,11 +73,12 @@ public class PostController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<PostDto>> getAllPosts(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User user = userService.findUserProfileByJwt(jwt);
         List<Post> posts = postService.findAllPosts();
         List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
+        System.out.println("why error");
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
