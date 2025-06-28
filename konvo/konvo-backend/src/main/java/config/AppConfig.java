@@ -26,9 +26,8 @@ public class AppConfig {
             .cors(withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/test/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/news").permitAll()
+                .requestMatchers("/api/news", "/api/news/", "/api/news/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);
@@ -49,7 +48,7 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173")); // frontend origin
+        config.setAllowedOrigins(List.of("http://localhost", "http://localhost:80")); // restrict to localhost for dev
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // for cookies and auth headers

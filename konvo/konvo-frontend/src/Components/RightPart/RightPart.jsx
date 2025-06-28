@@ -7,6 +7,7 @@ import { Button, IconButton, Tooltip } from '@mui/material';
 import SubscriptionM from '../SubscriptionM/SubscriptionM';
 import useColorMode from '../../theme/useColorMode';
 import Box from '@mui/material/Box';
+import { api } from '../Config/api';
 
 
 
@@ -20,13 +21,9 @@ const RightPart = () => {
   
   React.useEffect(() => {
     setLoading(true);
-    fetch('/api/news')
+    api.get('/api/news')
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch news');
-        return res.json();
-      })
-      .then(data => {
-        setNews(data.slice(0, 3));
+        setNews(res.data.slice(0, 3));
         setLoading(false);
       })
       .catch(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import bg_auth from '../../Assets/bg_auth.jpg';
-import logo_auth from '../../Assets/logo_auth.png';
+import bg_auth from '../../assets/bg_auth.jpg';
+import logo_auth from '../../assets/logo_auth.png';
 import Grid from '@mui/material/Grid';
 import { Button } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';

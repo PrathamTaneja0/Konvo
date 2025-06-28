@@ -8,7 +8,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../Store/Auth/Action";
-import { API_BASE_URL } from "../Config/api";
 import axios from "axios";
 
 const SignupForm = ({ onSubmit }) => {
@@ -96,7 +95,7 @@ const SignupForm = ({ onSubmit }) => {
 
         setUsernameChecking(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/check-username?username=${username}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/auth/check-username?username=${username}`);
             setUsernameAvailable(response.data.status);
         } catch (error) {
             console.error("Error checking username availability:", error);
@@ -115,7 +114,7 @@ const SignupForm = ({ onSubmit }) => {
 
         setEmailChecking(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/check-email?email=${email}`);
+            const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/auth/check-email?email=${email}`);
             setEmailAvailable(response.data.status);
         } catch (error) {
             console.error("Error checking email availability:", error);

@@ -1,4 +1,3 @@
-import { API_BASE_URL } from '../../Components/Config/api.js';
 import axios from 'axios';
 import { api } from '../../Components/Config/api.js';
 import {
@@ -21,7 +20,7 @@ import {
 
 export const loginUser = (loginData) => async (dispatch) => {
     try {
-        const {data} = await axios.post(`${API_BASE_URL}/auth/signin`, loginData);
+        const {data} = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/auth/signin`, loginData);
         console.log("Backend response data:", data);
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
@@ -48,7 +47,7 @@ export const registerUser = (registerData) => async (dispatch) => {
             birthDate: registerData.dateOfBirth
         };
 
-        const {data} = await axios.post(`${API_BASE_URL}/auth/signup`, backendData);
+        const {data} = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/auth/signup`, backendData);
         console.log("Backend response data:", data);
         
 
@@ -67,9 +66,9 @@ export const registerUser = (registerData) => async (dispatch) => {
 export const getUserProfile = (jwt) => async (dispatch) => {
     try {
         console.log("JWT token being sent:", jwt);
-        console.log("API_BASE_URL:", API_BASE_URL);
+        console.log("API_BASE_URL:", import.meta.env.VITE_API_URL || "http://localhost:8080");
         
-        const {data} = await axios.get(`${API_BASE_URL}/api/users/profile`, {
+        const {data} = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:8080"}/api/users/profile`, {
             headers: {
                 Authorization: `Bearer ${jwt}`
             }

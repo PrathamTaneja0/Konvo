@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useNavigate } from 'react-router-dom';
 import moon from '../../assets/moon.jpg';
+import userIcon from '../../assets/userIcon.png';
 import { Avatar, Button, Box, Tabs, Tab } from '@mui/material';
-import usericon from '../../assets/usericon.png';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -16,7 +16,7 @@ const defaultProfile = {
   bio: "Hello, I am Snax Dark",
   website: "",
   location: "Regensburg",
-  profilePicture: usericon,
+  profilePicture: userIcon,
   backgroundImage: moon,
   joined: "June, 2025",
 };

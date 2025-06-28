@@ -28,17 +28,17 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        System.out.println("Raw Authorization Header received in JwtTokenValidator: " + jwt);
+        // System.out.println("Raw Authorization Header received in JwtTokenValidator: " + jwt);
 
         if (jwt != null) {
             int bearerIndex = jwt.indexOf("Bearer ");
             if (bearerIndex != -1) {
                 // Extract the token and aggressively remove ALL whitespace (visible or invisible)
                 jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
-                System.out.println("Extracted JWT token: " + jwt);
+                // System.out.println("Extracted JWT token: " + jwt);
             } else {
                 // If "Bearer " prefix is not found, treat it as an invalid JWT header format
-                System.out.println("Bearer prefix not found in Authorization header");
+                // System.out.println("Bearer prefix not found in Authorization header");
                 jwt = null; // Will skip JWT parsing block below
             }
         }
@@ -52,10 +52,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 // Always give every user the 'USER' authority using SimpleGrantedAuthority
                 Authentication auth = new UsernamePasswordAuthenticationToken(email, null, java.util.Collections.singletonList(new SimpleGrantedAuthority("USER")));
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                System.out.println("Authentication set in SecurityContextHolder: " + auth);
+                // System.out.println("Authentication set in SecurityContextHolder: " + auth);
 
             } catch (Exception e) {
-                System.out.println("JWT validation error: " + e.getMessage());
+                // System.out.println("JWT validation error: " + e.getMessage());
                 // Throw BadCredentialsException directly to be handled by Spring Security's ExceptionTranslationFilter
                 throw new BadCredentialsException("Invalid or expired token", e);
             }
