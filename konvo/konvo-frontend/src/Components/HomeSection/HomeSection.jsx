@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Avatar, Button } from "@mui/material";
 import * as Yup from "yup";
 import ImageIcon from "@mui/icons-material/Image";
-import TagFacesIcon from "@mui/icons-material/TagFaces";
 import PostCard from "./PostCard";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
@@ -39,4 +38,4 @@ const HomeSection = () => {
 };
 
 export default HomeSection;
-//testing 2
+

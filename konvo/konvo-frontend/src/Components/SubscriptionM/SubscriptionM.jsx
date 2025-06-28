@@ -97,14 +97,14 @@ export default function SubscriptionM({ open, handleClose }) {
               fontSize: "1.125rem", 
               marginRight: "1rem" 
             }}>
-              ₹7,800.00
+              €5
             </span>
             <span style={{ 
               color: "white", 
               fontWeight: 400, 
               fontSize: "1.25rem" 
             }}>
-              ₹6,800/year
+              €3/year 
             </span>
           </Button>
         </div>

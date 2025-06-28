@@ -47,7 +47,7 @@ const Authentication = () => {
     console.log("Modal closed");
   };
 
-  // Auto-open modal if we're on signup/signin routes
+  // Auto-open modal if im on signup/signin routes
   React.useEffect(() => {
     if (shouldShowModal) {
       setOpenAuthModel(true);
@@ -108,7 +108,6 @@ const Authentication = () => {
             <div className="w-full md:w-[80%] lg:w-[70%] mx-auto">
               <div className="w-full mb-8">
                 <div style={{ marginBottom: '16px' }}>
-                  {/* GoogleLogin button removed */}
                 </div>
                 <Button
                   fullWidth

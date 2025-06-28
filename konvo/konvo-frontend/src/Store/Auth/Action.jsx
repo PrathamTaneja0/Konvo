@@ -40,7 +40,6 @@ export const loginUser = (loginData) => async (dispatch) => {
 
 export const registerUser = (registerData) => async (dispatch) => {
     try {
-        // Transform the data to match backend expectations
         const backendData = {
             fullName: `${registerData.firstName} ${registerData.lastName}`,
             username: registerData.username,
@@ -56,7 +55,6 @@ export const registerUser = (registerData) => async (dispatch) => {
         if(data.jwt) {
             localStorage.setItem('jwt', data.jwt);
             dispatch({type: REGISTER_USER_SUCCESS, payload: data});
-            // No need to call getUserProfile since user data is already in the response
         }
     }
     catch (error) {

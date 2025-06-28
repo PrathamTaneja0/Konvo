@@ -17,6 +17,7 @@ const RightPart = () => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
 
+  
   React.useEffect(() => {
     setLoading(true);
     fetch('/api/news')

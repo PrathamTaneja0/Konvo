@@ -159,10 +159,10 @@ const SignupForm = ({ onSubmit }) => {
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1900 - 12 }, (_, i) => currentYear - 13 - i);
 
-// Generate months 1-12
+    // Generate months 1-12
     const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
-// Generate days 1-31
+    // Generate days 1-31
     const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
     return (

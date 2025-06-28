@@ -1,12 +1,11 @@
 import React from "react";
 import { Avatar, Button } from "@mui/material";
-import user1 from "../../assets/user1.webp";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import TagFacesIcon from "@mui/icons-material/TagFaces";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
 import { api } from "../Config/api";
+import user1 from "../../assets/user1.webp";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string()
@@ -62,7 +61,6 @@ const PostForm = ({ onPostSuccess }) => {
           }}
           {...formik.getFieldProps("content")}
         />
-        <TagFacesIcon />
         <Button
           type="submit"
           variant="contained"

@@ -50,12 +50,12 @@ function PostCard({ post }) {
   };
 
   const handleDeletePost = () => {
-    // TODO: Implement delete logic
+    // Implement delete logic
     handleClose();
   };
 
   const handleEdit = () => {
-    // TODO: Implement edit logic
+    // Implement edit logic
     handleClose();
   };
 

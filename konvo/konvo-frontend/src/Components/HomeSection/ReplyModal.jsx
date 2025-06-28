@@ -11,7 +11,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import ImageIcon from '@mui/icons-material/Image';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
-import TagFacesIcon from '@mui/icons-material/TagFaces';
 import userIcon from '../../assets/userIcon.png';
 import verify from '../../assets/verify.png';
 import TeamIgris from '../../assets/TeamIgris.png';
@@ -124,7 +123,6 @@ function ReplyModal({ open, onClose }) {
                         />
                       </label>
                       <FmdGoodIcon />
-                      <TagFacesIcon />
                     </div>
                     <Button
                       type="submit"

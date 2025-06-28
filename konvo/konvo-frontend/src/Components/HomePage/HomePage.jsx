@@ -85,7 +85,7 @@ export default function HomePage() {
             borderRight: "1px solid #eff3f4",
             borderLeft: { xs: "1px solid #eff3f4", md: "none" },
             px: { xs: 0, md: 2 },
-            pt: { xs: 5, md: 0 }, // Add top padding on mobile to prevent overlap
+            pt: { xs: 5, md: 0 }, // Added top padding on mobile to prevent overlap
             bgcolor: "background.paper",
             maxWidth: 700,
             width: '100%',

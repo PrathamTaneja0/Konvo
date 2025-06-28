@@ -11,14 +11,14 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // First useEffect: Handle initial auth state and JWT
+  // Handle initial auth state and JWT
   useEffect(() => {
     if (jwt && !auth.user) {
       dispatch(getUserProfile(jwt));
     }
   }, [jwt, dispatch, auth.user]);
 
-  // Second useEffect: Handle navigation based on auth state
+  // Handle navigation based on auth state
   useEffect(() => {
     const currentPath = window.location.pathname;
     const isAuthRoute = currentPath === "/signin" || currentPath === "/signup" || currentPath === "/auth";
