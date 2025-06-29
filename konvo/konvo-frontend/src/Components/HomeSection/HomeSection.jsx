@@ -11,7 +11,7 @@ import PostForm from "./PostForm";
 
 const HomeSection = () => {
   const { theme } = useColorMode();
-  const { post } = useSelector(store => store);
+  const post = useSelector(store => store.post);
   const dispatch = useDispatch();
 
   useEffect(()=>{

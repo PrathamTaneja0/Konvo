@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 
 const Authentication = () => {
-  const {auth} = useSelector(store=>store);  
+  const auth = useSelector(store => store.auth);  
   const navigate = useNavigate();
   const location = useLocation();
   

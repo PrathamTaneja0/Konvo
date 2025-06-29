@@ -26,3 +26,5 @@ export const FOLLOW_USER_SUCCESS = "FOLLOW_USER_SUCCESS";
 export const FOLLOW_USER_FAILURE = "FOLLOW_USER_FAILURE";
 
 export const LOGOUT_USER = "LOGOUT_USER";
+
+export const SET_JWT = "SET_JWT";

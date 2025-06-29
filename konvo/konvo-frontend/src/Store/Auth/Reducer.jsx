@@ -11,7 +11,8 @@ import {
     LOGOUT_USER,
     FIND_USER_BY_ID_SUCCESS,
     FOLLOW_USER_SUCCESS,
-    UPDATE_USER_SUCCESS
+    UPDATE_USER_SUCCESS,
+    SET_JWT
 } from './ActionType';
 
 const initialState = {
@@ -107,6 +108,11 @@ export const authReducer = (state = initialState, action) => {
         case LOGOUT_USER:
             return {
                 ...initialState
+            };
+        case SET_JWT:
+            return {
+                ...state,
+                jwt: action.payload
             };
         default:
             console.log("why is it null"+ initialState);

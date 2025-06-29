@@ -62,6 +62,9 @@ const postReducer = (state = initialState, action) => {
                 posts: state.posts.map((p) =>
                   p.id === action.payload.id ? { ...p, ...action.payload } : p
                 ),
+                post: state.post && state.post.id === action.payload.id
+                  ? { ...state.post, ...action.payload }
+                  : state.post,
             };
 
         case REPOST_SUCCESS:

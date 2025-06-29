@@ -55,4 +55,13 @@ public class LikeServiceImplementation implements LikeService {
         List<Like> likes = likeRepository.findByPostId(postId);
         return likes;
     }
+
+    @Override
+    public void unlikePost(Long postId, User user) throws UserException, PostException {
+        Post post = postService.findById(postId);
+        Like isLikeExist = likeRepository.isLikeExist(user.getId(), postId);
+        if (isLikeExist != null) {
+            likeRepository.deleteById(isLikeExist.getId());
+        }
+    }
 }

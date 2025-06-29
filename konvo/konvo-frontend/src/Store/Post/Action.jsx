@@ -115,6 +115,18 @@ export const likePost = (postId) => async (dispatch) => {
     }
 }
 
+export const dislikePost = (postId) => async (dispatch) => {
+    try {
+        await api.delete(`/api/posts/${postId}/like`);
+        // Refetch the post to get updated like count and isLiked status
+        const { data } = await api.get(`/api/posts/${postId}`);
+        dispatch({ type: LIKE_POST_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("catch error - ", error);
+        dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
+    }
+}
+
 export const deletePost = (postId) => async (dispatch) => {
     try {
         const { data } = await api.delete(`/api/posts/${postId}`);

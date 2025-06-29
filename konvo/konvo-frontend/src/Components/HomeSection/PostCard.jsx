@@ -13,7 +13,7 @@ import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, createRePost } from "../../Store/Post/Action";
+import { likePost, dislikePost, createRePost } from "../../Store/Post/Action";
 
 function PostCard({ post }) {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function PostCard({ post }) {
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
-  const { auth } = useSelector((store) => store);
+  const auth = useSelector((store) => store.auth);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,7 +41,11 @@ function PostCard({ post }) {
 
   const handleLike = () => {
     if (!auth.jwt) return;
-    dispatch(likePost(post.id));
+    if (post.liked) {
+      dispatch(dislikePost(post.id));
+    } else {
+      dispatch(likePost(post.id));
+    }
   };
 
   const handleRepost = () => {
@@ -58,6 +62,8 @@ function PostCard({ post }) {
     // Implement edit logic
     handleClose();
   };
+
+  console.log("liked:", post.liked, "id:", post.id);
 
   return (
     <div className="border-b border-gray-200 p-4">
@@ -132,20 +138,18 @@ function PostCard({ post }) {
                 />
                 <span>{post.totalRePosts ?? 0}</span>
               </div>
-              <div
-                className={`space-x-3 flex items-center ${
-                  post.isLiked ? "text-pink-600" : "text-gray-600"
-                }`}
-              >
-                {post.isLiked ? (
+              <div className="space-x-3 flex items-center">
+                {post.liked ? (
                   <FavouriteIcon
                     className="cursor-pointer"
                     onClick={handleLike}
+                    color="error"
                   />
                 ) : (
                   <FavoriteBorderIcon
                     className="cursor-pointer"
                     onClick={handleLike}
+                    color="action"
                   />
                 )}
                 <span>{post.totalLikes ?? 0}</span>

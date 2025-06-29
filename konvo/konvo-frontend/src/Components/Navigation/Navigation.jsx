@@ -14,7 +14,7 @@ import { getAllPosts } from "../../Store/Post/Action";
 const Navigation = ({ onNavItemClick }) => {
 
 
-    const {auth} = useSelector(store=>store);
+    const auth = useSelector(store => store.auth);
     
     // Debug logging
     console.log("Navigation - auth state:", auth);

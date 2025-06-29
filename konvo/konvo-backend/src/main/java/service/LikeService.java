@@ -13,4 +13,6 @@ public interface LikeService {
     
     public List<Like> getAllLikes(Long postId) throws PostException;
     
+    public void unlikePost(Long postId, User user) throws UserException, PostException;
+    
 }

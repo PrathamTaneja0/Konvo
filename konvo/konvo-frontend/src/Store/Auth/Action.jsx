@@ -15,7 +15,8 @@ import {
     UPDATE_USER_FAILURE,
     FOLLOW_USER_REQUEST,
     FOLLOW_USER_SUCCESS,
-    FOLLOW_USER_FAILURE
+    FOLLOW_USER_FAILURE,
+    SET_JWT
 } from './ActionType';
 
 export const loginUser = (loginData) => async (dispatch) => {
@@ -123,3 +124,7 @@ export const logout = () => async (dispatch) => {
     localStorage.removeItem('jwt');
     dispatch({type: LOGOUT_USER, payload: null});
 }
+
+export const setJwt = (jwt) => (dispatch) => {
+    dispatch({ type: SET_JWT, payload: jwt });
+};

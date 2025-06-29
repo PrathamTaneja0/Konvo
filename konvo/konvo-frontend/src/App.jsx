@@ -3,20 +3,23 @@ import HomePage from "./Components/HomePage/HomePage";
 import Authentication from "./Components/Authentication/Authentication";
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserProfile} from "./Store/Auth/Action.jsx";
+import {getUserProfile, setJwt} from "./Store/Auth/Action.jsx";
 
 function App() {
   const jwt = localStorage.getItem("jwt");
-  const {auth} = useSelector(store=>store);
+  const auth = useSelector(store => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Handle initial auth state and JWT
   useEffect(() => {
+    if (jwt && !auth.jwt) {
+      dispatch(setJwt(jwt));
+    }
     if (jwt && !auth.user) {
       dispatch(getUserProfile(jwt));
     }
-  }, [jwt, dispatch, auth.user]);
+  }, [jwt, dispatch, auth.user, auth.jwt]);
 
   // Handle navigation based on auth state
   useEffect(() => {

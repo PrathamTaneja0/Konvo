@@ -14,7 +14,7 @@ const SigninForm = ({ onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {auth} = useSelector(store=>store);
+  const auth = useSelector(store => store.auth);
 
   useEffect(()=>{
     if(auth.user){

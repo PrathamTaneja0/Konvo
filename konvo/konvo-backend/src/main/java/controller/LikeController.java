@@ -10,6 +10,7 @@ import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,15 @@ public class LikeController {
         List<LikeDto> likeDtos = LikeDtoMapper.toLikeDtos(likes, user);
 
         return new ResponseEntity<>(likeDtos, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/posts/{postId}/like")
+    public ResponseEntity<?> unlikePost(
+            @PathVariable Long postId,
+            @RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User user = userService.findUserProfileByJwt(jwt);
+        likeService.unlikePost(postId, user);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
