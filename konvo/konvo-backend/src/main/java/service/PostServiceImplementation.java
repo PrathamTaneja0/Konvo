@@ -54,16 +54,26 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public Post repost(Long postId, User user) throws UserException, PostException {
-        Post post = findById(postId);
-
-        if (post.getRepostUser().contains(user)) {
-            post.getRepostUser().remove(user);
+        Post originalPost = findById(postId);
+        // Check if user already reposted this post
+        Post existingRepost = postRepository.findByUserIdAndRepostForId(user.getId(), postId);
+        if (existingRepost != null) {
+            // Undo repost: delete the repost post
+            postRepository.deleteById(existingRepost.getId());
+            return originalPost;
+        } else {
+            // Create a new repost post
+            Post repost = new Post();
+            repost.setUser(user);
+            repost.setCreatedAt(LocalDateTime.now());
+            repost.setPost(true);
+            repost.setRepost(true);
+            repost.setRepostFor(originalPost);
+            repost.setContent(originalPost.getContent());
+            repost.setImage(originalPost.getImage());
+            repost.setVideo(originalPost.getVideo());
+            return postRepository.save(repost);
         }
-        else{
-            post.getRepostUser().add(user);
-        }
-
-        return postRepository.save(post);
     }
     
     @Override
@@ -97,7 +107,15 @@ public class PostServiceImplementation implements PostService {
         if(!userId.equals(post.getUser().getId())){
             throw new UserException("You are not allowed to delete this post");
         }
-
+        // Delete all reposts of this post
+        List<Post> reposts = postRepository.findAllByRepostForId(postId);
+        for (Post repost : reposts) {
+            postRepository.deleteById(repost.getId());
+        }
+        // Delete all replies to this post
+        for (Post reply : post.getReplyPosts()) {
+            postRepository.deleteById(reply.getId());
+        }
         postRepository.deleteById(post.getId());
     }
     

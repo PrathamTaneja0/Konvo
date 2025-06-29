@@ -96,8 +96,8 @@ export const createPostReply = (postData) => async (dispatch) => {
 export const createRePost = (postId) => async (dispatch) => {
     try {
         const { data } = await api.put(`/api/posts/${postId}/repost`);
-        console.log("created repost: ", data);
         dispatch({ type: REPOST_SUCCESS, payload: data });
+        dispatch(getAllPosts()); // Refetch the feed
     } catch (error) {
         console.log("catch error - ", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
@@ -135,6 +135,17 @@ export const deletePost = (postId) => async (dispatch) => {
     } catch (error) {
         console.log("catch error - ", error);
         dispatch({ type: POST_DELETE_FAILURE, payload: error.message });
+    }
+}
+
+export const deleteRePost = (postId) => async (dispatch) => {
+    try {
+        const { data } = await api.delete(`/api/posts/${postId}/repost`);
+        dispatch({ type: REPOST_SUCCESS, payload: data });
+        dispatch(getAllPosts()); // Refetch the feed
+    } catch (error) {
+        console.log("catch error - ", error);
+        dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 }
 

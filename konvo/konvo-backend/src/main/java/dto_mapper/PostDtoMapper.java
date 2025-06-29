@@ -38,7 +38,10 @@ public class PostDtoMapper {
         postDto.setRepostUserid(repostUserId);
         postDto.setReplyPosts(toPostDtos(post.getReplyPosts(), reqUser));
         postDto.setVideo(post.getVideo());
-
+        postDto.setRepost(post.isRepost());
+        if (post.getRepostFor() != null) {
+            postDto.setRepostFor(toPostDto(post.getRepostFor(), reqUser));
+        }
 
         return postDto;
     }

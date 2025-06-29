@@ -38,6 +38,11 @@ public class Post {
     private boolean isReply;
     private boolean isPost;
 
+    private boolean isRepost;
+
+    @ManyToOne
+    private Post repostFor;
+
     private LocalDateTime createdAt;
 
     public Post() {

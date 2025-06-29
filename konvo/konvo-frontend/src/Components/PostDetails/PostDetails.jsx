@@ -4,12 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import PostCard from '../HomeSection/PostCard';
 import { Divider } from '@mui/material';
 import useColorMode from "../../theme/useColorMode";
+import { findPostsById } from '../../Store/Post/Action';
 function PostDetails() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const handleBack = () => {
         navigate(-1);
     }
+const {id} = useParams()
+const {post} = useSelector(store=> store)
     const { theme } = useColorMode();
+    useEffect(()=> {
+        if(id){
+            dispatch(findPostsById(id))
+        }
+    },[])
 
   return (
     <React.Fragment>
@@ -18,10 +27,11 @@ function PostDetails() {
             <h1 className='text-xl font-bold py-5 opacity-90 ml-5'>Post</h1>
         </section>
         <section>
-            {/* TODO: Pass the correct post object as prop */}
+            <PostCard post = {post.post}/>
+            <Divider sx = {{margin: "2rem 0 rem"}}/>
         </section>
         <section>
-            {/* TODO: Render replies or related posts with correct post prop */}
+            {post.post.replyPost.map((item)=> <PostCard item = {post}/>)}
         </section>
     </React.Fragment>
   )

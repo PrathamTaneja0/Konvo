@@ -58,7 +58,7 @@ export default function SubscriptionM({ open, handleClose }) {
 
         {/* Save and Monthly Row */}
         <div className="flex items-center justify-between px-6 py-3 rounded-full border border-gray-300 mb-2 mx-6">
-          <span className="text-green-600 font-bold text-base">SAVE 12%</span>
+          <span className="text-green-600 font-bold text-base">SAVE 40%</span>
           <span className="text-gray-500 font-semibold text-base">Monthly</span>
         </div>
 

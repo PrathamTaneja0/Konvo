@@ -13,7 +13,9 @@ import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, dislikePost, createRePost } from "../../Store/Post/Action";
+import { likePost, dislikePost, createRePost, deleteRePost } from "../../Store/Post/Action";
+import Tooltip from '@mui/material/Tooltip';
+import { formatDistanceToNow } from 'date-fns';
 
 function PostCard({ post }) {
   const navigate = useNavigate();
@@ -26,6 +28,12 @@ function PostCard({ post }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  // const handleCreateRepost{
+  //   dispatch(crateRePost(post.id))
+  //   console.log("handle create retweet");
+    
+  // };
 
   const handleOpenReplyModel = () => {
     setReplyModalOpen(true);
@@ -50,7 +58,11 @@ function PostCard({ post }) {
 
   const handleRepost = () => {
     if (!auth.jwt) return;
-    dispatch(createRePost(post.id));
+    if (post.reposted) {
+      dispatch(deleteRePost(post.id));
+    } else {
+      dispatch(createRePost(post.id));
+    }
   };
 
   const handleDeletePost = () => {
@@ -78,12 +90,15 @@ function PostCard({ post }) {
           <div className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
               <span className="font-semibold">{post.user?.fullName}</span>
-              <span className=" opacity-70">@{post.user?.username} . 2m</span>
+              <span className="opacity-70">@{post.user?.username}</span>
               {post.user?.is_verified && (
                 <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
               )}
             </div>
-            <div>
+            <div className="flex items-center space-x-2">
+              <span className="opacity-70 text-sm">
+                {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) : ''}
+              </span>
               <Button
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}
@@ -127,15 +142,13 @@ function PostCard({ post }) {
                 />
                 <span>{post.totalReplies ?? 0}</span>
               </div>
-              <div
-                className={`space-x-3 flex items-center ${
-                  post.isReposted ? "text-green-500" : "text-gray-600"
-                }`}
-              >
-                <RepeatIcon
-                  className="cursor-pointer"
-                  onClick={handleRepost}
-                />
+              <div className={`space-x-3 flex items-center ${post.reposted ? "text-green-500" : "text-gray-600"}`}>
+                <Tooltip title={post.reposted ? "Undo repost" : "Repost"}>
+                  <RepeatIcon
+                    className="cursor-pointer"
+                    onClick={handleRepost}
+                  />
+                </Tooltip>
                 <span>{post.totalRePosts ?? 0}</span>
               </div>
               <div className="space-x-3 flex items-center">
@@ -166,7 +179,7 @@ function PostCard({ post }) {
         </div>
       </div>
       {replyModalOpen && (
-        <ReplyModal open={replyModalOpen} onClose={handleCloseReplyModel} />
+        <ReplyModal open={replyModalOpen} onClose={handleCloseReplyModel} post={post} />
       )}
     </div>
   );

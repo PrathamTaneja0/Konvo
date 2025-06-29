@@ -9,12 +9,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import ImageIcon from '@mui/icons-material/Image';
-import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import userIcon from '../../assets/userIcon.png';
 import verify from '../../assets/verify.png';
 import TeamIgris from '../../assets/TeamIgris.png';
 import user1 from '../../assets/user1.webp';
+import { formatDistanceToNow } from 'date-fns';
+import { useDispatch } from 'react-redux';
+import { createPostReply, getAllPosts } from '../../Store/Post/Action';
 
 const style = {
   position: 'absolute',
@@ -30,20 +31,26 @@ const style = {
   borderRadius: 4,
 };
 
-function ReplyModal({ open, onClose }) {
+export default function ReplyModal({ open, onClose, post }) {
   const navigate = useNavigate();
-  const [uploadedImage, setUploadedImage] = React.useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
-    console.log("handle submit", values);
+    const replyData = {
+      content: values.content,
+      postId: post?.id,
+    };
+    dispatch(createPostReply(replyData)).then(() => {
+      dispatch(getAllPosts());
+      onClose();
+    });
   };
 
   const formik = useFormik({
     initialValues: {
       content: '',
       image: "",
-      postId: 4,
+      postId: post.id,
     },
     validationSchema: Yup.object({
       content: Yup.string().required('Content is required'),
@@ -54,14 +61,6 @@ function ReplyModal({ open, onClose }) {
       handleSubmit(values);
     },
   });
-
-  const handleSelectImage = (event) => {
-    setUploadedImage(true);
-    const imgFile = event.target.files[0];
-    formik.setFieldValue("image", imgFile);
-    setImagePreviewUrl(imgFile);
-    setUploadedImage(false);
-  };
 
   return (
     <Modal
@@ -74,22 +73,27 @@ function ReplyModal({ open, onClose }) {
         <div className="flex justify-between items-start">
           <div className="flex space-x-2 items-center">
             <Avatar
-              onClick={() => navigate(`/profile/6`)}
+              onClick={() => navigate(`/profile/${post?.user?.id}`)}
               className="cursor-pointer"
-              alt="username"
-              src={userIcon}
+              alt={post?.user?.username || "username"}
+              src={post?.user?.image || userIcon}
             />
-            <span className="font-semibold">Snax Dark</span>
-            <span className="text-gray-600">@Snax123 . 2m</span>
+            <span className="font-semibold">{post?.user?.fullName}</span>
+            <span className="text-gray-600">@{post?.user?.username}</span>
             <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
           </div>
-          <IconButton onClick={onClose} aria-label="close">
-            <CloseIcon />
-          </IconButton>
+          <div className="flex items-center space-x-2">
+            <span className="text-gray-600 text-sm">
+              {post?.createdAt ? formatDistanceToNow(new Date(post?.createdAt), { addSuffix: true }) : ''}
+            </span>
+            <IconButton onClick={onClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </div>
         </div>
         <div className="mt-2">
-          <div className="cursor-pointer" onClick={() => navigate(`/tweet/1`)}>
-            <p className="mb-2 p-0">Brain Rot code </p>
+          <div className="cursor-pointer" onClick={() => navigate(`/tweet/${post?.id}`)}>
+            <p className="mb-2 p-0">{post?.content}</p>
           </div>
         </div>
         <section className="py-2">
@@ -109,49 +113,18 @@ function ReplyModal({ open, onClose }) {
                     <div className="text-red-500">{formik.errors.content}</div>
                   )}
                 </div>
-                <div className="mt-5">
-                  <div className="flex justify-between items-center">
-                    <div className="flex space-x-5 items-center">
-                      <label className="flex items-center space-x-2 cursor-pointer rounded-md">
-                        <ImageIcon />
-                        <input
-                          type="file"
-                          name="image"
-                          accept="image/*"
-                          onChange={handleSelectImage}
-                          className="hidden"
-                        />
-                      </label>
-                      <FmdGoodIcon />
-                    </div>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{
-                        borderRadius: "29px",
-                        paddingX: "20px",
-                        bgcolor: "#1da1f2",
-                        "&:hover": {
-                          bgcolor: "#1a91da",
-                        },
-                      }}
-                      disabled={uploadedImage}
-                    >
-                      {uploadedImage ? "Uploading..." : "Post"}
-                    </Button>
-                  </div>
-                  {uploadedImage && (
-                    <div className="mt-4 text-blue-500 font-semibold">Uploading image...</div>
-                  )}
-                  {imagePreviewUrl && (
-                    <div className="mt-4">
-                      <img
-                        src={URL.createObjectURL(imagePreviewUrl)}
-                        alt="Preview"
-                        className="max-w-full rounded-2xl border border-gray-200"
-                      />
-                    </div>
-                  )}
+                <div className="flex justify-end mt-5">
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      borderRadius: "29px",
+                      px: 4
+                    }}
+                  >
+                    Post
+                  </Button>
                 </div>
               </form>
             </div>
@@ -161,5 +134,3 @@ function ReplyModal({ open, onClose }) {
     </Modal>
   );
 }
-
-export default ReplyModal;

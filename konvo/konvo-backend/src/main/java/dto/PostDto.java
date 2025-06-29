@@ -17,6 +17,8 @@ public class PostDto {
     private int totalRePosts;
     private boolean isLiked;
     private boolean isReposted;
+    private boolean isRepost;
+    private PostDto repostFor;
 
     private List<Long> repostUserid;
     private List<PostDto> replyPosts;
