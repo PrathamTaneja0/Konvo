@@ -1,0 +1,23 @@
+# Development Dockerfile with hot reload
+FROM openjdk:21-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy the Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Download dependencies
+RUN ./mvnw dependency:go-offline -B
+
+# Expose port 8080
+EXPOSE 8080
+
+# For development, we'll mount the src directory as a volume
+# and run the application with Maven for hot reload
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'"] 

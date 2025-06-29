@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine as build
+FROM node:20-alpine as build
 
 # Accept build argument for API URL
 ARG VITE_API_URL=http://localhost:8080
@@ -11,7 +11,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+# RUN npm ci --only=production
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
