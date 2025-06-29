@@ -48,7 +48,7 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost", "http://localhost:80")); // restrict to localhost for dev
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost", "http://localhost:80")); // added 5173 for frontend dev
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // for cookies and auth headers
