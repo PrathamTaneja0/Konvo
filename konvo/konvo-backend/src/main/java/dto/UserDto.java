@@ -23,6 +23,7 @@ public class UserDto {
     private List<UserDto> following = new ArrayList<>();
 
     private boolean followed;
+    private boolean followsYou;
 
     private boolean is_verified;
 }

@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     public User findByUsername(String username);
 
-    @Query("SELECT DISTINCT u FROM User u WHERE u.fullName LIKE %:query% OR u.email LIKE %:query%")
+    @Query("SELECT DISTINCT u FROM User u WHERE u.fullName LIKE %:query% OR u.email LIKE %:query% OR u.username LIKE %:query%")
     public List<User> searchUser(@Param("query") String query);
 
 }

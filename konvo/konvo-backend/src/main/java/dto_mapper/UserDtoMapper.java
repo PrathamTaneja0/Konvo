@@ -45,6 +45,7 @@ public class UserDtoMapper {
             dto.setEmail(user.getEmail());
             dto.setFullName(user.getFullName());
             dto.setImage(user.getImage());
+            dto.setUsername(user.getUsername());
             // Don't set followers and following for nested users to avoid infinite recursion
 
             userDtos.add(dto);

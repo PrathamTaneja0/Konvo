@@ -46,6 +46,14 @@ public class UserController {
         List<User> users = userService.searchUser(query);
         List<UserDto> userDtos = UserDtoMapper.toUserDtos(users);
 
+        // Set followed and followsYou for each user
+        for (int i = 0; i < users.size(); i++) {
+            UserDto dto = userDtos.get(i);
+            User user = users.get(i);
+            dto.setFollowed(UserUtil.isFollowedByReqUser(reqUser, user));
+            dto.setFollowsYou(user.getFollowings().contains(reqUser));
+        }
+
         return new ResponseEntity<>(userDtos, HttpStatus.ACCEPTED);
     }
 

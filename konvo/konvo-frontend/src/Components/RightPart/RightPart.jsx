@@ -8,6 +8,9 @@ import SubscriptionM from '../SubscriptionM/SubscriptionM';
 import useColorMode from '../../theme/useColorMode';
 import Box from '@mui/material/Box';
 import { api } from '../Config/api';
+import UserSearchResult from './UserSearchResult';
+import { useSelector, useDispatch } from 'react-redux';
+import { findUserById } from '../../Store/Auth/Action';
 
 
 
@@ -17,6 +20,13 @@ const RightPart = () => {
   const [news, setNews] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState([]);
+  const [searchLoading, setSearchLoading] = React.useState(false);
+  const [searchError, setSearchError] = React.useState(null);
+  const auth = useSelector((store) => store.auth);
+  const currentUserId = auth?.user?.id;
+  const dispatch = useDispatch();
 
   
   React.useEffect(() => {
@@ -38,7 +48,55 @@ const RightPart = () => {
   // Get theme mode and toggle function
   const { colorMode, mode } = useColorMode();
   const { theme } = useColorMode();
+  const isDarkMode = mode === 'dark';
 
+  const handleSearchChange = async (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (!value) {
+      setSearchResults([]);
+      setSearchError(null);
+      return;
+    }
+    setSearchLoading(true);
+    setSearchError(null);
+    try {
+      const response = await api.get(`/api/users/search?query=${encodeURIComponent(value)}`);
+      setSearchResults(response.data);
+    } catch {
+      setSearchError('Could not search users');
+      setSearchResults([]);
+    }
+    setSearchLoading(false);
+  };
+
+  const handleFollowToggle = async (user) => {
+    try {
+      await api.put(`/api/users/${user.id}/follow`);
+      setSearchResults((prev) =>
+        prev.map((u) => {
+          if (u.id === user.id) {
+            const followed = !u.followed;
+            let followers = u.followers ? [...u.followers] : [];
+            if (followed) {
+              followers.push({ id: currentUserId });
+            } else {
+              followers = followers.filter(f => f.id !== currentUserId);
+            }
+            return {
+              ...u,
+              followed,
+              followers,
+            };
+          }
+          return u;
+        })
+      );
+      dispatch(findUserById(user.id));
+    } catch {
+      // Optionally show error
+    }
+  };
 
     return (
     <div className='py-3 px-4 sticky top-0 h-screen w-full flex flex-col gap-6'>
@@ -46,11 +104,10 @@ const RightPart = () => {
         <input
           type="text"
           placeholder="Search"
-          // className='py-3 rounded-full text-gray-500 w-full pl-12 bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-400'
-            className='py-3 rounded-full  w-full pl-12  focus:outline-none focus:ring-1 focus:ring-blue-400' style={{color: theme.palette.text.primary,
-            backgroundColor: theme.palette.custom.cardBackground
-        }}
-
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className='py-3 rounded-full  w-full pl-12  focus:outline-none focus:ring-1 focus:ring-blue-400'
+          style={{color: theme.palette.text.primary, backgroundColor: theme.palette.custom.cardBackground}}
         />
         <div className='absolute top-0 left-0 pl-3 pt-3 pr-0'>  
           <SearchIcon className='text-gray-500' />
@@ -61,6 +118,16 @@ const RightPart = () => {
           </IconButton>
         </Tooltip>
       </div>
+
+      {searchQuery && (
+        <div className="mb-4 rounded-xl p-3" style={{color: theme.palette.text.primary, backgroundColor: theme.palette.custom.cardBackground}}>
+          {searchLoading && <div>Searching...</div>}
+          {searchError && <div className="text-red-500">{searchError}</div>}
+          {!searchLoading && !searchError && (
+            <UserSearchResult users={searchResults} onFollowToggle={handleFollowToggle} currentUserId={currentUserId} theme={theme} isDarkMode={isDarkMode} />
+          )}
+        </div>
+      )}
 
       <section className=' rounded-xl p-4  transition-colors ' style={{color: theme.palette.text.primary,
           backgroundColor: theme.palette.custom.cardBackground
