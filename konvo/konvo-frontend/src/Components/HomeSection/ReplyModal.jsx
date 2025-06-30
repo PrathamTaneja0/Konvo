@@ -1,7 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
@@ -11,7 +10,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import userIcon from '../../assets/userIcon.png';
 import verify from '../../assets/verify.png';
-import TeamIgris from '../../assets/TeamIgris.png';
 import user1 from '../../assets/user1.webp';
 import { formatDistanceToNow } from 'date-fns';
 import { useDispatch } from 'react-redux';

@@ -5,7 +5,8 @@ import { useFormik } from "formik";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
 import { api } from "../Config/api";
-import user1 from "../../assets/user1.webp";
+import userIcon from "../../assets/userIcon.png";
+import { useSelector } from "react-redux";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string()
@@ -15,6 +16,7 @@ const validationSchema = Yup.object().shape({
 
 const PostForm = ({ onPostSuccess }) => {
   const { theme } = useColorMode();
+  const auth = useSelector(store => store.auth);
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
@@ -38,7 +40,7 @@ const PostForm = ({ onPostSuccess }) => {
   return (
     <form onSubmit={formik.handleSubmit} style={{ background: theme.palette.background.paper, color: theme.palette.text.primary }}>
       <div className="flex space-x-5 items-center">
-        <Avatar alt="username" src={user1} />
+        <Avatar alt={auth?.user?.fullName || "username"} src={auth?.user?.image || userIcon} />
         <TextField
           name="content"
           placeholder="What's happening?"

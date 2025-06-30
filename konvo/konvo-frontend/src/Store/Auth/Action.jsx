@@ -109,11 +109,16 @@ export const updateUserProfile = (reqData) => async (dispatch) => {
     }
 }
 
-export const followUserAction = (userId) => async (dispatch) => {
+export const followUserAction = (userId) => async (dispatch, getState) => {
     try {
         const { data } = await api.put(`/api/users/${userId}/follow`);
         console.log("followed user", data);
         dispatch({ type: FOLLOW_USER_SUCCESS, payload: data });
+        // Refetch logged-in user's profile to update following list
+        const jwt = getState().auth.jwt;
+        if (jwt) {
+            dispatch(getUserProfile(jwt));
+        }
     } catch (error) {
         console.log("error", error);
         dispatch({ type: FOLLOW_USER_FAILURE, payload: error.message });

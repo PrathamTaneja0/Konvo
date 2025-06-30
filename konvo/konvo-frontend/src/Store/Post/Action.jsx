@@ -100,7 +100,7 @@ export const updateSinglePost = (postId) => async (dispatch) => {
         const { data } = await api.get(`/api/posts/${postId}`);
         dispatch({ type: UPDATE_SINGLE_POST, payload: data });
     } catch (error) {
-        // handle error if needed
+        console.error("Error updating single post:", error);
     }
 };
 

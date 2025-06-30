@@ -11,6 +11,8 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import moon from "../../assets/moon.jpg";
 import useColorMode from "../../theme/useColorMode";
+import uploadToCloudinary from "../../../Utils/uploadToCloudinary";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,8 +31,10 @@ const style = {
 export default function ProfileModal({ open, onClose, initialValues, onSave }) {
   const [uploadedImage, setUploadedImage] = useState(false);
   const [bannerPreview, setBannerPreview] = useState(initialValues?.backgroundImage || moon);
-  const [avatarPreview, setAvatarPreview] = useState(initialValues?.profilePicture || "");
+  const [avatarPreview, setAvatarPreview] = useState(initialValues?.image || "");
   const [saving, setSaving] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const { theme } = useColorMode();
   const handleSubmit = async (values) => {
     setSaving(true);
@@ -43,8 +47,9 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
     if (values.backgroundImage instanceof File) {
       formData.append('backgroundImage', values.backgroundImage);
     }
-    if (values.profilePicture instanceof File) {
-      formData.append('profilePicture', values.profilePicture);
+    // Use 'image' for profile photo
+    if (values.image) {
+      formData.append('image', values.image);
     }
     // TODO: Call your backend API here, e.g.:
     // await fetch('/api/profile', { method: 'POST', body: formData });
@@ -61,7 +66,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       location: "",
       bio: "",
       backgroundImage: "",
-      profilePicture: "",
+      image: "",
     },
     enableReinitialize: true,
     onSubmit: handleSubmit,
@@ -71,29 +76,27 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
     if (open) {
       formik.resetForm({ values: initialValues });
       setBannerPreview(initialValues?.backgroundImage || moon);
-      setAvatarPreview(initialValues?.profilePicture || "");
+      setAvatarPreview(initialValues?.image || "");
     }
     // eslint-disable-next-line
   }, [open, initialValues]);
 
-  const handleBannerChange = (event) => {
-    setUploadedImage(true);
+  const handleImageChange = async (event, field, setPreview, setSelected, setUploading) => {
+    setUploading(true);
     const file = event.target.files[0];
     if (file) {
-      setBannerPreview(URL.createObjectURL(file));
-      formik.setFieldValue("backgroundImage", file);
+      const uploadedUrl = await uploadToCloudinary(file);
+      if (uploadedUrl) {
+        setPreview(uploadedUrl);
+        setSelected(uploadedUrl);
+        formik.setFieldValue(field, uploadedUrl);
+      } else {
+        setPreview(URL.createObjectURL(file));
+        setSelected("");
+        formik.setFieldValue(field, "");
+      }
     }
-    setUploadedImage(false);
-  };
-
-  const handleAvatarChange = (event) => {
-    setUploadedImage(true);
-    const file = event.target.files[0];
-    if (file) {
-      setAvatarPreview(URL.createObjectURL(file));
-      formik.setFieldValue("profilePicture", file);
-    }
-    setUploadedImage(false);
+    setUploading(false);
   };
 
   return (
@@ -114,8 +117,8 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
               </IconButton>
               <Typography variant="subtitle1" className="ml-2">Edit Profile</Typography>
             </div>
-            <Button type="submit" variant = "contained "  color="inherit" sx={{ fontWeight: 600 }} disabled={uploadedImage || saving} >
-              {saving ? 'Saving...' : 'Save'}
+            <Button type="submit" variant = "contained "  color="inherit" sx={{ fontWeight: 600 }} disabled={uploadedImage || saving || uploadingAvatar} >
+              {saving ? 'Saving...' : uploadingAvatar ? 'Uploading...' : 'Save'}
             </Button>
           </div>
 
@@ -131,7 +134,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleBannerChange}
+                onChange={e => handleImageChange(e, "backgroundImage", setBannerPreview, () => {}, setUploadedImage)}
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                 title="Edit Banner"
               />
@@ -139,14 +142,14 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
               <div className="absolute left-1/2 -bottom-12 transform -translate-x-1/2">
                 <div className="relative">
                   <Avatar
-                    src={avatarPreview}
+                    src={avatarPreview || selectedAvatar || initialValues?.image || ""}
                     alt="Profile Picture"
                     sx={{ width: 96, height: 96, border: '4px solid white', boxShadow: 2, background: '#fff' }}
                   />
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleAvatarChange}
+                    onChange={e => handleImageChange(e, "image", setAvatarPreview, setSelectedAvatar, setUploadingAvatar)}
                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                     style={{ width: 96, height: 96, borderRadius: '50%' }}
                     title="Edit Avatar"

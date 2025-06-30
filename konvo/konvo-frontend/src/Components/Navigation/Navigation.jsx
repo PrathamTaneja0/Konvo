@@ -122,7 +122,7 @@ const Navigation = ({ onNavItemClick }) => {
         </Modal>
         <div className="flex items-center justify-between w-full mt-2">
           <div className="flex items-center space-x-3">
-            <Avatar alt="username" src={userIcon} />
+            <Avatar alt={auth.user?.fullName || "username"} src={auth.user?.image || userIcon} />
           </div>
           <div>
             <p>{auth.user?.fullName}</p>
