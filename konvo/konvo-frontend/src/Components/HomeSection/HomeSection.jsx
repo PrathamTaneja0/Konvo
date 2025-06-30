@@ -16,7 +16,7 @@ const HomeSection = () => {
 
   useEffect(()=>{
     dispatch(getAllPosts())
-  }, [post.like, post.repost] )
+  }, [post.like, post.repost])
 
   return (
     <div >
@@ -39,3 +39,4 @@ const HomeSection = () => {
 
 export default HomeSection;
 
+  

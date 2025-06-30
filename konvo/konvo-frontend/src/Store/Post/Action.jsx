@@ -12,13 +12,15 @@ import {
     POST_CREATE_FAILURE,
     REPLY_POST_SUCCESS,
     REPLY_POST_FAILURE,
+    REPOST_REQUEST,
     REPOST_SUCCESS,
     REPOST_FAILURE,
     LIKE_POST_SUCCESS,
     LIKE_POST_FAILURE,
     POST_DELETE_SUCCESS,
     POST_DELETE_FAILURE,
-    GET_ALL_POSTS_SUCCESS
+    GET_ALL_POSTS_SUCCESS,
+    UPDATE_SINGLE_POST
 } from "./ActionType";
 
 // Fetch all posts
@@ -93,29 +95,58 @@ export const createPostReply = (postData) => async (dispatch) => {
     }
 }
 
-export const createRePost = (postId) => async (dispatch) => {
+export const updateSinglePost = (postId) => async (dispatch) => {
     try {
-        console.log("Creating repost for postId:", postId);
+        const { data } = await api.get(`/api/posts/${postId}`);
+        dispatch({ type: UPDATE_SINGLE_POST, payload: data });
+    } catch (error) {
+        // handle error if needed
+    }
+};
+
+export const repostPost = (postId) => async (dispatch) => {
+    dispatch({ type: REPOST_REQUEST });
+    try {
         const { data } = await api.put(`/api/posts/${postId}/repost`);
-        console.log("Repost API response:", {
-            data,
-            isRepost: data.isRepost,
-            repostFor: data.repostFor,
-            user: data.user,
-            id: data.id
+        console.log("[DEBUG] Repost API Response:", {
+            postId,
+            isReposted: data.isReposted,
+            totalRePosts: data.totalRePosts,
+            fullData: data
         });
         dispatch({ type: REPOST_SUCCESS, payload: data });
+        dispatch(updateSinglePost(postId));
+        dispatch(getAllPosts());
     } catch (error) {
         console.log("Repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
-}
+};
+
+export const undoRepost = (postId) => async (dispatch) => {
+    dispatch({ type: REPOST_REQUEST });
+    try {
+        const { data } = await api.delete(`/api/posts/${postId}/repost`);
+        console.log("[DEBUG] Undo Repost API Response:", {
+            postId,
+            isReposted: data.isReposted,
+            totalRePosts: data.totalRePosts,
+            fullData: data
+        });
+        dispatch({ type: REPOST_SUCCESS, payload: data });
+        dispatch(updateSinglePost(postId));
+        dispatch(getAllPosts());
+    } catch (error) {
+        console.log("Undo repost error:", error);
+        dispatch({ type: REPOST_FAILURE, payload: error.message });
+    }
+};
 
 export const likePost = (postId) => async (dispatch) => {
     try {
         const { data } = await api.post(`/api/posts/${postId}/like`);
         console.log("liked post: ", data);
-        dispatch({ type: LIKE_POST_SUCCESS, payload: data.post });
+        dispatch({ type: LIKE_POST_SUCCESS, payload: data });
     } catch (error) {
         console.log("catch error - ", error);
         dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
@@ -134,38 +165,28 @@ export const dislikePost = (postId) => async (dispatch) => {
     }
 }
 
-export const deletePost = (postId) => async (dispatch) => {
+export const deletePost = (postId, originalPostIdIfRepost) => async (dispatch) => {
     try {
-        console.log("Deleting post with ID:", postId);
-        const jwt = localStorage.getItem("jwt");
-        console.log("Current JWT:", jwt ? "Present" : "Missing");
-        
-        const response = await api.delete(`/api/posts/${postId}`);
-        console.log("Delete response:", response);
-        
+        await api.delete(`/api/posts/${postId}`);
         dispatch({ type: POST_DELETE_SUCCESS, payload: postId });
+        if (originalPostIdIfRepost) {
+            dispatch(updateSinglePost(originalPostIdIfRepost));
+        }
+        dispatch(getAllPosts());
     } catch (error) {
-        console.log("Error deleting post:", {
-            status: error.response?.status,
-            message: error.response?.data?.message || error.message,
-            error
-        });
         dispatch({ type: POST_DELETE_FAILURE, payload: error.message });
     }
 }
 
 export const deleteRePost = (postId) => async (dispatch) => {
+    dispatch({ type: REPOST_REQUEST });
     try {
         console.log("Deleting repost for postId:", postId);
         const { data } = await api.delete(`/api/posts/${postId}/repost`);
-        console.log("Delete repost API response:", {
-            data,
-            isRepost: data.isRepost,
-            repostFor: data.repostFor,
-            user: data.user,
-            id: data.id
-        });
+        console.log("Delete repost API response:", data);
         dispatch({ type: REPOST_SUCCESS, payload: data });
+        dispatch(updateSinglePost(postId));
+        dispatch(getAllPosts());
     } catch (error) {
         console.log("Delete repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });

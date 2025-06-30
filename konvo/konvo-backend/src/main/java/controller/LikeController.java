@@ -2,11 +2,14 @@ package controller;
 
 import dto.LikeDto;
 import dto_mapper.LikeDtoMapper;
+import dto.PostDto;
+import dto_mapper.PostDtoMapper;
 import exception.PostException;
 import exception.UserException;
 import model.Like;
-
+import model.Post;
 import model.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,16 +41,15 @@ public class LikeController {
     private PostService postService;
 
     @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<LikeDto> likePost(
+    public ResponseEntity<PostDto> likePost(
             @PathVariable Long postId,
             @RequestHeader("Authorization") String jwt) throws UserException, PostException {
 
         User user = userService.findUserProfileByJwt(jwt);
-        Like like = likeService.likePost(postId, user);
-
-        LikeDto likeDto = LikeDtoMapper.toLikeDto(like, user);
-
-        return new ResponseEntity<>(likeDto, HttpStatus.CREATED);
+        likeService.likePost(postId, user);
+        Post post = postService.findById(postId);
+        PostDto postDto = PostDtoMapper.toPostDto(post, user);
+        return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
     @GetMapping("/posts/{postId}/likes")

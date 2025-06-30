@@ -13,7 +13,7 @@ import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, dislikePost, createRePost, deleteRePost, deletePost } from "../../Store/Post/Action";
+import { repostPost, undoRepost, likePost, dislikePost, deletePost } from "../../Store/Post/Action";
 import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -24,30 +24,14 @@ function PostCard({ post }) {
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
-  const allPosts = useSelector((store) => store.post.posts);
 
-  console.log("PostCard - Current post data:", {
-    id: post.id,
-    isRepost: post.isRepost,
-    repost: post.repost,
-    repostFor: post.repostFor,
-    user: post.user,
-    content: post.content,
-    totalRePosts: post.totalRePosts
-  });
+  const currentUserId = auth.user?.id;
 
-  const isRepost = post.isRepost || post.repost;
-  const displayPost = isRepost && post.repostFor ? post.repostFor : post;
-  const userHasReposted = allPosts.some(
-    p => (p.isRepost || p.repost) && p.repostFor && p.repostFor.id === displayPost.id && p.user?.id === auth.user?.id
-  );
-
-  console.log("PostCard - Computed repost state:", {
-    isRepost,
-    userHasReposted,
-    totalRePosts: displayPost.totalRePosts,
-    displayPostId: displayPost.id
-  });
+  // Only glow repost button on original posts if user has reposted
+  let userHasReposted = false;
+  if (!post.repost && post.reposted) {
+    userHasReposted = post.reposted;
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,34 +61,28 @@ function PostCard({ post }) {
   const handleRepost = () => {
     if (!auth.jwt) return;
     if (userHasReposted) {
-      dispatch(deleteRePost(displayPost.id));
+      dispatch(undoRepost(post.id));
     } else {
-      dispatch(createRePost(displayPost.id));
+      dispatch(repostPost(post.id));
     }
   };
 
   const handleDeletePost = () => {
-    console.log("Attempting to delete post:", post.id);
     if (post.user?.id === auth.user?.id) {
-      console.log("User authorized to delete. Dispatching delete action...");
-      dispatch(deletePost(post.id));
-    } else {
-      console.log("User not authorized to delete this post");
+      if (post.isRepost && post.repostFor && post.repostFor.id) {
+        dispatch(deletePost(post.id, post.repostFor.id));
+      } else {
+        dispatch(deletePost(post.id));
+      }
     }
     handleClose();
   };
 
   const handleEdit = () => {
-    // Implement edit logic
     handleClose();
   };
 
   const isUsersPost = post.user?.id === auth.user?.id;
-  console.log("Post ownership:", { 
-    postUserId: post.user?.id, 
-    currentUserId: auth.user?.id, 
-    isUsersPost 
-  });
 
   console.log("liked:", post.liked, "id:", post.id);
 
@@ -176,13 +154,15 @@ function PostCard({ post }) {
                 <span>{post.totalReplies ?? 0}</span>
               </div>
               <div className={`space-x-3 flex items-center ${userHasReposted ? "text-green-500" : "text-gray-600"}`}>
-                <Tooltip title={userHasReposted ? "Undo repost" : "Repost"}>
-                  <RepeatIcon
-                    className="cursor-pointer"
+                <Tooltip key={userHasReposted ? "undo" : "repost"} title={userHasReposted ? "Undo repost" : "Repost"}>
+                  <button
                     onClick={handleRepost}
-                  />
+                    className={`p-2 rounded-full transition-colors ${userHasReposted ? 'text-green-500 bg-green-50 hover:bg-green-100' : 'text-gray-500 hover:text-green-500 hover:bg-green-50'}`}
+                  >
+                    <RepeatIcon />
+                  </button>
                 </Tooltip>
-                <span>{displayPost.totalRePosts ?? 0}</span>
+                <span className={`text-sm ${userHasReposted ? 'text-green-500' : 'text-gray-500'}`}>{post.totalRePosts ?? 0}</span>
               </div>
               <div className="space-x-3 flex items-center">
                 {post.liked ? (

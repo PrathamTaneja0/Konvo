@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface LikeService {
     
-    public Like likePost(Long postId, User user) throws UserException, PostException;
+    public Post likePost(Long postId, User user) throws UserException, PostException;
     
     public List<Like> getAllLikes(Long postId) throws PostException;
     

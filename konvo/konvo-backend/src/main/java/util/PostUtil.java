@@ -18,12 +18,14 @@ public class PostUtil {
 
 
     public static boolean isRepostedByReqUser(User reqUser, Post post) {
-        for(User user : post.getRepostUser()) {
-            if(user.getId().equals(reqUser.getId())) {
-                return true;
+        // Check if the user has any repost of the original post (not just authored the current repost)
+        if (post.getRepostUser() != null) {
+            for (User user : post.getRepostUser()) {
+                if (user.getId().equals(reqUser.getId())) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 }

@@ -60,6 +60,9 @@ public class PostServiceImplementation implements PostService {
         if (existingRepost != null) {
             // Undo repost: delete the repost post
             postRepository.deleteById(existingRepost.getId());
+            // Remove user from repostUser list
+            originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
+            postRepository.save(originalPost);
             return originalPost;
         } else {
             // Create a new repost post
@@ -72,7 +75,13 @@ public class PostServiceImplementation implements PostService {
             repost.setContent(originalPost.getContent());
             repost.setImage(originalPost.getImage());
             repost.setVideo(originalPost.getVideo());
-            return postRepository.save(repost);
+            postRepository.save(repost);
+            // Add user to repostUser list
+            if (originalPost.getRepostUser().stream().noneMatch(u -> u.getId().equals(user.getId()))) {
+                originalPost.getRepostUser().add(user);
+                postRepository.save(originalPost);
+            }
+            return repost;
         }
     }
     
@@ -107,6 +116,12 @@ public class PostServiceImplementation implements PostService {
         if(!userId.equals(post.getUser().getId())){
             throw new UserException("You are not allowed to delete this post");
         }
+        // If this is a repost, update the original post's repostUser list and count
+        if (post.isRepost() && post.getRepostFor() != null) {
+            Post original = post.getRepostFor();
+            original.getRepostUser().removeIf(u -> u.getId().equals(post.getUser().getId()));
+            postRepository.save(original);
+        }
         // Delete all reposts of this post
         List<Post> reposts = postRepository.findAllByRepostForId(postId);
         for (Post repost : reposts) {
@@ -130,7 +145,15 @@ public class PostServiceImplementation implements PostService {
         Post originalPost = findById(postId);
         Post existingRepost = postRepository.findByUserIdAndRepostForId(user.getId(), postId);
         if (existingRepost != null) {
+            // Delete all nested reposts of this repost post
+            List<Post> nestedReposts = postRepository.findAllByRepostForId(existingRepost.getId());
+            for (Post nested : nestedReposts) {
+                postRepository.deleteById(nested.getId());
+            }
             postRepository.deleteById(existingRepost.getId());
+            // Remove user from repostUser list
+            originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
+            postRepository.save(originalPost);
         }
         return originalPost;
     }

@@ -25,27 +25,22 @@ public class LikeServiceImplementation implements LikeService {
     private PostService postService;
     
     @Override
-    public Like likePost(Long postId, User user) throws UserException, PostException {
+    public Post likePost(Long postId, User user) throws UserException, PostException {
         Post post = postService.findById(postId);
-        
         Like isLikeExist = likeRepository.isLikeExist(user.getId(), postId);
-        
         if (isLikeExist != null) {
-            // User already liked the po
+            // User already liked the post, so unlike it
             likeRepository.deleteById(isLikeExist.getId());
-            return isLikeExist;
         } else {
             Like like = new Like();
             like.setPost(post);
             like.setUser(user);
-            
             Like savedLike = likeRepository.save(like);
-            
             post.getLikes().add(savedLike);
             postRepository.save(post);
-            
-            return savedLike;
         }
+        // Always return the full post after like/unlike
+        return postService.findById(postId);
     }
     
     @Override

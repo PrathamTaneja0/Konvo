@@ -19,7 +19,8 @@ import {
     FIND_POST_BY_ID_REQUEST,
     FIND_POST_BY_ID_SUCCESS,
     FIND_POST_BY_ID_FAILURE,
-    REPLY_POST_SUCCESS
+    REPLY_POST_SUCCESS,
+    UPDATE_SINGLE_POST
 } from "./ActionType";
 
 const initialState = {
@@ -67,33 +68,59 @@ const postReducer = (state = initialState, action) => {
                   : state.post,
             };
 
+        case REPOST_REQUEST:
+            return { ...state, loading: true, error: null };
         case REPOST_SUCCESS:
-            if (action.payload.isRepost) {
-                // Add new repost to the feed
-                return {
-                    ...state,
-                    loading: false,
-                    error: null,
-                    posts: [action.payload, ...state.posts.map(p => 
-                        p.id === action.payload.repostFor.id 
-                            ? { ...p, totalRePosts: (p.totalRePosts || 0) + 1 }
-                            : p
-                    )],
-                };
-            } else {
-                // Remove repost and decrement count
-                return {
-                    ...state,
-                    loading: false,
-                    error: null,
-                    posts: state.posts
-                        .filter(p => p.id !== action.payload.id) // Remove the repost
-                        .map(p => p.id === action.payload.repostFor?.id 
-                            ? { ...p, totalRePosts: Math.max(0, (p.totalRePosts || 0) - 1) }
-                            : p
-                        ),
-                };
-            }
+            console.log("[DEBUG] REPOST_SUCCESS Reducer - Payload:", {
+                postId: action.payload.id,
+                isReposted: action.payload.isReposted,
+                totalRePosts: action.payload.totalRePosts
+            });
+            const updatedPosts = state.posts.map(post => {
+                // Update the target post if it's the one being reposted
+                if (post.id === action.payload.id) {
+                    console.log("[DEBUG] Updating target post:", {
+                        postId: post.id,
+                        oldIsReposted: post.isReposted,
+                        newIsReposted: action.payload.isReposted
+                    });
+                    return {
+                        ...post,
+                        ...action.payload,
+                        isReposted: action.payload.isReposted
+                    };
+                }
+                // If this post is a repost of the target post, update its repostFor field
+                if (post.isRepost && post.repostFor && post.repostFor.id === action.payload.id) {
+                    console.log("[DEBUG] Updating repost reference:", {
+                        postId: post.id,
+                        repostForId: post.repostFor.id,
+                        oldIsReposted: post.repostFor.isReposted,
+                        newIsReposted: action.payload.isReposted
+                    });
+                    return {
+                        ...post,
+                        repostFor: {
+                            ...post.repostFor,
+                            ...action.payload,
+                            isReposted: action.payload.isReposted
+                        }
+                    };
+                }
+                return post;
+            });
+            console.log("[DEBUG] REPOST_SUCCESS Reducer - State Update:", {
+                postsUpdated: updatedPosts.some(p => p.id === action.payload.id),
+                repostsUpdated: updatedPosts.some(p => p.isRepost && p.repostFor?.id === action.payload.id)
+            });
+            return {
+                ...state,
+                loading: false,
+                posts: updatedPosts,
+                error: null
+            };
+        case REPOST_FAILURE:
+            return { ...state, loading: false, error: action.payload };
 
         case FIND_POST_BY_ID_SUCCESS:
         case REPLY_POST_SUCCESS:
@@ -103,9 +130,22 @@ const postReducer = (state = initialState, action) => {
         case POST_DELETE_FAILURE:
         case USER_LIKE_POST_FAILURE:
         case LIKE_POST_FAILURE:
-        case REPOST_FAILURE:
         case FIND_POST_BY_ID_FAILURE:
             return { ...state, loading: false, error: action.payload };
+
+        case UPDATE_SINGLE_POST:
+            return {
+                ...state,
+                posts: state.posts.map(post => {
+                    if (post.id === action.payload.id) {
+                        return { ...post, ...action.payload };
+                    }
+                    if (post.isRepost && post.repostFor && post.repostFor.id === action.payload.id) {
+                        return { ...post, repostFor: { ...post.repostFor, ...action.payload } };
+                    }
+                    return post;
+                })
+            };
 
         default:
             return state;
