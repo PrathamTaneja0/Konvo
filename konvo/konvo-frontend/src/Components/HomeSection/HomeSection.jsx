@@ -30,7 +30,7 @@ const HomeSection = () => {
         </section>
 
         <section>
-          {post.posts.slice(0, 20).map((postItem) => <PostCard key={postItem.id} post={postItem} />)}
+          {post.posts.slice(0, 20).map((postItem) => <PostCard key={postItem.id} post={postItem} posts={post.posts} />)}
         </section>
       </div>
     </div>

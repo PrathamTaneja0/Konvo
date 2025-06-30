@@ -3,7 +3,6 @@ import axios from "axios";
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
   headers: {
-    "Authorization": `Bearer ${localStorage.getItem("jwt")}`,
     "Content-Type": "application/json"
   }
 });
@@ -18,9 +17,33 @@ api.interceptors.request.use(
       const jwt = localStorage.getItem("jwt");
       if (jwt) {
         config.headers["Authorization"] = `Bearer ${jwt}`;
+      } else {
+        delete config.headers["Authorization"];
       }
     }
+    console.log("API Request:", {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+    });
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Add a response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.log("API Error:", {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers,
+      }
+    });
+    return Promise.reject(error);
+  }
 );

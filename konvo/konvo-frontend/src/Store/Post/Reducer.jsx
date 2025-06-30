@@ -68,14 +68,32 @@ const postReducer = (state = initialState, action) => {
             };
 
         case REPOST_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                error: null,
-                posts: state.posts.map((p) =>
-                  p.id === action.payload.id ? { ...p, ...action.payload } : p
-                ),
-            };
+            if (action.payload.isRepost) {
+                // Add new repost to the feed
+                return {
+                    ...state,
+                    loading: false,
+                    error: null,
+                    posts: [action.payload, ...state.posts.map(p => 
+                        p.id === action.payload.repostFor.id 
+                            ? { ...p, totalRePosts: (p.totalRePosts || 0) + 1 }
+                            : p
+                    )],
+                };
+            } else {
+                // Remove repost and decrement count
+                return {
+                    ...state,
+                    loading: false,
+                    error: null,
+                    posts: state.posts
+                        .filter(p => p.id !== action.payload.id) // Remove the repost
+                        .map(p => p.id === action.payload.repostFor?.id 
+                            ? { ...p, totalRePosts: Math.max(0, (p.totalRePosts || 0) - 1) }
+                            : p
+                        ),
+                };
+            }
 
         case FIND_POST_BY_ID_SUCCESS:
         case REPLY_POST_SUCCESS:

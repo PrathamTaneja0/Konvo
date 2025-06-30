@@ -59,6 +59,13 @@ public class PostController {
         return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{postId}/repost")
+    public ResponseEntity<PostDto> undoRepost(@PathVariable Long postId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User user = userService.findUserProfileByJwt(jwt);
+        Post originalPost = postService.undoRepost(postId, user);
+        PostDto postDto = PostDtoMapper.toPostDto(originalPost, user);
+        return new ResponseEntity<>(postDto, HttpStatus.OK);
+    }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse> deletePost(

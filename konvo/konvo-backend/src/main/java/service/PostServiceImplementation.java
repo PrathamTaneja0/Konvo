@@ -124,4 +124,14 @@ public class PostServiceImplementation implements PostService {
         return postRepository.findByLikesUser_Id(user.getId()) ;
 
     }
+
+    @Override
+    public Post undoRepost(Long postId, User user) throws UserException, PostException {
+        Post originalPost = findById(postId);
+        Post existingRepost = postRepository.findByUserIdAndRepostForId(user.getId(), postId);
+        if (existingRepost != null) {
+            postRepository.deleteById(existingRepost.getId());
+        }
+        return originalPost;
+    }
 }

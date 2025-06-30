@@ -13,7 +13,7 @@ import FavouriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, dislikePost, createRePost, deleteRePost } from "../../Store/Post/Action";
+import { likePost, dislikePost, createRePost, deleteRePost, deletePost } from "../../Store/Post/Action";
 import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -24,16 +24,34 @@ function PostCard({ post }) {
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
+  const allPosts = useSelector((store) => store.post.posts);
+
+  console.log("PostCard - Current post data:", {
+    id: post.id,
+    isRepost: post.isRepost,
+    repost: post.repost,
+    repostFor: post.repostFor,
+    user: post.user,
+    content: post.content,
+    totalRePosts: post.totalRePosts
+  });
+
+  const isRepost = post.isRepost || post.repost;
+  const displayPost = isRepost && post.repostFor ? post.repostFor : post;
+  const userHasReposted = allPosts.some(
+    p => (p.isRepost || p.repost) && p.repostFor && p.repostFor.id === displayPost.id && p.user?.id === auth.user?.id
+  );
+
+  console.log("PostCard - Computed repost state:", {
+    isRepost,
+    userHasReposted,
+    totalRePosts: displayPost.totalRePosts,
+    displayPostId: displayPost.id
+  });
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  // const handleCreateRepost{
-  //   dispatch(crateRePost(post.id))
-  //   console.log("handle create retweet");
-    
-  // };
 
   const handleOpenReplyModel = () => {
     setReplyModalOpen(true);
@@ -58,15 +76,21 @@ function PostCard({ post }) {
 
   const handleRepost = () => {
     if (!auth.jwt) return;
-    if (post.reposted) {
-      dispatch(deleteRePost(post.id));
+    if (userHasReposted) {
+      dispatch(deleteRePost(displayPost.id));
     } else {
-      dispatch(createRePost(post.id));
+      dispatch(createRePost(displayPost.id));
     }
   };
 
   const handleDeletePost = () => {
-    // Implement delete logic
+    console.log("Attempting to delete post:", post.id);
+    if (post.user?.id === auth.user?.id) {
+      console.log("User authorized to delete. Dispatching delete action...");
+      dispatch(deletePost(post.id));
+    } else {
+      console.log("User not authorized to delete this post");
+    }
     handleClose();
   };
 
@@ -74,6 +98,13 @@ function PostCard({ post }) {
     // Implement edit logic
     handleClose();
   };
+
+  const isUsersPost = post.user?.id === auth.user?.id;
+  console.log("Post ownership:", { 
+    postUserId: post.user?.id, 
+    currentUserId: auth.user?.id, 
+    isUsersPost 
+  });
 
   console.log("liked:", post.liked, "id:", post.id);
 
@@ -118,8 +149,10 @@ function PostCard({ post }) {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem onClick={handleDeletePost}>Delete</MenuItem>
-                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                {isUsersPost ? [
+                  <MenuItem key="delete" onClick={handleDeletePost}>Delete</MenuItem>,
+                  <MenuItem key="edit" onClick={handleEdit}>Edit</MenuItem>
+                ] : null}
               </Menu>
             </div>
           </div>
@@ -142,14 +175,14 @@ function PostCard({ post }) {
                 />
                 <span>{post.totalReplies ?? 0}</span>
               </div>
-              <div className={`space-x-3 flex items-center ${post.reposted ? "text-green-500" : "text-gray-600"}`}>
-                <Tooltip title={post.reposted ? "Undo repost" : "Repost"}>
+              <div className={`space-x-3 flex items-center ${userHasReposted ? "text-green-500" : "text-gray-600"}`}>
+                <Tooltip title={userHasReposted ? "Undo repost" : "Repost"}>
                   <RepeatIcon
                     className="cursor-pointer"
                     onClick={handleRepost}
                   />
                 </Tooltip>
-                <span>{post.totalRePosts ?? 0}</span>
+                <span>{displayPost.totalRePosts ?? 0}</span>
               </div>
               <div className="space-x-3 flex items-center">
                 {post.liked ? (

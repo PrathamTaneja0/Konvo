@@ -95,11 +95,18 @@ export const createPostReply = (postData) => async (dispatch) => {
 
 export const createRePost = (postId) => async (dispatch) => {
     try {
+        console.log("Creating repost for postId:", postId);
         const { data } = await api.put(`/api/posts/${postId}/repost`);
+        console.log("Repost API response:", {
+            data,
+            isRepost: data.isRepost,
+            repostFor: data.repostFor,
+            user: data.user,
+            id: data.id
+        });
         dispatch({ type: REPOST_SUCCESS, payload: data });
-        dispatch(getAllPosts()); // Refetch the feed
     } catch (error) {
-        console.log("catch error - ", error);
+        console.log("Repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 }
@@ -129,22 +136,38 @@ export const dislikePost = (postId) => async (dispatch) => {
 
 export const deletePost = (postId) => async (dispatch) => {
     try {
-        const { data } = await api.delete(`/api/posts/${postId}`);
-        console.log("deleted post: ", data);
+        console.log("Deleting post with ID:", postId);
+        const jwt = localStorage.getItem("jwt");
+        console.log("Current JWT:", jwt ? "Present" : "Missing");
+        
+        const response = await api.delete(`/api/posts/${postId}`);
+        console.log("Delete response:", response);
+        
         dispatch({ type: POST_DELETE_SUCCESS, payload: postId });
     } catch (error) {
-        console.log("catch error - ", error);
+        console.log("Error deleting post:", {
+            status: error.response?.status,
+            message: error.response?.data?.message || error.message,
+            error
+        });
         dispatch({ type: POST_DELETE_FAILURE, payload: error.message });
     }
 }
 
 export const deleteRePost = (postId) => async (dispatch) => {
     try {
+        console.log("Deleting repost for postId:", postId);
         const { data } = await api.delete(`/api/posts/${postId}/repost`);
+        console.log("Delete repost API response:", {
+            data,
+            isRepost: data.isRepost,
+            repostFor: data.repostFor,
+            user: data.user,
+            id: data.id
+        });
         dispatch({ type: REPOST_SUCCESS, payload: data });
-        dispatch(getAllPosts()); // Refetch the feed
     } catch (error) {
-        console.log("catch error - ", error);
+        console.log("Delete repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 }

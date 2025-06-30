@@ -29,5 +29,6 @@ public interface PostService {
 
     public List<Post> findByLikesContainsUser(User user) throws UserException;
 
+    public Post undoRepost(Long postId, User user) throws UserException, PostException;
 
 }
