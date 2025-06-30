@@ -101,6 +101,7 @@ public class PostServiceImplementation implements PostService {
         post.setImage(req.getImage());
         post.setReply(true);
         post.setReplyFor(replyFor);
+        post.setContent(req.getContent());
 
         Post savedPost = postRepository.save(post);
 

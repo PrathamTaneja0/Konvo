@@ -10,6 +10,7 @@ import {logout} from "../../Store/Auth/Action.jsx";
 import PostForm from "../HomeSection/PostForm";
 import Modal from "@mui/material/Modal";
 import { getAllPosts } from "../../Store/Post/Action";
+import useColorMode from "../../theme/useColorMode";
 
 const Navigation = ({ onNavItemClick }) => {
 
@@ -43,6 +44,7 @@ const Navigation = ({ onNavItemClick }) => {
     setPostModalOpen(false);
     dispatch(getAllPosts());
   };
+  const { theme } = useColorMode();
   return (
     <div className="h-screen sticky top-0 flex flex-col justify-between px-4">
       <div>
@@ -104,7 +106,8 @@ const Navigation = ({ onNavItemClick }) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            background: 'white',
+            background: theme.palette.background.paper,
+            color: theme.palette.text.primary,
             borderRadius: 16,
             boxShadow: 24,
             padding: 24,

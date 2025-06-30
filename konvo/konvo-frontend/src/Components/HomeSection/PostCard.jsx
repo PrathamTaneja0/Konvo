@@ -17,7 +17,7 @@ import { repostPost, undoRepost, likePost, dislikePost, deletePost } from "../..
 import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 
-function PostCard({ post }) {
+function PostCard({ post, isReply = false }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
@@ -78,13 +78,14 @@ function PostCard({ post }) {
     handleClose();
   };
 
-  const handleEdit = () => {
-    handleClose();
-  };
-
   const isUsersPost = post.user?.id === auth.user?.id;
 
   console.log("liked:", post.liked, "id:", post.id);
+
+  // Fallbacks for missing fields
+  const fullName = post.user?.fullName || 'Unknown User';
+  const username = post.user?.username || 'unknown';
+  const content = post.content || '[No content]';
 
   return (
     <div className="border-b border-gray-200 p-4">
@@ -98,8 +99,8 @@ function PostCard({ post }) {
         <div className="w-full">
           <div className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
-              <span className="font-semibold">{post.user?.fullName}</span>
-              <span className="opacity-70">@{post.user?.username}</span>
+              <span className="font-semibold">{fullName}</span>
+              <span className="opacity-70">@{username}</span>
               {post.user?.is_verified && (
                 <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
               )}
@@ -128,15 +129,17 @@ function PostCard({ post }) {
                 }}
               >
                 {isUsersPost ? [
-                  <MenuItem key="delete" onClick={handleDeletePost}>Delete</MenuItem>,
-                  <MenuItem key="edit" onClick={handleEdit}>Edit</MenuItem>
+                  <MenuItem key="delete" onClick={handleDeletePost}>Delete</MenuItem>
                 ] : null}
               </Menu>
             </div>
           </div>
           <div className="mt-2">
-            <div className="cursor-pointer" onClick={() => navigate(`/tweet/${post.id}`)}>
-              <p className="mb-2 p-0">{post.content}</p>
+            <div
+              className={isReply ? undefined : "cursor-pointer"}
+              onClick={isReply ? undefined : () => navigate(`/post/${post.id}`)}
+            >
+              <p className="mb-2 p-0">{content}</p>
               {post.image && (
                 <img
                   className="w-full max-w-2xl border border-gray-400 p-5 rounded-md"

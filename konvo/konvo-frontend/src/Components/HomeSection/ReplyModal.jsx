@@ -92,7 +92,7 @@ export default function ReplyModal({ open, onClose, post }) {
           </div>
         </div>
         <div className="mt-2">
-          <div className="cursor-pointer" onClick={() => navigate(`/tweet/${post?.id}`)}>
+          <div className="cursor-pointer" onClick={() => navigate(`/post/${post?.id}`)}>
             <p className="mb-2 p-0">{post?.content}</p>
           </div>
         </div>

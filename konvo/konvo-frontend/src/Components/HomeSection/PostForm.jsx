@@ -36,7 +36,7 @@ const PostForm = ({ onPostSuccess }) => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit} style={{ background: theme.palette.background.paper, color: theme.palette.text.primary }}>
       <div className="flex space-x-5 items-center">
         <Avatar alt="username" src={user1} />
         <TextField
@@ -45,6 +45,11 @@ const PostForm = ({ onPostSuccess }) => {
           variant="standard"
           fullWidth
           sx={{
+            background: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+            '& input': {
+              color: theme.palette.text.primary,
+            },
             '& input:-webkit-autofill': {
               WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
               WebkitTextFillColor: theme.palette.text.primary,
@@ -67,9 +72,11 @@ const PostForm = ({ onPostSuccess }) => {
           sx={{
             borderRadius: "29px",
             paddingX: "20px",
-            bgcolor: "#000000",
+            bgcolor: theme.palette.mode === 'dark' ? '#000' : '#000',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#fff',
             "&:hover": {
-              bgcolor: "#1a91da",
+              bgcolor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
             },
           }}
         >

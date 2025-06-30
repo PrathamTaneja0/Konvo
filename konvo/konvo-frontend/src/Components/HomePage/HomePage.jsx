@@ -97,7 +97,7 @@ export default function HomePage() {
             <Route path="/" element={<HomeSection />} />
             <Route path="/home/*" element={<HomeSection />} />
             <Route path="/profile/:id" element={<Profile />} />
-            <Route path="/tweet/:id" element={<PostDetails />} />
+            <Route path="/post/:id" element={<PostDetails />} />
           </Routes>
         </Grid>
 

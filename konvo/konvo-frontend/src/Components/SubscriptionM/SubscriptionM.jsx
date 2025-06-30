@@ -66,13 +66,13 @@ export default function SubscriptionM({ open, handleClose }) {
         <ul className="px-8 pb-2 text-base space-y-2 list-disc" style={{ color: theme.palette.text.primary }}>
           <li>Prioritized rankings in conversations and search</li>
           <li>
-            See approximately twice as many Tweets between ads in your For You
+            See approximately twice as many posts between ads in your For You
             and Following timelines.
           </li>
-          <li>Add bold and italic text in your Tweets.</li>
+          <li>Add bold and italic text in your posts.</li>
           <li>Post longer videos and 1080p video uploads.</li>
           <li>
-            All the existing Blue features, including Edit Tweet, Bookmark
+            All the existing Blue features, including Edit post, Bookmark
             Folders and early access to new features.
           </li>
         </ul>
