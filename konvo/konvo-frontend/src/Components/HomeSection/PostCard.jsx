@@ -3,14 +3,11 @@ import RepeatIcon from "@mui/icons-material/Repeat";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
 import verify from "../../assets/verify.png";
-import TeamIgris from "../../assets/TeamIgris.png";
 import { useNavigate } from "react-router-dom";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FavouriteIcon from "@mui/icons-material/Favorite";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import ReplyModal from "./ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
 import { repostPost, undoRepost, likePost, dislikePost, deletePost } from "../../Store/Post/Action";
@@ -25,7 +22,6 @@ function PostCard({ post, isReply = false }) {
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
 
-  const currentUserId = auth.user?.id;
 
   // Only glow repost button on original posts if user has reposted
   let userHasReposted = false;
@@ -124,8 +120,10 @@ function PostCard({ post, isReply = false }) {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                slotProps={{
+                  menuList: {
+                    'aria-labelledby': 'basic-button',
+                  },
                 }}
               >
                 {isUsersPost ? [
@@ -182,13 +180,6 @@ function PostCard({ post, isReply = false }) {
                   />
                 )}
                 <span>{post.totalLikes ?? 0}</span>
-              </div>
-              <div className="space-x-3 flex items-center text-gray-600">
-                <BarChartIcon className="cursor-pointer" />
-                <span>{post.viewCount ?? 0}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <FileUploadIcon className="cursor-pointer" />
               </div>
             </div>
           </div>

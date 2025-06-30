@@ -183,17 +183,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
               />
               <TextField
                 fullWidth
-                id="website"
-                label="Website"
-                name="website"
-                value={formik.values.website}
-                onChange={formik.handleChange}
-                error={formik.touched.website && Boolean(formik.errors.website)}
-                helperText={formik.errors.website}
-                margin="normal"
-              />
-              <TextField
-                fullWidth
                 id="location"
                 label="Location"
                 name="location"
@@ -203,12 +192,17 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
                 helperText={formik.errors.location}
                 margin="normal"
               />
-              <div className="my-3">
-                <p className="text-lg">Birth Date . Edit</p>
-                <p className="text-2xl"> October 26, 1999</p>
-                
-              </div>
-              <p className = "py-3 text-lg">Edit professional Profile</p>
+              <TextField
+                fullWidth
+                id="birthDate"
+                label="Birthday"
+                name="birthDate"
+                type="date"
+                value={formik.values.birthDate || ''}
+                onChange={formik.handleChange}
+                InputLabelProps={{ shrink: true }}
+                margin="normal"
+              />
             </div>
           </div>
         </form>

@@ -45,6 +45,7 @@ const Navigation = ({ onNavItemClick }) => {
     dispatch(getAllPosts());
   };
   const { theme } = useColorMode();
+  const userId = auth.user?.id;
   return (
     <div className="h-screen sticky top-0 flex flex-col justify-between px-4">
       <div>
@@ -65,7 +66,9 @@ const Navigation = ({ onNavItemClick }) => {
               className="cursor-pointer flex space-x-3 items-center"
               onClick={() => {
                 if (item.title === "Profile") {
-                  navigate(`/profile/${50}`);
+                  if (userId) {
+                    navigate(`/profile/${userId}`);
+                  }
                 } else {
                   navigate(item.path);
                 }
