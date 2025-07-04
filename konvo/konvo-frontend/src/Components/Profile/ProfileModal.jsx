@@ -35,28 +35,33 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
   const [saving, setSaving] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [error, setError] = useState("");
   const { theme } = useColorMode();
+
   const handleSubmit = async (values) => {
     setSaving(true);
-    // Prepare data for backend
-    const formData = new FormData();
-    formData.append('fullName', values.fullName);
-    formData.append('bio', values.bio);
-    formData.append('website', values.website);
-    formData.append('location', values.location);
-    if (values.backgroundImage instanceof File) {
-      formData.append('backgroundImage', values.backgroundImage);
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.append('fullName', values.fullName);
+      formData.append('bio', values.bio);
+      formData.append('website', values.website);
+      formData.append('location', values.location);
+      if (values.backgroundImage instanceof File) {
+        formData.append('backgroundImage', values.backgroundImage);
+      }
+      if (values.image) {
+        formData.append('image', values.image);
+      }
+      // Place your backend API call here if needed
+      if (onSave) onSave(values);
+      if (onClose) onClose();
+    } catch (err) {
+      setError("Failed to save profile. Please try again.");
+      console.error(err);
+    } finally {
+      setSaving(false);
     }
-    // Use 'image' for profile photo
-    if (values.image) {
-      formData.append('image', values.image);
-    }
-    // TODO: Call your backend API here, e.g.:
-    // await fetch('/api/profile', { method: 'POST', body: formData });
-    // Optionally handle errors and show feedback
-    setSaving(false);
-    if (onSave) onSave(values);
-    if (onClose) onClose();
   };
 
   const formik = useFormik({
@@ -83,20 +88,27 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
 
   const handleImageChange = async (event, field, setPreview, setSelected, setUploading) => {
     setUploading(true);
-    const file = event.target.files[0];
-    if (file) {
-      const uploadedUrl = await uploadToCloudinary(file);
-      if (uploadedUrl) {
-        setPreview(uploadedUrl);
-        setSelected(uploadedUrl);
-        formik.setFieldValue(field, uploadedUrl);
-      } else {
-        setPreview(URL.createObjectURL(file));
-        setSelected("");
-        formik.setFieldValue(field, "");
+    setError("");
+    try {
+      const file = event.target.files[0];
+      if (file) {
+        const uploadedUrl = await uploadToCloudinary(file);
+        if (uploadedUrl) {
+          setPreview(uploadedUrl);
+          setSelected(uploadedUrl);
+          formik.setFieldValue(field, uploadedUrl);
+        } else {
+          setPreview(URL.createObjectURL(file));
+          setSelected("");
+          formik.setFieldValue(field, "");
+        }
       }
+    } catch (err) {
+      setError("Failed to upload image. Please try again.");
+      console.error(err);
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
   };
 
   return (
@@ -105,11 +117,9 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       onClose={onClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-
     >
       <Box sx={{ ...style, backgroundColor: theme.palette.background.default }}>
         <form onSubmit={formik.handleSubmit}>
-          {/* Sticky Header with close and save */}
           <div className="flex items-center justify-between px-4 py-2 border-b sticky top-0 z-10" style={{ borderColor: theme.palette.divider, backgroundColor: theme.palette.background.paper }}>
             <div className="flex items-center">
               <IconButton onClick={onClose} aria-label="close">
@@ -121,10 +131,10 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
               {saving ? 'Saving...' : uploadingAvatar ? 'Uploading...' : 'Save'}
             </Button>
           </div>
-
-          {/* Scrollable Modal Content */}
+          {error && (
+            <div className="px-4 py-2 text-red-600 text-sm bg-red-50 border-b border-red-200">{error}</div>
+          )}
           <div className="overflow-y-auto max-h-[80vh]">
-            {/* Banner and Avatar */}
             <div className="relative w-full h-[180px] ">
               <img
                 src={bannerPreview}
@@ -138,7 +148,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                 title="Edit Banner"
               />
-              {/* Avatar Overlapping */}
               <div className="absolute left-1/2 -bottom-12 transform -translate-x-1/2">
                 <div className="relative">
                   <Avatar
@@ -157,8 +166,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
                 </div>
               </div>
             </div>
-
-            {/* Form Fields */}
             <div className="pt-16 px-6 pb-6">
               <TextField
                 fullWidth

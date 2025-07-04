@@ -1,36 +1,36 @@
-import React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import userIcon from '../../assets/userIcon.png';
-import user1 from '../../assets/user1.webp';
-import { formatDistanceToNow } from 'date-fns';
-import { useDispatch } from 'react-redux';
-import { createPostReply, getAllPosts } from '../../Store/Post/Action';
+import React from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import userIcon from "../../assets/userIcon.png";
+import { formatDistanceToNow } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import { createPostReply, getAllPosts } from "../../Store/Post/Action";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: 'background.paper',
-  border: 'none',
+  bgcolor: "background.paper",
+  border: "none",
   boxShadow: 24,
   p: 4,
-  outline: 'none',
+  outline: "none",
   borderRadius: 4,
 };
 
-export default function ReplyModal({ open, onClose, post }) {
+const ReplyModal = ({ open, onClose, post }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const auth = useSelector((store) => store.auth);
 
   const handleSubmit = (values) => {
     const replyData = {
@@ -45,16 +45,14 @@ export default function ReplyModal({ open, onClose, post }) {
 
   const formik = useFormik({
     initialValues: {
-      content: '',
+      content: "",
       image: "",
       postId: post.id,
     },
     validationSchema: Yup.object({
-      content: Yup.string().required('Content is required'),
+      content: Yup.string().required("Content is required"),
     }),
     onSubmit: (values) => {
-      // Handle form submission
-      console.log(values);
       handleSubmit(values);
     },
   });
@@ -67,7 +65,7 @@ export default function ReplyModal({ open, onClose, post }) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <div className="flex justify-between items-start">
+        <header className="flex justify-between items-start">
           <div className="flex space-x-2 items-center">
             <Avatar
               onClick={() => navigate(`/profile/${post?.user?.id}`)}
@@ -80,21 +78,21 @@ export default function ReplyModal({ open, onClose, post }) {
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-gray-600 text-sm">
-              {post?.createdAt ? formatDistanceToNow(new Date(post?.createdAt), { addSuffix: true }) : ''}
+              {post?.createdAt ? formatDistanceToNow(new Date(post?.createdAt), { addSuffix: true }) : ""}
             </span>
             <IconButton onClick={onClose} aria-label="close">
               <CloseIcon />
             </IconButton>
           </div>
-        </div>
-        <div className="mt-2">
+        </header>
+        <section className="mt-2">
           <div className="cursor-pointer" onClick={() => navigate(`/post/${post?.id}`)}>
             <p className="mb-2 p-0">{post?.content}</p>
           </div>
-        </div>
+        </section>
         <section className="py-2">
           <div className="flex space-x-5">
-            <Avatar alt="username" src={user1} />
+            <Avatar alt="username" src={auth.user?.image || userIcon} />
             <div className="w-full">
               <form onSubmit={formik.handleSubmit}>
                 <div>
@@ -116,7 +114,7 @@ export default function ReplyModal({ open, onClose, post }) {
                     color="primary"
                     sx={{
                       borderRadius: "29px",
-                      px: 4
+                      px: 4,
                     }}
                   >
                     Post
@@ -129,4 +127,6 @@ export default function ReplyModal({ open, onClose, post }) {
       </Box>
     </Modal>
   );
-}
+};
+
+export default ReplyModal;

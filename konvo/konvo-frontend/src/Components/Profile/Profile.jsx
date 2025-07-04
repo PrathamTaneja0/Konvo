@@ -100,9 +100,6 @@ const Profile = () => {
     const isLoading = post.profilePostsLoading;
     const error = post.profilePostsError;
 
-    // Debug log
-    console.log("[Profile renderPosts] postsToShow:", postsToShow);
-
     if (isLoading) {
       return (
         <div className="flex justify-center items-center py-8">

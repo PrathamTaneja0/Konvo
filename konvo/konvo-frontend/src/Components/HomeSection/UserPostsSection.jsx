@@ -7,14 +7,14 @@ import { getFollowedUserPosts } from "../../Store/Post/Action";
 
 const UserPostsSection = ({ userId, userName }) => {
   const { theme } = useColorMode();
-  const post = useSelector(store => store.post);
+  const post = useSelector((store) => store.post);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (userId) {
       dispatch(getFollowedUserPosts(userId));
     }
-  }, [userId, post.like, post.repost]);
+  }, [userId, post.like, post.repost, dispatch]);
 
   const renderPosts = () => {
     if (post.loading) {
@@ -24,7 +24,6 @@ const UserPostsSection = ({ userId, userName }) => {
         </div>
       );
     }
-
     if (post.error) {
       return (
         <div className="flex justify-center items-center py-8">
@@ -32,7 +31,6 @@ const UserPostsSection = ({ userId, userName }) => {
         </div>
       );
     }
-
     if (!post.posts || post.posts.length === 0) {
       return (
         <div className="flex justify-center items-center py-8">
@@ -40,7 +38,6 @@ const UserPostsSection = ({ userId, userName }) => {
         </div>
       );
     }
-
     return (
       <div>
         {post.posts.slice(0, 20).map((postItem) => (
@@ -51,22 +48,19 @@ const UserPostsSection = ({ userId, userName }) => {
   };
 
   return (
-    <div>
+    <main>
       <div className="max-w-xl mx-auto px-4">
-        <section>
+        <header>
           <Box className="py-5 flex items-center gap-3">
             <Avatar src={post.posts?.[0]?.user?.image} alt={userName} />
             <Typography variant="h6" className="font-bold opacity-90">
               {userName}'s Posts
             </Typography>
           </Box>
-        </section>
-
-        <section>
-          {renderPosts()}
-        </section>
+        </header>
+        <section>{renderPosts()}</section>
       </div>
-    </div>
+    </main>
   );
 };
 

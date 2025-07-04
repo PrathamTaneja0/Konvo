@@ -1,36 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
 import { useNavigate } from "react-router-dom";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePost } from "../../Store/Post/Action";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
 import useColorMode from "../../theme/useColorMode";
 
-function ReplyCard({ post, onReplyDeleted }) {
+const ReplyCard = ({ post, onReplyDeleted }) => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
   const { theme } = useColorMode();
 
-  // Fallbacks for missing fields
-  const fullName = post.user?.fullName || 'Unknown User';
-  const username = post.user?.username || 'unknown';
-  const content = post.content || '[No content]';
+  const fullName = post.user?.fullName || "Unknown User";
+  const username = post.user?.username || "unknown";
+  const content = post.content || "[No content]";
+  const isUsersPost = post.user?.id === auth.user?.id;
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
   const handleDeletePost = () => {
-    if (post.user?.id === auth.user?.id) {
+    if (isUsersPost) {
       dispatch(deletePost(post.id)).then(() => {
         if (onReplyDeleted) onReplyDeleted();
       });
@@ -38,10 +33,8 @@ function ReplyCard({ post, onReplyDeleted }) {
     handleClose();
   };
 
-  const isUsersPost = post.user?.id === auth.user?.id;
-
   return (
-    <div
+    <article
       className="border-b p-4"
       style={{
         background: theme.palette.background.paper,
@@ -49,22 +42,22 @@ function ReplyCard({ post, onReplyDeleted }) {
         color: theme.palette.text.primary,
       }}
     >
-      <div className="flex space-x-5">
+      <section className="flex space-x-5">
         <Avatar
           onClick={() => navigate(`/profile/${post.user?.id}`)}
           className="cursor-pointer"
-          alt="username"
+          alt={username}
           src={post.user?.image || userIcon}
         />
         <div className="w-full">
-          <div className="flex justify-between items-center">
+          <header className="flex justify-between items-center">
             <div className="flex cursor-pointer space-x-2 items-center">
               <span className="font-semibold">{fullName}</span>
               <span className="opacity-70">@{username}</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="opacity-70 text-sm">
-                {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) : ''}
+                {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) : ""}
               </span>
               <Button
                 id="basic-button"
@@ -85,13 +78,11 @@ function ReplyCard({ post, onReplyDeleted }) {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                {isUsersPost ? [
-                  <MenuItem key="delete" onClick={handleDeletePost}>Delete</MenuItem>
-                ] : null}
+                {isUsersPost && <MenuItem onClick={handleDeletePost}>Delete</MenuItem>}
               </Menu>
             </div>
-          </div>
-          <div className="mt-2">
+          </header>
+          <section className="mt-2">
             <p className="mb-2 p-0">{content}</p>
             {post.image && (
               <img
@@ -100,11 +91,11 @@ function ReplyCard({ post, onReplyDeleted }) {
                 alt="Reply"
               />
             )}
-          </div>
+          </section>
         </div>
-      </div>
-    </div>
+      </section>
+    </article>
   );
-}
+};
 
 export default ReplyCard; 

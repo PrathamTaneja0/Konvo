@@ -1,4 +1,4 @@
-  import * as React from 'react';
+import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -7,13 +7,11 @@ import SignupForm from './SignupForm';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useColorMode from '../../theme/useColorMode';
 
-  // Style is now defined inside the component to access theme
 export default function AuthModal({ open, handleClose }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme } = useColorMode();
 
-  // Theme-aware modal style
   const style = {
     position: 'absolute',
     top: '50%',
@@ -38,9 +36,7 @@ export default function AuthModal({ open, handleClose }) {
   const handleNavigate = () => {
     if (isSignupPage) {
       navigate("/signin");
-    
-    } 
-    else {
+    } else {
       navigate("/signup");
     }
   };
@@ -63,11 +59,8 @@ export default function AuthModal({ open, handleClose }) {
     return "";
   };
 
-  
-
-
   return (
-    <div>
+    <section>
       <Modal
         open={open}
         onClose={handleClose}
@@ -78,27 +71,24 @@ export default function AuthModal({ open, handleClose }) {
           <h1 className='text-center font-bold text-3xl pb-20' style={{ color: theme.palette.text.primary }}>
             {getModalTitle()}
           </h1>
-
           {isSignupPage ? <SignupForm /> : <SigninForm />}
-
           <h1 className='text-center py-5 font-semibold text-lg' style={{ color: theme.palette.text.secondary }}>
             {getToggleText()}
           </h1>
-
-          <Button 
+          <Button
             variant='outlined'
             color='primary'
-            onClick={handleNavigate} 
+            onClick={handleNavigate}
             fullWidth
-            sx={{ 
-              borderRadius: '29px', 
-              py: 1.5
+            sx={{
+              borderRadius: '29px',
+              py: 1.5,
             }}
           >
             {getButtonText()}
           </Button>
         </Box>
       </Modal>
-    </div>
+    </section>
   );
 }

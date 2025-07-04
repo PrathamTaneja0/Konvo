@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, Avatar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import userIcon from '../../assets/userIcon.png';
+import React from "react";
+import { Button, Avatar } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import userIcon from "../../assets/userIcon.png";
 
 const UserSearchResult = ({ users, onFollowToggle, currentUserId, theme, isDarkMode }) => {
   const navigate = useNavigate();
@@ -10,9 +10,9 @@ const UserSearchResult = ({ users, onFollowToggle, currentUserId, theme, isDarkM
   }
 
   return (
-    <div className="space-y-2">
+    <section className="space-y-2">
       {users.map((user) => (
-        <div
+        <article
           key={user.id}
           className="flex items-center justify-between p-2 rounded-lg transition-colors"
         >
@@ -28,37 +28,43 @@ const UserSearchResult = ({ users, onFollowToggle, currentUserId, theme, isDarkM
           </div>
           {user.id !== currentUserId && (
             <Button
-              variant={user.followed ? 'contained' : 'outlined'}
-              color={user.followed ? 'primary' : 'inherit'}
+              variant={user.followed ? "contained" : "outlined"}
+              color={user.followed ? "primary" : "inherit"}
               size="small"
               onClick={() => onFollowToggle(user)}
               sx={{
-                borderRadius: '20px',
-                minWidth: '90px',
-                position: 'static',
-                paddingX: '1.5rem',
-                paddingY: '0.5rem',
+                borderRadius: "20px",
+                minWidth: "90px",
+                position: "static",
+                paddingX: "1.5rem",
+                paddingY: "0.5rem",
                 bgcolor: user.followed
-                  ? isDarkMode ? '#000' : '#000'
-                  : isDarkMode ? '#000' : '#000',
+                  ? isDarkMode
+                    ? "#000"
+                    : "#000"
+                  : isDarkMode
+                  ? "#000"
+                  : "#000",
                 color: user.followed
-                  ? isDarkMode ? '#fff' : '#fff'
-                  : isDarkMode ? '#fff' : '#fff',
-                border: user.followed
-                  ? 'none'
-                  : `1px solid ${theme.palette.divider}`,
-                '&:hover': {
+                  ? isDarkMode
+                    ? "#fff"
+                    : "#fff"
+                  : isDarkMode
+                  ? "#fff"
+                  : "#fff",
+                border: user.followed ? "none" : `1px solid ${theme.palette.divider}`,
+                "&:hover": {
                   bgcolor: theme.palette.primary.main,
                   color: theme.palette.primary.contrastText,
                 },
               }}
             >
-              {user.followed ? 'Following' : 'Follow'}
+              {user.followed ? "Following" : "Follow"}
             </Button>
           )}
-        </div>
+        </article>
       ))}
-    </div>
+    </section>
   );
 };
 

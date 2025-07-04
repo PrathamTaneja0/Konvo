@@ -2,19 +2,17 @@ import * as React from 'react';
 import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-
-//Fixed and Cleaned
-
-// Create a theme context
+// Context for toggling color mode (light/dark)
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
 
 export default function ThemeProvider({ children }) {
-  // Use localStorage to persist theme preference if available
+  // Persist theme preference in localStorage
   const storedMode = localStorage.getItem('colorMode');
   const [mode, setMode] = React.useState(storedMode || 'light');
 
+  // Memoized color mode context value
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
@@ -25,10 +23,10 @@ export default function ThemeProvider({ children }) {
         });
       },
     }),
-    [],
+    []
   );
 
-  // Define button styles for each mode
+  // Custom color values for light mode
   const lightModeCustomColors = {
     cardBackground: '#f9fafb',
     cardHover: '#374151',
@@ -46,6 +44,7 @@ export default function ThemeProvider({ children }) {
     outlinedButtonHoverBorder: '#0c7abf',
   };
 
+  // Custom color values for dark mode
   const darkModeCustomColors = {
     cardBackground: 'rgb(42 42 47)',
     cardHover: '#374151',
@@ -63,11 +62,11 @@ export default function ThemeProvider({ children }) {
     outlinedButtonHoverBorder: '#0c7abf',
   };
 
+  // Memoized MUI theme object, switches palette and custom colors by mode
   const theme = React.useMemo(
     () => {
       // Select the appropriate custom colors based on mode
       const customColors = mode === 'light' ? lightModeCustomColors : darkModeCustomColors;
-
       return createTheme({
         palette: {
           mode,
@@ -120,13 +119,13 @@ export default function ThemeProvider({ children }) {
                   backgroundColor: customColors.outlinedButtonHoverBg,
                   borderColor: customColors.outlinedButtonHoverBorder,
                 },
-              }
+              },
             },
           },
         },
       });
     },
-    [mode], // Re-compute the theme only when the mode changes
+    [mode]
   );
 
   return (
