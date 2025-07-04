@@ -122,266 +122,286 @@ const SignupForm = ({ onSubmit }) => {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <Box sx={{ height: '400px', overflow: 'auto', pr: 1 }}>
-      <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
-            <TextField
-              fullWidth
-              id="firstName"
-              name="firstName"
-              label="First Name"
-              value={formik.values.firstName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-              helperText={formik.touched.firstName && formik.errors.firstName}
-              variant="outlined"
-              margin="dense"
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
-            <TextField
-              fullWidth
-              id="lastName"
-              name="lastName"
-              label="Last Name"
-              value={formik.values.lastName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              variant="outlined"
-              margin="dense"
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12' }}>
-            <TextField
-              fullWidth
-              id="username"
-              name="username"
-              label="Username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={
-                formik.touched.username && formik.errors.username
-                  ? formik.errors.username
-                  : usernameChecking
-                  ? "Checking availability..."
-                  : usernameAvailable === true
-                  ? "Username is available ✓"
-                  : usernameAvailable === false
-                  ? "Username is already taken ✗"
-                  : ""
-              }
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment:
-                  usernameChecking && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-              }}
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12' }}>
-            <TextField
-              fullWidth
-              id="email"
-              name="email"
-              label="Email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={
-                formik.touched.email && formik.errors.email
-                  ? formik.errors.email
-                  : emailChecking
-                  ? "Checking availability..."
-                  : emailAvailable === true
-                  ? "Email is available ✓"
-                  : emailAvailable === false
-                  ? "Email is already registered ✗"
-                  : ""
-              }
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment:
-                  emailChecking && (
-                    <InputAdornment position="end">
-                      <CircularProgress size={20} />
-                    </InputAdornment>
-                  ),
-              }}
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12' }}>
-            <TextField
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={togglePasswordVisibility}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12' }}>
-            <TextField
-              fullWidth
-              id="confirmPassword"
-              name="confirmPassword"
-              label="Confirm Password"
-              type={showConfirmPassword ? "text" : "password"}
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle confirm password visibility"
-                      onClick={toggleConfirmPasswordVisibility}
-                      edge="end"
-                    >
-                      {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12' }}>
-            <Box sx={{ mt: 1, mb: 1 }}>
-              <FormHelperText sx={{ ml: 1, mb: 1, fontWeight: 500 }}>Date of Birth</FormHelperText>
-              <Grid container spacing={2}>
-                <Grid sx={{ gridColumn: 'span 4' }}>
-                  <FormControl fullWidth error={formik.touched.day && Boolean(formik.errors.day)}>
-                    <TextField
-                      select
-                      id="day"
-                      name="day"
-                      label="Day"
-                      value={formik.values.day}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.day && Boolean(formik.errors.day)}
-                      helperText={formik.touched.day && formik.errors.day}
-                      variant="outlined"
-                      margin="dense"
-                      fullWidth
-                    >
-                      <MenuItem value="">Select Day</MenuItem>
-                      {days.map((day) => (
-                        <MenuItem key={day} value={day}>
-                          {day}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </FormControl>
+        <Box sx={{ height: '400px', overflow: 'auto', pr: 1 }}>
+            <form onSubmit={formik.handleSubmit}>
+                <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                        <TextField
+                            fullWidth
+                            id="firstName"
+                            name="firstName"
+                            label="First Name"
+                            value={formik.values.firstName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                            helperText={formik.touched.firstName && formik.errors.firstName}
+                            variant="outlined"
+                            margin="dense"
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                        <TextField
+                            fullWidth
+                            id="lastName"
+                            name="lastName"
+                            label="Last Name"
+                            value={formik.values.lastName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                            helperText={formik.touched.lastName && formik.errors.lastName}
+                            variant="outlined"
+                            margin="dense"
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
+                            id="username"
+                            name="username"
+                            label="Username"
+                            value={formik.values.username}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.username && Boolean(formik.errors.username)}
+                            helperText={
+                                formik.touched.username && formik.errors.username
+                                    ? formik.errors.username
+                                    : usernameChecking
+                                    ? "Checking availability..."
+                                    : usernameAvailable === true
+                                    ? "Username is available ✓"
+                                    : usernameAvailable === false
+                                    ? "Username is already taken ✗"
+                                    : ""
+                            }
+                            variant="outlined"
+                            margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: usernameChecking && (
+                                        <InputAdornment position="end">
+                                            <CircularProgress size={20} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
+                            id="email"
+                            name="email"
+                            label="Email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={
+                                formik.touched.email && formik.errors.email
+                                    ? formik.errors.email
+                                    : emailChecking
+                                    ? "Checking availability..."
+                                    : emailAvailable === true
+                                    ? "Email is available ✓"
+                                    : emailAvailable === false
+                                    ? "Email is already registered ✗"
+                                    : ""
+                            }
+                            variant="outlined"
+                            margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: emailChecking && (
+                                        <InputAdornment position="end">
+                                            <CircularProgress size={20} />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
+                            id="password"
+                            name="password"
+                            label="Password"
+                            type={showPassword ? "text" : "password"}
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            variant="outlined"
+                            margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={togglePasswordVisibility}
+                                                edge="end"
+                                            >
+                                                {showPassword ? (
+                                                    <VisibilityOffIcon />
+                                                ) : (
+                                                    <VisibilityIcon />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <TextField
+                            fullWidth
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            label="Confirm Password"
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={formik.values.confirmPassword}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                            helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                            variant="outlined"
+                            margin="dense"
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle confirm password visibility"
+                                                onClick={toggleConfirmPasswordVisibility}
+                                                edge="end"
+                                            >
+                                                {showConfirmPassword ? (
+                                                    <VisibilityOffIcon />
+                                                ) : (
+                                                    <VisibilityIcon />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ mt: 1, mb: 1 }}>
+                            <FormHelperText sx={{ ml: 1, mb: 1, fontWeight: 500 }}>Date of Birth</FormHelperText>
+                            <Grid container spacing={2}>
+                                <Grid size={{ xs: 4 }}>
+                                    <FormControl fullWidth error={formik.touched.day && Boolean(formik.errors.day)}>
+                                        <TextField
+                                            select
+                                            id="day"
+                                            name="day"
+                                            label="Day"
+                                            value={formik.values.day}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.day && Boolean(formik.errors.day)}
+                                            helperText={formik.touched.day && formik.errors.day}
+                                            variant="outlined"
+                                            margin="dense"
+                                            fullWidth
+                                        >
+                                            <MenuItem value="">Select Day</MenuItem>
+                                            {days.map((day) => (
+                                                <MenuItem key={day} value={day}>{day}</MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </FormControl>
+                                </Grid>
+                                <Grid size={{ xs: 4 }}>
+                                    <FormControl fullWidth error={formik.touched.month && Boolean(formik.errors.month)}>
+                                        <TextField
+                                            select
+                                            id="month"
+                                            name="month"
+                                            label="Month"
+                                            value={formik.values.month}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.month && Boolean(formik.errors.month)}
+                                            helperText={formik.touched.month && formik.errors.month}
+                                            variant="outlined"
+                                            margin="dense"
+                                            fullWidth
+                                        >
+                                            <MenuItem value="">Select Month</MenuItem>
+                                            {months.map((month) => (
+                                                <MenuItem key={month} value={month}>
+                                                    {new Date(2000, month - 1, 1).toLocaleString('default', { month: 'long' })}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </FormControl>
+                                </Grid>
+                                <Grid size={{ xs: 4 }}>
+                                    <FormControl fullWidth error={formik.touched.year && Boolean(formik.errors.year)}>
+                                        <TextField
+                                            select
+                                            id="year"
+                                            name="year"
+                                            label="Year"
+                                            value={formik.values.year}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.year && Boolean(formik.errors.year)}
+                                            helperText={formik.touched.year && formik.errors.year}
+                                            variant="outlined"
+                                            margin="dense"
+                                            fullWidth
+                                        >
+                                            <MenuItem value="">Select Year</MenuItem>
+                                            {years.map((year) => (
+                                                <MenuItem key={year} value={year}>{year}</MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </FormControl>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            disabled={loading}
+                            sx={{ borderRadius: "29px", py: 1.5 }}
+                        >
+                            {loading ? "Creating Account..." : "Create Account"}
+                        </Button>
+                    </Grid>
+
+                    {error && (
+                        <Grid size={{ xs: 12 }}>
+                            <div className="text-red-500 text-center mt-2">
+                                {error}
+                            </div>
+                        </Grid>
+                    )}
                 </Grid>
-                <Grid sx={{ gridColumn: 'span 4' }}>
-                  <FormControl fullWidth error={formik.touched.month && Boolean(formik.errors.month)}>
-                    <TextField
-                      select
-                      id="month"
-                      name="month"
-                      label="Month"
-                      value={formik.values.month}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.month && Boolean(formik.errors.month)}
-                      helperText={formik.touched.month && formik.errors.month}
-                      variant="outlined"
-                      margin="dense"
-                      fullWidth
-                    >
-                      <MenuItem value="">Select Month</MenuItem>
-                      {months.map((month) => (
-                        <MenuItem key={month} value={month}>
-                          {new Date(2000, month - 1, 1).toLocaleString('default', { month: 'long' })}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </FormControl>
-                </Grid>
-                <Grid sx={{ gridColumn: 'span 4' }}>
-                  <FormControl fullWidth error={formik.touched.year && Boolean(formik.errors.year)}>
-                    <TextField
-                      select
-                      id="year"
-                      name="year"
-                      label="Year"
-                      value={formik.values.year}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.year && Boolean(formik.errors.year)}
-                      helperText={formik.touched.year && formik.errors.year}
-                      variant="outlined"
-                      margin="dense"
-                      fullWidth
-                    >
-                      <MenuItem value="">Select Year</MenuItem>
-                      {years.map((year) => (
-                        <MenuItem key={year} value={year}>
-                          {year}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid sx={{ gridColumn: 'span 12', mt: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={loading}
-              sx={{ borderRadius: "29px", py: 1.5 }}
-            >
-              {loading ? "Creating Account..." : "Create Account"}
-            </Button>
-          </Grid>
-          {error && (
-            <Grid sx={{ gridColumn: 'span 12' }}>
-              <div className="text-red-500 text-center mt-2">{error}</div>
-            </Grid>
-          )}
-        </Grid>
-      </form>
-    </Box>
-  );
+            </form>
+        </Box>
+    );
 };
 
 export default SignupForm;

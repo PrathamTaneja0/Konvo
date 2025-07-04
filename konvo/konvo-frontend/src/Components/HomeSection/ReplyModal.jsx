@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import userIcon from "../../assets/userIcon.png";
 import { formatDistanceToNow } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { createPostReply, getAllPosts } from "../../Store/Post/Action";
+import { createPostReply, getAllPosts, findPostsById, getUserProfilePosts } from "../../Store/Post/Action";
 
 const style = {
   position: "absolute",
@@ -39,6 +39,10 @@ const ReplyModal = ({ open, onClose, post }) => {
     };
     dispatch(createPostReply(replyData)).then(() => {
       dispatch(getAllPosts());
+      dispatch(findPostsById(post.id)); // Refresh post details for immediate comment update
+      if (post.user?.id) {
+        dispatch(getUserProfilePosts(post.user.id)); // Refresh profile posts after commenting
+      }
       onClose();
     });
   };

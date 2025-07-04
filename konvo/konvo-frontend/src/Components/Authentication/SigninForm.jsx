@@ -41,7 +41,7 @@ const SigninForm = ({ onSubmit }) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2}>
-        <Grid sx={{ gridColumn: 'span 12' }}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             fullWidth
             id="email"
@@ -50,12 +50,14 @@ const SigninForm = ({ onSubmit }) => {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            // size="medium"
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
             variant="outlined"
           />
         </Grid>
-        <Grid sx={{ gridColumn: 'span 12' }}>
+
+        <Grid size={{ xs: 12 }}>
           <TextField
             fullWidth
             id="password"
@@ -65,25 +67,33 @@ const SigninForm = ({ onSubmit }) => {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            // size="medium"
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
             variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={togglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
         </Grid>
-        <Grid sx={{ gridColumn: 'span 12', mt: 5 }}>
+
+        <Grid size={{ xs: 12 }} sx={{ mt: 5 }}>
           <Button
             type="submit"
             variant="contained"
@@ -95,7 +105,7 @@ const SigninForm = ({ onSubmit }) => {
           </Button>
         </Grid>
         {auth.error && (
-          <Grid sx={{ gridColumn: 'span 12', mt: 2 }}>
+          <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
             <Alert severity="error">{auth.error}</Alert>
           </Grid>
         )}

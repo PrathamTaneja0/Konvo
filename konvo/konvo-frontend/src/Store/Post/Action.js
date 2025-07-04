@@ -85,6 +85,10 @@ export const createPostReply = (postData) => async (dispatch) => {
   try {
     const { data } = await api.post('/api/posts/reply', postData);
     dispatch({ type: REPLY_POST_SUCCESS, payload: data });
+    dispatch(getAllPosts());
+    if (postData.userId) {
+      dispatch(getUserProfilePosts(postData.userId));
+    }
   } catch (error) {
     dispatch({ type: REPLY_POST_FAILURE, payload: error.message });
   }
@@ -178,7 +182,7 @@ export const dislikePost = (postId, isProfile, userId) => async (dispatch) => {
   }
 };
 
-export const deletePost = (postId, originalPostIdIfRepost) => async (dispatch) => {
+export const deletePost = (postId, originalPostIdIfRepost, isProfile, userId) => async (dispatch) => {
   try {
     await api.delete(`/api/posts/${postId}`);
     dispatch({ type: POST_DELETE_SUCCESS, payload: postId });
@@ -186,6 +190,13 @@ export const deletePost = (postId, originalPostIdIfRepost) => async (dispatch) =
       dispatch(updateSinglePost(originalPostIdIfRepost));
     }
     dispatch(getAllPosts());
+    if (isProfile) {
+      if (userId) {
+        dispatch(getUserProfilePosts(userId));
+      } else {
+        dispatch(getMyAuthoredPosts());
+      }
+    }
   } catch (error) {
     dispatch({ type: POST_DELETE_FAILURE, payload: error.message });
   }

@@ -154,6 +154,12 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
+    // Alias mapping for frontend compatibility
+    @GetMapping("/user/{userId}/profile")
+    public ResponseEntity<List<PostDto>> getUserProfilePostsAlias(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        return getUserProfilePosts(userId, jwt);
+    }
+
     // F-V3: Get aggregated timeline of all followed users' posts (20 most recent)
     @GetMapping("/timeline")
     public ResponseEntity<List<PostDto>> getTimeline(@RequestHeader("Authorization") String jwt) throws UserException, PostException {

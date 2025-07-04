@@ -52,9 +52,9 @@ const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = nu
   const handleDeletePost = () => {
     if (isUsersPost) {
       if (post.isRepost && post.repostFor && post.repostFor.id) {
-        dispatch(deletePost(post.id, post.repostFor.id));
+        dispatch(deletePost(post.id, post.repostFor.id, isProfile, profileUserId));
       } else {
-        dispatch(deletePost(post.id));
+        dispatch(deletePost(post.id, null, isProfile, profileUserId));
       }
     }
     handleClose();

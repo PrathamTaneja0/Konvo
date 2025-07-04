@@ -64,7 +64,13 @@ const postReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: null, posts: [action.payload, ...state.posts] };
 
     case POST_DELETE_SUCCESS:
-      return { ...state, loading: false, error: null, posts: state.posts.filter((post) => post.id !== action.payload) };
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        posts: state.posts.filter((post) => post.id !== action.payload),
+        profilePosts: state.profilePosts.filter((post) => post.id !== action.payload),
+      };
 
     case GET_ALL_POSTS_SUCCESS:
     case GET_USERS_POSTS_SUCCESS:
