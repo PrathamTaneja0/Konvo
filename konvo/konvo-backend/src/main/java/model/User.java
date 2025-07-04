@@ -48,9 +48,6 @@ public class User {
     @OneToMany(mappedBy =  "user", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
-    @Embedded
-    private Verification verification;
-
     @JsonIgnore
     @ManyToMany
     private List<User> followers = new ArrayList<>();

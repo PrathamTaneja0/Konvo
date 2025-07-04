@@ -21,7 +21,7 @@ public class UserDtoMapper {
         userDto.setBirthDate(user.getBirthDate());
         userDto.setLocation(user.getLocation());
 
-//        userDto.set_verified();
+        // REMOVE any mapping or reference to is_verified
 
 //        userDto.setWebsite(user.getWebsite());
 //        userDto.setMobile(user.getMobile());

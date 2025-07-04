@@ -1,7 +1,6 @@
 import React from "react";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
-import verify from "../../assets/verify.png";
 import { useNavigate } from "react-router-dom";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,9 +61,6 @@ function ReplyCard({ post, onReplyDeleted }) {
             <div className="flex cursor-pointer space-x-2 items-center">
               <span className="font-semibold">{fullName}</span>
               <span className="opacity-70">@{username}</span>
-              {post.user?.is_verified && (
-                <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
-              )}
             </div>
             <div className="flex items-center space-x-2">
               <span className="opacity-70 text-sm">

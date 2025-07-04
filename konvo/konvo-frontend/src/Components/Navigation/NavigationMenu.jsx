@@ -10,11 +10,6 @@ export const navigationMenu = [
         path: "/home"
     },
     {
-        title: "Verified",
-        icon: <VerifiedIcon />,
-        path: "/verified"
-    },
-    {
         title: "Profile",
         icon: <AccountCircleIcon />,
         path: "/profile"

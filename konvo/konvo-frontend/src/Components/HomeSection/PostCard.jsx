@@ -2,7 +2,6 @@ import React from "react";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import userIcon from "../../assets/userIcon.png";
-import verify from "../../assets/verify.png";
 import { useNavigate } from "react-router-dom";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -100,9 +99,6 @@ function PostCard({ post, isReply = false, isProfile = false, profileUserId = nu
             >
               <span className="font-semibold">{fullName}</span>
               <span className="opacity-70">@{username}</span>
-              {post.user?.is_verified && (
-                <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
-              )}
             </div>
             <div className="flex items-center space-x-2">
               <span className="opacity-70 text-sm">
@@ -169,19 +165,33 @@ function PostCard({ post, isReply = false, isProfile = false, profileUserId = nu
                 <span className={`text-sm ${userHasReposted ? 'text-green-500' : 'text-gray-500'}`}>{post.totalRePosts ?? 0}</span>
               </div>
               <div className="space-x-3 flex items-center">
-                {post.liked ? (
-                  <FavouriteIcon
-                    className="cursor-pointer"
-                    onClick={handleLike}
-                    color="error"
-                  />
-                ) : (
-                  <FavoriteBorderIcon
-                    className="cursor-pointer"
-                    onClick={handleLike}
-                    color="action"
-                  />
-                )}
+                <Tooltip title={isUsersPost ? "You cannot like your own post." : (post.liked ? "Unlike" : "Like")}>
+                  <span>
+                    {post.liked ? (
+                      <FavouriteIcon
+                        className={`cursor-pointer ${isUsersPost ? 'pointer-events-none text-gray-400' : ''}`}
+                        color={isUsersPost ? undefined : "error"}
+                        onClick={e => {
+                          if (isUsersPost) return;
+                          handleLike();
+                        }}
+                        style={isUsersPost ? { opacity: 0.5 } : {}}
+                        data-testid="like-button"
+                      />
+                    ) : (
+                      <FavoriteBorderIcon
+                        className={`cursor-pointer ${isUsersPost ? 'pointer-events-none text-gray-400' : ''}`}
+                        color={isUsersPost ? undefined : "action"}
+                        onClick={e => {
+                          if (isUsersPost) return;
+                          handleLike();
+                        }}
+                        style={isUsersPost ? { opacity: 0.5 } : {}}
+                        data-testid="like-button"
+                      />
+                    )}
+                  </span>
+                </Tooltip>
                 <span>{post.totalLikes ?? 0}</span>
               </div>
             </div>

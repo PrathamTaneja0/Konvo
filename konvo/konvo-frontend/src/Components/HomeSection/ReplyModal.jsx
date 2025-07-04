@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import userIcon from '../../assets/userIcon.png';
-import verify from '../../assets/verify.png';
 import user1 from '../../assets/user1.webp';
 import { formatDistanceToNow } from 'date-fns';
 import { useDispatch } from 'react-redux';
@@ -78,7 +77,6 @@ export default function ReplyModal({ open, onClose, post }) {
             />
             <span className="font-semibold">{post?.user?.fullName}</span>
             <span className="text-gray-600">@{post?.user?.username}</span>
-            <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-gray-600 text-sm">

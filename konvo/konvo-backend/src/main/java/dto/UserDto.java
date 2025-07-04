@@ -24,6 +24,4 @@ public class UserDto {
 
     private boolean followed;
     private boolean followsYou;
-
-    private boolean is_verified;
 }

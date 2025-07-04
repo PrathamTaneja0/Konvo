@@ -4,7 +4,6 @@ import Brightness4Icon from '@mui/icons-material/Brightness6';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { Button, IconButton, Tooltip } from '@mui/material';
-import SubscriptionM from '../SubscriptionM/SubscriptionM';
 import useColorMode from '../../theme/useColorMode';
 import Box from '@mui/material/Box';
 import { api } from '../Config/api';
@@ -16,7 +15,6 @@ import { followUserAction } from '../../Store/Auth/Action';
 
 
 const RightPart = () => {
-  const [openSubscriptionM, setOpenSubscriptionM] = React.useState(false);
   const [news, setNews] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
@@ -41,9 +39,6 @@ const RightPart = () => {
         setLoading(false);
       });
   }, []);
-
-  const handleOpenSubscriptionM = () => setOpenSubscriptionM(true);
-  const handleCloseSubscriptionM = () => setOpenSubscriptionM(false);
 
   // Get theme mode and toggle function
   const { colorMode, mode } = useColorMode();
@@ -110,26 +105,6 @@ const RightPart = () => {
         </div>
       )}
 
-      <section className=' rounded-xl p-4  transition-colors ' style={{color: theme.palette.text.primary,
-          backgroundColor: theme.palette.custom.cardBackground
-      }}>
-
-        <h1 className='text-xl font-bold'>Get Verified</h1>
-        <h1 className='font-bold my-2'>Subscribe to unlock new Features</h1>
-        <Button 
-          variant='contained' 
-          color='primary'
-          onClick={handleOpenSubscriptionM}
-          sx={{ 
-            padding: "10px", 
-            paddingX: "20px", 
-            borderRadius: "25px",
-          }}
-        >
-          Get Verified
-        </Button>
-      </section>
-
       <section className=' rounded-xl p-4' style={{color: theme.palette.text.primary,
           backgroundColor: theme.palette.custom.cardBackground
       }}>
@@ -159,9 +134,6 @@ const RightPart = () => {
             </div>
           ))}
         </Box>
-      </section>
-      <section>
-        <SubscriptionM open={openSubscriptionM} handleClose={handleCloseSubscriptionM} />
       </section>
     </div>
   )

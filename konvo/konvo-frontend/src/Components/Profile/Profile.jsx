@@ -7,7 +7,6 @@ import { Avatar, Button, Box } from "@mui/material";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import verify from "../../assets/verify.png";
 import PostCard from "../HomeSection/PostCard";
 import ProfileModal from "./ProfileModal";
 import useColorMode from "../../theme/useColorMode";
@@ -227,7 +226,6 @@ const Profile = () => {
         <div style={{ height: "4rem" }} />
         <div className="flex items-center px-4">
           <h1 className="font-bold text-lg">{user.fullName}</h1>
-          <img className="w-4 h-4 ml-2" src={verify} alt="verified" />
         </div>
         <h1 className="text-gray-500 px-4">@{user.username}</h1>
         <div className="mt-2 space-y-3 px-4">

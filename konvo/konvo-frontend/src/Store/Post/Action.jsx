@@ -155,7 +155,21 @@ export const undoRepost = (postId, isProfile, userId) => async (dispatch) => {
     }
 };
 
-export const likePost = (postId, isProfile, userId) => async (dispatch) => {
+export const likePost = (postId, isProfile, userId) => async (dispatch, getState) => {
+    const state = getState();
+    const posts = state.post.posts || [];
+    const post = posts.find((p) => p.id === postId);
+    const currentUserId = state.auth.user?.id;
+
+    // Prevent self-like on client side
+    if (post && post.user?.id === currentUserId) {
+        dispatch({
+            type: LIKE_POST_FAILURE,
+            payload: "You cannot like your own post.",
+        });
+        return;
+    }
+
     try {
         const { data } = await api.post(`/api/posts/${postId}/like`);
         dispatch({ type: LIKE_POST_SUCCESS, payload: data });
@@ -167,7 +181,7 @@ export const likePost = (postId, isProfile, userId) => async (dispatch) => {
             }
         }
     } catch (error) {
-        dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
+        dispatch({ type: LIKE_POST_FAILURE, payload: error.response?.data || error.message });
     }
 }
 

@@ -27,6 +27,10 @@ public class LikeServiceImplementation implements LikeService {
     @Override
     public Post likePost(Long postId, User user) throws UserException, PostException {
         Post post = postService.findById(postId);
+        // Prevent self-like
+        if (post.getUser() != null && user.getId().equals(post.getUser().getId())) {
+            throw new PostException("You cannot like your own post.");
+        }
         Like isLikeExist = likeRepository.isLikeExist(user.getId(), postId);
         if (isLikeExist != null) {
             // User already liked the post, so unlike it
