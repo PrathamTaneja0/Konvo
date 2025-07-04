@@ -77,7 +77,7 @@ export const authReducer = (state = initialState, action) => {
         case FOLLOW_USER_SUCCESS:
             return {
                 ...state,
-                findUser: action.payload,
+                user: action.payload,
                 loading: false,
                 error: null
             };

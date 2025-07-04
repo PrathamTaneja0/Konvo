@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import { api } from '../Config/api';
 import UserSearchResult from './UserSearchResult';
 import { useSelector, useDispatch } from 'react-redux';
-import { findUserById } from '../../Store/Auth/Action';
+import { followUserAction } from '../../Store/Auth/Action';
 
 
 
@@ -70,32 +70,13 @@ const RightPart = () => {
     setSearchLoading(false);
   };
 
-  const handleFollowToggle = async (user) => {
-    try {
-      await api.put(`/api/users/${user.id}/follow`);
-      setSearchResults((prev) =>
-        prev.map((u) => {
-          if (u.id === user.id) {
-            const followed = !u.followed;
-            let followers = u.followers ? [...u.followers] : [];
-            if (followed) {
-              followers.push({ id: currentUserId });
-            } else {
-              followers = followers.filter(f => f.id !== currentUserId);
-            }
-            return {
-              ...u,
-              followed,
-              followers,
-            };
-          }
-          return u;
-        })
-      );
-      dispatch(findUserById(user.id));
-    } catch {
-      // Optionally show error
-    }
+  const handleFollowToggle = (user) => {
+    dispatch(followUserAction(user.id));
+    setSearchResults((prev) =>
+      prev.map((u) =>
+        u.id === user.id ? { ...u, followed: !u.followed } : u
+      )
+    );
   };
 
     return (

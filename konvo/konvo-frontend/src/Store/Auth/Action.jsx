@@ -18,6 +18,7 @@ import {
     FOLLOW_USER_FAILURE,
     SET_JWT
 } from './ActionType';
+import { getTimeline } from '../Post/Action';
 
 export const loginUser = (loginData) => async (dispatch) => {
     try {
@@ -119,6 +120,8 @@ export const followUserAction = (userId) => async (dispatch, getState) => {
         if (jwt) {
             dispatch(getUserProfile(jwt));
         }
+        // Refresh timeline
+        dispatch(getTimeline());
     } catch (error) {
         console.log("error", error);
         dispatch({ type: FOLLOW_USER_FAILURE, payload: error.message });

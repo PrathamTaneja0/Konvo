@@ -13,13 +13,14 @@ import {
 const PostSection = ({ userId = null }) => {
   const { theme } = useColorMode();
   const post = useSelector(store => store.post);
+  const auth = useSelector(store => store.auth);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     // Load initial posts based on active tab
     loadPostsForTab(activeTab);
-  }, [activeTab, post.like, post.repost]);
+  }, [activeTab, post.like, post.repost, auth.user?.following?.length]);
 
   const loadPostsForTab = (tabIndex) => {
     switch (tabIndex) {
