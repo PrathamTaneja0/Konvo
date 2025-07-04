@@ -3,6 +3,7 @@ import { Avatar, Button } from "@mui/material";
 import * as Yup from "yup";
 import ImageIcon from "@mui/icons-material/Image";
 import PostCard from "./PostCard";
+import PostSection from "./PostSection";
 import useColorMode from "../../theme/useColorMode";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
@@ -30,7 +31,7 @@ const HomeSection = () => {
         </section>
 
         <section>
-          {post.posts.slice(0, 20).map((postItem) => <PostCard key={postItem.id} post={postItem} posts={post.posts} />)}
+          <PostSection />
         </section>
       </div>
     </div>

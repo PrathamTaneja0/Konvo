@@ -94,7 +94,7 @@ public class PostController {
                                                           @RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User user = userService.findUserProfileByJwt(jwt);
         User requestedUser = userService.findUserById(userId);
-        List<Post> posts = postService.getUserPost(requestedUser);
+        List<Post> posts = postService.getUserOwnPosts(requestedUser);
         List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
@@ -114,5 +114,52 @@ public class PostController {
         Post post = postService.findById(postId);
         PostDto postDto = PostDtoMapper.toPostDto(post, user);
         return new ResponseEntity<>(postDto, HttpStatus.OK);
+    }
+
+    // F-V1: Get user's own posts (20 most recent)
+    @GetMapping("/my-posts")
+    public ResponseEntity<List<PostDto>> getMyPosts(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Post> posts = postService.getUserOwnPosts(user);
+        List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    }
+
+    // Get user's own authored posts (excluding reposts) - for profile
+    @GetMapping("/my-authored-posts")
+    public ResponseEntity<List<PostDto>> getMyAuthoredPosts(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Post> posts = postService.getUserAuthoredPosts(user);
+        List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    }
+
+    // F-V2: Get specific followed user's posts (20 most recent)
+    @GetMapping("/user/{userId}/posts")
+    public ResponseEntity<List<PostDto>> getFollowedUserPosts(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User currentUser = userService.findUserProfileByJwt(jwt);
+        User targetUser = userService.findUserById(userId);
+        List<Post> posts = postService.getFollowedUserPosts(currentUser, targetUser);
+        List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, currentUser);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    }
+
+    // Get any user's posts (for profile viewing) - more permissive than F-V2
+    @GetMapping("/user/{userId}/profile-posts")
+    public ResponseEntity<List<PostDto>> getUserProfilePosts(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User currentUser = userService.findUserProfileByJwt(jwt);
+        User targetUser = userService.findUserById(userId);
+        List<Post> posts = postService.getUserProfilePosts(currentUser, targetUser);
+        List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, currentUser);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    }
+
+    // F-V3: Get aggregated timeline of all followed users' posts (20 most recent)
+    @GetMapping("/timeline")
+    public ResponseEntity<List<PostDto>> getTimeline(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Post> posts = postService.getTimeline(user);
+        List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 }

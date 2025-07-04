@@ -3,7 +3,7 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useNavigate, useParams } from "react-router-dom";
 import moon from "../../assets/moon.jpg";
 import userIcon from "../../assets/userIcon.png";
-import { Avatar, Button, Box, Tabs, Tab } from "@mui/material";
+import { Avatar, Button, Box } from "@mui/material";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -18,11 +18,13 @@ import {
   findUserById,
   followUserAction,
 } from "../../Store/Auth/Action";
+import { getUserProfilePosts, getMyAuthoredPosts, clearProfilePosts } from "../../Store/Post/Action";
 
 const Profile = () => {
   const { theme } = useColorMode();
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
+  const post = useSelector((store) => store.post);
   const { id } = useParams();
   const loggedInUser = auth.user || {};
   const otherUser = auth.findUser || {};
@@ -36,6 +38,38 @@ const Profile = () => {
       dispatch(findUserById(id));
     }
   }, [id, loggedInUser.id, dispatch]);
+
+  React.useEffect(() => {
+    if (user.id) {
+      loadPosts();
+    }
+  }, [user.id]); // Only depend on user.id, not on post state
+
+  // Separate useEffect to handle like/repost updates
+  React.useEffect(() => {
+    if (user.id && (post.like || post.repost)) {
+      // Only reload if we have a user and there was a like/repost action
+      loadPosts();
+    }
+  }, [post.like?.id, post.repost?.id]); // Only depend on the specific post IDs that changed
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearProfilePosts());
+    };
+  }, [dispatch]);
+
+  const loadPosts = () => {
+    if (!user.id) return;
+    
+    if (isOwnProfile) {
+      // For own profile, use getMyAuthoredPosts() to show only authored posts (not reposts)
+      dispatch(getMyAuthoredPosts());
+    } else {
+      // For other users, use profile posts (more permissive than F-V2)
+      dispatch(getUserProfilePosts(user.id));
+    }
+  };
 
   const handleOpenProfileModel = () => {
     setModalOpen(true);
@@ -59,6 +93,48 @@ const Profile = () => {
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const renderPosts = () => {
+    // Always use profilePosts for profile page
+    const postsToShow = post.profilePosts;
+    const isLoading = post.profilePostsLoading;
+    const error = post.profilePostsError;
+
+    // Debug log
+    console.log("[Profile renderPosts] postsToShow:", postsToShow);
+
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center py-8">
+          <p>Loading posts...</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="flex justify-center items-center py-8">
+          <p className="text-red-500">{error}</p>
+        </div>
+      );
+    }
+
+    if (!postsToShow || postsToShow.length === 0) {
+      return (
+        <div className="flex justify-center items-center py-8">
+          <p>No posts found.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {postsToShow.slice(0, 20).map((postItem) => (
+          <PostCard key={postItem.id} post={postItem} posts={postsToShow} isProfile={true} profileUserId={user.id} />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -108,10 +184,6 @@ const Profile = () => {
               paddingY: "0.5rem",
               bgcolor: theme.palette.mode === "dark" ? "#000" : "#000",
               color: theme.palette.mode === "dark" ? "#fff" : "#fff",
-              // fontWeight: 600,
-              // '&:hover': {
-              //   bgcolor: theme.palette.primary.dark,
-              // },
               "&:hover": {
                 bgcolor: theme.palette.primary.main,
                 color: theme.palette.primary.contrastText,
@@ -186,6 +258,17 @@ const Profile = () => {
           </div>
         </div>
       </section>
+
+      {/* Posts Section */}
+      <section className="mt-6">
+        <div className="border-b border-gray-200 pb-2 mb-4">
+          <h2 className="text-lg font-semibold">Posts</h2>
+        </div>
+        <div className="mt-4">
+          {renderPosts()}
+        </div>
+      </section>
+
       {isOwnProfile && (
         <ProfileModal
           open={modalOpen}

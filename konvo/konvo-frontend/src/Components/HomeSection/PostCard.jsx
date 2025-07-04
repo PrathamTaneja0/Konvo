@@ -14,7 +14,7 @@ import { repostPost, undoRepost, likePost, dislikePost, deletePost } from "../..
 import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 
-function PostCard({ post, isReply = false }) {
+function PostCard({ post, isReply = false, isProfile = false, profileUserId = null }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
@@ -48,18 +48,18 @@ function PostCard({ post, isReply = false }) {
   const handleLike = () => {
     if (!auth.jwt) return;
     if (post.liked) {
-      dispatch(dislikePost(post.id));
+      dispatch(dislikePost(post.id, isProfile, profileUserId));
     } else {
-      dispatch(likePost(post.id));
+      dispatch(likePost(post.id, isProfile, profileUserId));
     }
   };
 
   const handleRepost = () => {
     if (!auth.jwt) return;
     if (userHasReposted) {
-      dispatch(undoRepost(post.id));
+      dispatch(undoRepost(post.id, isProfile, profileUserId));
     } else {
-      dispatch(repostPost(post.id));
+      dispatch(repostPost(post.id, isProfile, profileUserId));
     }
   };
 
@@ -94,7 +94,10 @@ function PostCard({ post, isReply = false }) {
         />
         <div className="w-full">
           <div className="flex justify-between items-center">
-            <div className="flex cursor-pointer space-x-2 items-center">
+            <div 
+              className="flex cursor-pointer space-x-2 items-center"
+              onClick={() => navigate(`/profile/${post.user?.id}`)}
+            >
               <span className="font-semibold">{fullName}</span>
               <span className="opacity-70">@{username}</span>
               {post.user?.is_verified && (

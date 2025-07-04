@@ -47,12 +47,6 @@ public class PostServiceImplementation implements PostService {
     }
     
     @Override
-    public List<Post> getUserPost(User user) throws UserException {
-        return postRepository.findAllByRepostUserContainsOrUser_IdAndIsPostTrueOrderByCreatedAtDesc(user, user.getId());
-
-    }
-    
-    @Override
     public Post repost(Long postId, User user) throws UserException, PostException {
         Post originalPost = findById(postId);
         // Check if user already reposted this post
@@ -157,5 +151,77 @@ public class PostServiceImplementation implements PostService {
             postRepository.save(originalPost);
         }
         return originalPost;
+    }
+
+    // F-V1: Get user's own posts (20 most recent)
+    @Override
+    public List<Post> getUserOwnPosts(User user) throws UserException {
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+        List<Post> posts = postRepository.findUserOwnPostsOrderByCreatedAtDesc(user.getId());
+        // Debug logging
+        System.out.println("Returning posts for user: " + user.getId());
+        for (Post p : posts) {
+            System.out.println("Post id: " + p.getId() + ", author: " + p.getUser().getId() + ", isRepost: " + p.isRepost());
+        }
+        // Limit to 20 most recent posts
+        return posts.stream().limit(20).toList();
+    }
+
+    // Get user's own authored posts (excluding reposts) - for profile
+    @Override
+    public List<Post> getUserAuthoredPosts(User user) throws UserException {
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+        List<Post> posts = postRepository.findUserAuthoredPostsOrderByCreatedAtDesc(user.getId());
+        // Limit to 20 most recent posts
+        return posts.stream().limit(20).toList();
+    }
+
+    // F-V2: Get specific followed user's posts (20 most recent)
+    @Override
+    public List<Post> getFollowedUserPosts(User currentUser, User targetUser) throws UserException {
+        if (currentUser == null || targetUser == null) {
+            throw new UserException("User not found");
+        }
+        
+        // Check if current user is following the target user
+        boolean isFollowing = currentUser.getFollowings().stream()
+                .anyMatch(following -> following.getId().equals(targetUser.getId()));
+        
+        if (!isFollowing) {
+            throw new UserException("You are not following this user");
+        }
+        
+        List<Post> posts = postRepository.findUserPostsOrderByCreatedAtDesc(targetUser.getId());
+        // Limit to 20 most recent posts
+        return posts.stream().limit(20).toList();
+    }
+
+    // Get any user's posts (for profile viewing) - more permissive than F-V2
+    @Override
+    public List<Post> getUserProfilePosts(User currentUser, User targetUser) throws UserException {
+        if (currentUser == null || targetUser == null) {
+            throw new UserException("User not found");
+        }
+        
+        // For profile viewing, show only authored posts (not reposts)
+        List<Post> posts = postRepository.findUserAuthoredPostsOrderByCreatedAtDesc(targetUser.getId());
+        // Limit to 20 most recent posts
+        return posts.stream().limit(20).toList();
+    }
+
+    // F-V3: Get aggregated timeline of all followed users' posts (20 most recent)
+    @Override
+    public List<Post> getTimeline(User user) throws UserException {
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+        
+        List<Post> posts = postRepository.findPostsFromFollowedUsersOrderByCreatedAtDesc(user.getId());
+        // Limit to 20 most recent posts
+        return posts.stream().limit(20).toList();
     }
 }

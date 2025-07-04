@@ -20,7 +20,20 @@ import {
     POST_DELETE_SUCCESS,
     POST_DELETE_FAILURE,
     GET_ALL_POSTS_SUCCESS,
-    UPDATE_SINGLE_POST
+    UPDATE_SINGLE_POST,
+    GET_MY_POSTS_REQUEST,
+    GET_MY_POSTS_FAILURE,
+    GET_MY_POSTS_SUCCESS,
+    GET_FOLLOWED_USER_POSTS_REQUEST,
+    GET_FOLLOWED_USER_POSTS_FAILURE,
+    GET_FOLLOWED_USER_POSTS_SUCCESS,
+    GET_PROFILE_POSTS_REQUEST,
+    GET_PROFILE_POSTS_SUCCESS,
+    GET_PROFILE_POSTS_FAILURE,
+    GET_TIMELINE_REQUEST,
+    GET_TIMELINE_FAILURE,
+    GET_TIMELINE_SUCCESS,
+    CLEAR_PROFILE_POSTS
 } from "./ActionType";
 
 // Fetch all posts
@@ -104,63 +117,73 @@ export const updateSinglePost = (postId) => async (dispatch) => {
     }
 };
 
-export const repostPost = (postId) => async (dispatch) => {
+export const repostPost = (postId, isProfile, userId) => async (dispatch) => {
     dispatch({ type: REPOST_REQUEST });
     try {
         const { data } = await api.put(`/api/posts/${postId}/repost`);
-        console.log("[DEBUG] Repost API Response:", {
-            postId,
-            isReposted: data.isReposted,
-            totalRePosts: data.totalRePosts,
-            fullData: data
-        });
         dispatch({ type: REPOST_SUCCESS, payload: data });
         dispatch(updateSinglePost(postId));
         dispatch(getAllPosts());
+        if (isProfile) {
+            if (userId) {
+                dispatch(getUserProfilePosts(userId));
+            } else {
+                dispatch(getMyAuthoredPosts());
+            }
+        }
     } catch (error) {
-        console.log("Repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 };
 
-export const undoRepost = (postId) => async (dispatch) => {
+export const undoRepost = (postId, isProfile, userId) => async (dispatch) => {
     dispatch({ type: REPOST_REQUEST });
     try {
         const { data } = await api.delete(`/api/posts/${postId}/repost`);
-        console.log("[DEBUG] Undo Repost API Response:", {
-            postId,
-            isReposted: data.isReposted,
-            totalRePosts: data.totalRePosts,
-            fullData: data
-        });
         dispatch({ type: REPOST_SUCCESS, payload: data });
         dispatch(updateSinglePost(postId));
         dispatch(getAllPosts());
+        if (isProfile) {
+            if (userId) {
+                dispatch(getUserProfilePosts(userId));
+            } else {
+                dispatch(getMyAuthoredPosts());
+            }
+        }
     } catch (error) {
-        console.log("Undo repost error:", error);
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 };
 
-export const likePost = (postId) => async (dispatch) => {
+export const likePost = (postId, isProfile, userId) => async (dispatch) => {
     try {
         const { data } = await api.post(`/api/posts/${postId}/like`);
-        console.log("liked post: ", data);
         dispatch({ type: LIKE_POST_SUCCESS, payload: data });
+        if (isProfile) {
+            if (userId) {
+                dispatch(getUserProfilePosts(userId));
+            } else {
+                dispatch(getMyAuthoredPosts());
+            }
+        }
     } catch (error) {
-        console.log("catch error - ", error);
         dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
     }
 }
 
-export const dislikePost = (postId) => async (dispatch) => {
+export const dislikePost = (postId, isProfile, userId) => async (dispatch) => {
     try {
         await api.delete(`/api/posts/${postId}/like`);
-        // Refetch the post to get updated like count and isLiked status
         const { data } = await api.get(`/api/posts/${postId}`);
         dispatch({ type: LIKE_POST_SUCCESS, payload: data });
+        if (isProfile) {
+            if (userId) {
+                dispatch(getUserProfilePosts(userId));
+            } else {
+                dispatch(getMyAuthoredPosts());
+            }
+        }
     } catch (error) {
-        console.log("catch error - ", error);
         dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
     }
 }
@@ -192,4 +215,71 @@ export const deleteRePost = (postId) => async (dispatch) => {
         dispatch({ type: REPOST_FAILURE, payload: error.message });
     }
 }
+
+// F-V1: Get user's own posts (20 most recent)
+export const getMyPosts = () => async (dispatch) => {
+    dispatch({ type: GET_MY_POSTS_REQUEST });
+    try {
+        const { data } = await api.get(`/api/posts/my-posts`);
+        console.log("Get My Posts Data:", data);
+        dispatch({ type: GET_MY_POSTS_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("Error in Get My Posts:", error);
+        dispatch({ type: GET_MY_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    }
+}
+
+// Get user's own authored posts (excluding reposts) - for profile
+export const getMyAuthoredPosts = () => async (dispatch) => {
+    dispatch({ type: GET_PROFILE_POSTS_REQUEST });
+    try {
+        const { data } = await api.get(`/api/posts/my-authored-posts`);
+        dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("Error in Get My Authored Posts:", error);
+        dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    }
+}
+
+// F-V2: Get specific followed user's posts (20 most recent)
+export const getFollowedUserPosts = (userId) => async (dispatch) => {
+    dispatch({ type: GET_FOLLOWED_USER_POSTS_REQUEST });
+    try {
+        const { data } = await api.get(`/api/posts/user/${userId}/posts`);
+        console.log("Get Followed User Posts Data:", data);
+        dispatch({ type: GET_FOLLOWED_USER_POSTS_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("Error in Get Followed User Posts:", error);
+        dispatch({ type: GET_FOLLOWED_USER_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    }
+}
+
+// Get any user's posts (for profile viewing) - more permissive than F-V2
+export const getUserProfilePosts = (userId) => async (dispatch) => {
+    dispatch({ type: GET_PROFILE_POSTS_REQUEST });
+    try {
+        const { data } = await api.get(`/api/posts/user/${userId}/profile-posts`);
+        dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("Error in Get User Profile Posts:", error);
+        dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    }
+}
+
+// F-V3: Get aggregated timeline of all followed users' posts (20 most recent)
+export const getTimeline = () => async (dispatch) => {
+    dispatch({ type: GET_TIMELINE_REQUEST });
+    try {
+        const { data } = await api.get(`/api/posts/timeline`);
+        console.log("Get Timeline Data:", data);
+        dispatch({ type: GET_TIMELINE_SUCCESS, payload: data });
+    } catch (error) {
+        console.log("Error in Get Timeline:", error);
+        dispatch({ type: GET_TIMELINE_FAILURE, payload: error.response?.data?.message || error.message });
+    }
+}
+
+export const clearProfilePosts = () => (dispatch) => {
+    dispatch({ type: CLEAR_PROFILE_POSTS });
+};
 
