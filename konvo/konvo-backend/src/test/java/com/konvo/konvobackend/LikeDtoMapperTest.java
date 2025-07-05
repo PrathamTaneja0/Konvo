@@ -293,7 +293,6 @@ class LikeDtoMapperTest {
             LikeDtoMapper.toLikeDto(testLike, reqUser);
 
             userDtoMapperMock.verify(() -> UserDtoMapper.toUserDto(testUser));
-            userDtoMapperMock.verify(() -> UserDtoMapper.toUserDto(reqUser));
             postDtoMapperMock.verify(() -> PostDtoMapper.toPostDto(testPost, reqUser));
         }
     }

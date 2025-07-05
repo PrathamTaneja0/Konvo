@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import request.PostReplyRequest;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
@@ -134,7 +135,7 @@ class PostServiceTest {
         when(postRepository.findById(1L)).thenReturn(Optional.of(testPost));
         when(postRepository.save(any(Post.class))).thenReturn(testPost);
         
-        request.PostReplyRequest replyRequest = new request.PostReplyRequest();
+        PostReplyRequest replyRequest = new PostReplyRequest();
         replyRequest.setContent("Reply content");
         replyRequest.setPostId(1L);
         
@@ -318,5 +319,72 @@ class PostServiceTest {
         List<Post> result = postService.findByLikesContainsUser(testUser);
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testRepost_AlreadyReposted_UndoRepost() throws Exception {
+        Post originalPost = new Post();
+        originalPost.setId(2L);
+        originalPost.setUser(testUser);
+        originalPost.setContent("Original post");
+        originalPost.setRepostUser(new ArrayList<>());
+        Post existingRepost = new Post();
+        existingRepost.setId(3L);
+        existingRepost.setUser(testUser);
+        when(postRepository.findById(2L)).thenReturn(Optional.of(originalPost));
+        when(postRepository.findByUserIdAndRepostForId(testUser.getId(), 2L)).thenReturn(existingRepost);
+        doNothing().when(postRepository).deleteById(existingRepost.getId());
+        when(postRepository.save(any(Post.class))).thenReturn(originalPost);
+        Post result = postService.repost(2L, testUser);
+        assertNotNull(result);
+        verify(postRepository).deleteById(existingRepost.getId());
+    }
+
+    @Test
+    void testDeletePostById_UserNotOwner() {
+        Post notOwnedPost = new Post();
+        notOwnedPost.setId(1L);
+        User otherUser = new User();
+        otherUser.setId(2L);
+        notOwnedPost.setUser(otherUser);
+        when(postRepository.findById(1L)).thenReturn(Optional.of(notOwnedPost));
+        assertThrows(UserException.class, () -> postService.deletePostById(1L, testUser.getId()));
+    }
+
+    @Test
+    void testCreatedReply_AllNullFields() throws PostException {
+        PostReplyRequest replyRequest = new PostReplyRequest();
+        replyRequest.setPostId(1L);
+        when(postRepository.findById(1L)).thenReturn(Optional.of(testPost));
+        when(postRepository.save(any(Post.class))).thenReturn(testPost);
+        Post result = postService.createdReply(replyRequest, testUser);
+        assertNotNull(result);
+    }
+
+    @Test
+    void testRemoveFromRepost_WithNestedReposts() throws Exception {
+        Post originalPost = new Post();
+        originalPost.setId(2L);
+        Post existingRepost = new Post();
+        existingRepost.setId(3L);
+        List<Post> nestedReposts = new ArrayList<>();
+        Post nested = new Post();
+        nested.setId(4L);
+        nestedReposts.add(nested);
+        when(postRepository.findById(2L)).thenReturn(Optional.of(originalPost));
+        when(postRepository.findByUserIdAndRepostForId(1L, 2L)).thenReturn(existingRepost);
+        when(postRepository.findAllByRepostForId(3L)).thenReturn(nestedReposts);
+        doNothing().when(postRepository).deleteById(4L);
+        doNothing().when(postRepository).deleteById(3L);
+        when(postRepository.save(any(Post.class))).thenReturn(originalPost);
+        Post result = postService.removeFromRepost(2L, 1L);
+        assertNotNull(result);
+        verify(postRepository).deleteById(4L);
+        verify(postRepository).deleteById(3L);
+    }
+
+    @Test
+    void testGetUserOwnPosts_NullUser() {
+        assertThrows(UserException.class, () -> postService.getUserOwnPosts(null));
     }
 } 

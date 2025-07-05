@@ -19,6 +19,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import response.ErrorResponse;
 import service.LikeService;
 import service.PostService;
 import service.UserService;
@@ -98,9 +99,10 @@ class LikeControllerTest {
         when(userService.findUserProfileByJwt(jwt)).thenReturn(user);
         doThrow(new PostException("Post not found")).when(likeService).likePost(1L, user);
 
-        ResponseEntity<?> response = likeController.likePost(1L, jwt);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Post not found", response.getBody());
+        PostException thrown = assertThrows(PostException.class, () -> {
+            likeController.likePost(1L, jwt);
+        });
+        assertEquals("Post not found", thrown.getMessage());
     }
 
     @Test

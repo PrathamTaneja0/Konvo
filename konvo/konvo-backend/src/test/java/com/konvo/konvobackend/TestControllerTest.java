@@ -21,11 +21,7 @@ class TestControllerTest {
     void setUp() {
     }
 
-    @Test
-    void testHello_Success() {
-        String response = testController.hello();
-        assertEquals("Hello from Konvo Backend!", response);
-    }
+    
 
     @Test
     void testGetNews_Success() {

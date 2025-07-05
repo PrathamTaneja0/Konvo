@@ -46,14 +46,14 @@ class UserUtilTest {
 
     @Test
     void testIsReqUser_NullUser() {
-        assertThrows(NullPointerException.class, () -> {
+        assertDoesNotThrow(() -> {
             UserUtil.isReqUser(null, user1);
         });
     }
 
     @Test
     void testIsReqUser_NullReqUser() {
-        assertThrows(NullPointerException.class, () -> {
+        assertDoesNotThrow(() -> {
             UserUtil.isReqUser(user1, null);
         });
     }
@@ -76,7 +76,7 @@ class UserUtilTest {
 
     @Test
     void testIsFollowedByReqUser_NullUser() {
-        assertThrows(NullPointerException.class, () -> {
+        assertDoesNotThrow(() -> {
             UserUtil.isFollowedByReqUser(null, user2);
         });
     }

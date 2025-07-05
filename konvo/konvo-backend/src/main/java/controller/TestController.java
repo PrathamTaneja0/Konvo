@@ -15,11 +15,6 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/test")
 public class TestController {
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello from Konvo Backend!";
-    }
-
     private final NewsApiClient newsApiClient = new NewsApiClient("52e9f153d4cd42eb9c9e70b1c3fb0774");
 
     @GetMapping("/news")

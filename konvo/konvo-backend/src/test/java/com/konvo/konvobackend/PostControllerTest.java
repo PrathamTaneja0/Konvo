@@ -220,4 +220,29 @@ class PostControllerTest {
             assertFalse(response.getBody().isEmpty());
         }
     }
+
+    @Test
+    void testCreatePost_UserNotFound() throws PostException, UserException {
+        when(userService.findUserProfileByJwt(jwt)).thenThrow(new UserException("User not found"));
+        assertThrows(UserException.class, () -> postController.createPost(post, jwt));
+    }
+
+    @Test
+    void testDeletePost_PostNotFound() throws UserException, PostException {
+        when(userService.findUserProfileByJwt(jwt)).thenReturn(user);
+        doThrow(new PostException("Post not found")).when(postService).deletePostById(1L, user.getId());
+        assertThrows(PostException.class, () -> postController.deletePost(1L, jwt));
+    }
+
+    @Test
+    void testFindPostById_PostNotFound() throws UserException, PostException {
+        when(userService.findUserProfileByJwt(jwt)).thenReturn(user);
+        when(postService.findById(1L)).thenThrow(new PostException("Post not found"));
+        assertThrows(PostException.class, () -> postController.findPostById(1L, jwt));
+    }
+
+    @Test
+    void testCreatePost_NullInput() {
+        assertThrows(NullPointerException.class, () -> postController.createPost(null, jwt));
+    }
 } 
