@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { repostPost, undoRepost, likePost, dislikePost, deletePost } from "../../Store/Post/Action";
 import { formatDistanceToNow } from "date-fns";
 
-const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = null }) => {
+const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = null, refreshType = "all" }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [replyModalOpen, setReplyModalOpen] = useState(false);
@@ -43,18 +43,18 @@ const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = nu
   const handleRepost = () => {
     if (!auth.jwt) return;
     if (userHasReposted) {
-      dispatch(undoRepost(post.id, isProfile, profileUserId));
+      dispatch(undoRepost(post.id, isProfile, profileUserId, refreshType));
     } else {
-      dispatch(repostPost(post.id, isProfile, profileUserId));
+      dispatch(repostPost(post.id, isProfile, profileUserId, refreshType));
     }
   };
 
   const handleDeletePost = () => {
     if (isUsersPost) {
       if (post.isRepost && post.repostFor && post.repostFor.id) {
-        dispatch(deletePost(post.id, post.repostFor.id, isProfile, profileUserId));
+        dispatch(deletePost(post.id, post.repostFor.id, isProfile, profileUserId, refreshType));
       } else {
-        dispatch(deletePost(post.id, null, isProfile, profileUserId));
+        dispatch(deletePost(post.id, null, isProfile, profileUserId, refreshType));
       }
     }
     handleClose();
@@ -173,7 +173,7 @@ const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = nu
         </div>
       </section>
       {replyModalOpen && (
-        <ReplyModal open={replyModalOpen} onClose={handleCloseReplyModel} post={post} />
+        <ReplyModal open={replyModalOpen} onClose={handleCloseReplyModel} post={post} refreshType={refreshType} />
       )}
     </article>
   );

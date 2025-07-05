@@ -4,6 +4,7 @@ import Authentication from "./Components/Authentication/Authentication";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile, setJwt } from "./Store/Auth/Action.js";
+import NotFound from "./Components/NotFound";
 
 function App() {
   // Get JWT from localStorage and Redux auth state
@@ -48,6 +49,7 @@ function App() {
         <Route path="/home/*" element={<HomePage />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/*" element={auth.user ? <HomePage /> : <Authentication />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

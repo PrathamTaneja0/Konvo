@@ -27,7 +27,7 @@ const style = {
   borderRadius: 4,
 };
 
-const ReplyModal = ({ open, onClose, post }) => {
+const ReplyModal = ({ open, onClose, post, refreshType = "all" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
@@ -37,8 +37,7 @@ const ReplyModal = ({ open, onClose, post }) => {
       content: values.content,
       postId: post?.id,
     };
-    dispatch(createPostReply(replyData)).then(() => {
-      dispatch(getAllPosts());
+    dispatch(createPostReply(replyData, refreshType)).then(() => {
       dispatch(findPostsById(post.id)); // Refresh post details for immediate comment update
       if (post.user?.id) {
         dispatch(getUserProfilePosts(post.user.id)); // Refresh profile posts after commenting

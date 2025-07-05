@@ -74,7 +74,9 @@ const PostSection = ({ userId = null }) => {
     return (
       <div>
         {post.posts.slice(0, 20).map((postItem) => (
-          <PostCard key={postItem.id} post={postItem} posts={post.posts} />
+          <PostCard key={postItem.id} post={postItem} posts={post.posts} refreshType={
+            activeTab === 2 ? "timeline" : activeTab === 1 ? "my" : "all"
+          } />
         ))}
       </div>
     );

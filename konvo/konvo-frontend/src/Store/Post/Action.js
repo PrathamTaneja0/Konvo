@@ -81,11 +81,26 @@ export const createPost = (postData) => async (dispatch) => {
   }
 };
 
-export const createPostReply = (postData) => async (dispatch) => {
+export const createPostReply = (postData, refreshType = "all") => async (dispatch) => {
   try {
     const { data } = await api.post('/api/posts/reply', postData);
     dispatch({ type: REPLY_POST_SUCCESS, payload: data });
-    dispatch(getAllPosts());
+    // Only refresh the relevant posts based on refreshType
+    switch (refreshType) {
+      case "timeline":
+        dispatch(getTimeline());
+        break;
+      case "my":
+        dispatch(getMyPosts());
+        break;
+      case "followed":
+        if (postData.userId) dispatch(getFollowedUserPosts(postData.userId));
+        break;
+      case "all":
+      default:
+        dispatch(getAllPosts());
+        break;
+    }
     if (postData.userId) {
       dispatch(getUserProfilePosts(postData.userId));
     }
@@ -103,13 +118,28 @@ export const updateSinglePost = (postId) => async (dispatch) => {
   }
 };
 
-export const repostPost = (postId, isProfile, userId) => async (dispatch) => {
+export const repostPost = (postId, isProfile, userId, refreshType = "all") => async (dispatch) => {
   dispatch({ type: REPOST_REQUEST });
   try {
     const { data } = await api.put(`/api/posts/${postId}/repost`);
     dispatch({ type: REPOST_SUCCESS, payload: data });
     dispatch(updateSinglePost(postId));
-    dispatch(getAllPosts());
+    // Only refresh the relevant posts based on refreshType
+    switch (refreshType) {
+      case "timeline":
+        dispatch(getTimeline());
+        break;
+      case "my":
+        dispatch(getMyPosts());
+        break;
+      case "followed":
+        if (userId) dispatch(getFollowedUserPosts(userId));
+        break;
+      case "all":
+      default:
+        dispatch(getAllPosts());
+        break;
+    }
     if (isProfile) {
       if (userId) {
         dispatch(getUserProfilePosts(userId));
@@ -122,13 +152,28 @@ export const repostPost = (postId, isProfile, userId) => async (dispatch) => {
   }
 };
 
-export const undoRepost = (postId, isProfile, userId) => async (dispatch) => {
+export const undoRepost = (postId, isProfile, userId, refreshType = "all") => async (dispatch) => {
   dispatch({ type: REPOST_REQUEST });
   try {
     const { data } = await api.delete(`/api/posts/${postId}/repost`);
     dispatch({ type: REPOST_SUCCESS, payload: data });
     dispatch(updateSinglePost(postId));
-    dispatch(getAllPosts());
+    // Only refresh the relevant posts based on refreshType
+    switch (refreshType) {
+      case "timeline":
+        dispatch(getTimeline());
+        break;
+      case "my":
+        dispatch(getMyPosts());
+        break;
+      case "followed":
+        if (userId) dispatch(getFollowedUserPosts(userId));
+        break;
+      case "all":
+      default:
+        dispatch(getAllPosts());
+        break;
+    }
     if (isProfile) {
       if (userId) {
         dispatch(getUserProfilePosts(userId));
@@ -182,14 +227,29 @@ export const dislikePost = (postId, isProfile, userId) => async (dispatch) => {
   }
 };
 
-export const deletePost = (postId, originalPostIdIfRepost, isProfile, userId) => async (dispatch) => {
+export const deletePost = (postId, originalPostIdIfRepost, isProfile, userId, refreshType = "all") => async (dispatch) => {
   try {
     await api.delete(`/api/posts/${postId}`);
     dispatch({ type: POST_DELETE_SUCCESS, payload: postId });
     if (originalPostIdIfRepost) {
       dispatch(updateSinglePost(originalPostIdIfRepost));
     }
-    dispatch(getAllPosts());
+    // Only refresh the relevant posts based on refreshType
+    switch (refreshType) {
+      case "timeline":
+        dispatch(getTimeline());
+        break;
+      case "my":
+        dispatch(getMyPosts());
+        break;
+      case "followed":
+        if (userId) dispatch(getFollowedUserPosts(userId));
+        break;
+      case "all":
+      default:
+        dispatch(getAllPosts());
+        break;
+    }
     if (isProfile) {
       if (userId) {
         dispatch(getUserProfilePosts(userId));
