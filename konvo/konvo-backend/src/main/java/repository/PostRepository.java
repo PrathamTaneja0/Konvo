@@ -1,6 +1,5 @@
 package repository;
 
-import model.Like;
 import model.Post;
 import model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

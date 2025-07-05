@@ -2,14 +2,12 @@ package dto_mapper;
 
 import dto.PostDto;
 import dto.UserDto;
-import model.Like;
 import model.Post;
 import model.User;
 import util.PostUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PostDtoMapper {
     public static PostDto toPostDto(Post post, User reqUser) {

@@ -4,7 +4,7 @@ import Authentication from "./Components/Authentication/Authentication";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile, setJwt } from "./Store/Auth/Action.js";
-import NotFound from "./Components/NotFound";
+import NotFound from "./Components/NotFoundPage/NotFound.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 
 function App() {

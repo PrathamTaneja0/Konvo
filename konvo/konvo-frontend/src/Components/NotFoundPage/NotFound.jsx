@@ -1,5 +1,5 @@
 import React from "react";
-import notFoundImg from "../assets/notFound.webp";
+import notFoundImg from "../../assets/notFound.webp";
 
 const NotFound = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
