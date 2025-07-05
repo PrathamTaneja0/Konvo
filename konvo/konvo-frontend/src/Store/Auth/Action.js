@@ -30,10 +30,11 @@ export const loginUser = (loginData) => async (dispatch) => {
       dispatch({ type: LOGIN_USER_SUCCESS, payload: data });
     }
   } catch (error) {
-    let errorMsg = error.message;
+    let errorMsg = error.userMessage || error.message;
     if (error.response && error.response.status === 403) {
       errorMsg = 'Invalid username or password';
     }
+    console.error('Login failed:', error);
     dispatch({ type: LOGIN_USER_FAILURE, payload: errorMsg });
   }
 };
@@ -56,7 +57,9 @@ export const registerUser = (registerData) => async (dispatch) => {
       dispatch({ type: REGISTER_USER_SUCCESS, payload: data });
     }
   } catch (error) {
-    dispatch({ type: REGISTER_USER_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Registration failed:', error);
+    dispatch({ type: REGISTER_USER_FAILURE, payload: errorMsg });
   }
 };
 
@@ -70,7 +73,9 @@ export const getUserProfile = (jwt) => async (dispatch) => {
     );
     dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_USER_PROFILE_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Get user profile failed:', error);
+    dispatch({ type: GET_USER_PROFILE_FAILURE, payload: errorMsg });
   }
 };
 
@@ -79,7 +84,9 @@ export const findUserById = (userId) => async (dispatch) => {
     const { data } = await api.get(`/api/users/${userId}`);
     dispatch({ type: FIND_USER_BY_ID_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: FIND_USER_BY_ID_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Find user by ID failed:', error);
+    dispatch({ type: FIND_USER_BY_ID_FAILURE, payload: errorMsg });
   }
 };
 
@@ -89,7 +96,9 @@ export const updateUserProfile = (reqData) => async (dispatch) => {
     const { data } = await api.put(`/api/users/update`, reqData);
     dispatch({ type: UPDATE_USER_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: UPDATE_USER_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Update user profile failed:', error);
+    dispatch({ type: UPDATE_USER_FAILURE, payload: errorMsg });
   }
 };
 
@@ -103,7 +112,9 @@ export const followUserAction = (userId) => async (dispatch, getState) => {
     }
     dispatch(getTimeline());
   } catch (error) {
-    dispatch({ type: FOLLOW_USER_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Follow user failed:', error);
+    dispatch({ type: FOLLOW_USER_FAILURE, payload: errorMsg });
   }
 };
 

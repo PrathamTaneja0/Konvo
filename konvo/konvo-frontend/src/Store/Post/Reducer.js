@@ -92,8 +92,6 @@ const postReducer = (state = initialState, action) => {
         post: state.post && state.post.id === action.payload.id ? { ...state.post, ...action.payload } : state.post,
       };
 
-    case REPOST_REQUEST:
-      return { ...state, loading: true, error: null };
     case REPOST_SUCCESS: {
       const updatedPosts = state.posts.map((post) => {
         if (post.id === action.payload.id) {

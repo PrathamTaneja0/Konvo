@@ -41,7 +41,9 @@ export const getAllPosts = () => async (dispatch) => {
     const { data } = await api.get('/api/posts');
     dispatch({ type: GET_ALL_POSTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_ALL_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get all posts failed:', error);
+    dispatch({ type: GET_ALL_POSTS_FAILURE, payload: errorMsg });
   }
 };
 
@@ -77,7 +79,9 @@ export const createPost = (postData) => async (dispatch) => {
     const { data } = await api.post('/api/posts/create', postData);
     dispatch({ type: POST_CREATE_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: POST_CREATE_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Create post failed:', error);
+    dispatch({ type: POST_CREATE_FAILURE, payload: errorMsg });
   }
 };
 
@@ -148,7 +152,9 @@ export const repostPost = (postId, isProfile, userId, refreshType = "all") => as
       }
     }
   } catch (error) {
-    dispatch({ type: REPOST_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Repost failed:', error);
+    dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
 
@@ -182,7 +188,9 @@ export const undoRepost = (postId, isProfile, userId, refreshType = "all") => as
       }
     }
   } catch (error) {
-    dispatch({ type: REPOST_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Undo repost failed:', error);
+    dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
 
@@ -206,7 +214,9 @@ export const likePost = (postId, isProfile, userId) => async (dispatch, getState
       }
     }
   } catch (error) {
-    dispatch({ type: LIKE_POST_FAILURE, payload: error.response?.data || error.message });
+    const errorMsg = error.userMessage || error.response?.data || error.message;
+    console.error('Like post failed:', error);
+    dispatch({ type: LIKE_POST_FAILURE, payload: errorMsg });
   }
 };
 
@@ -223,7 +233,9 @@ export const dislikePost = (postId, isProfile, userId) => async (dispatch) => {
       }
     }
   } catch (error) {
-    dispatch({ type: LIKE_POST_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Dislike post failed:', error);
+    dispatch({ type: LIKE_POST_FAILURE, payload: errorMsg });
   }
 };
 
@@ -258,7 +270,9 @@ export const deletePost = (postId, originalPostIdIfRepost, isProfile, userId, re
       }
     }
   } catch (error) {
-    dispatch({ type: POST_DELETE_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Delete post failed:', error);
+    dispatch({ type: POST_DELETE_FAILURE, payload: errorMsg });
   }
 };
 
@@ -270,7 +284,9 @@ export const deleteRePost = (postId) => async (dispatch) => {
     dispatch(updateSinglePost(postId));
     dispatch(getAllPosts());
   } catch (error) {
-    dispatch({ type: REPOST_FAILURE, payload: error.message });
+    const errorMsg = error.userMessage || error.message;
+    console.error('Delete repost failed:', error);
+    dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
 
@@ -280,7 +296,9 @@ export const getMyPosts = () => async (dispatch) => {
     const { data } = await api.get('/api/posts/my-posts');
     dispatch({ type: GET_MY_POSTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_MY_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get my posts failed:', error);
+    dispatch({ type: GET_MY_POSTS_FAILURE, payload: errorMsg });
   }
 };
 
@@ -290,7 +308,9 @@ export const getMyAuthoredPosts = () => async (dispatch) => {
     const { data } = await api.get('/api/posts/my-authored-posts');
     dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get my authored posts failed:', error);
+    dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: errorMsg });
   }
 };
 
@@ -300,7 +320,9 @@ export const getFollowedUserPosts = (userId) => async (dispatch) => {
     const { data } = await api.get(`/api/posts/followed/${userId}`);
     dispatch({ type: GET_FOLLOWED_USER_POSTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_FOLLOWED_USER_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get followed user posts failed:', error);
+    dispatch({ type: GET_FOLLOWED_USER_POSTS_FAILURE, payload: errorMsg });
   }
 };
 
@@ -310,7 +332,9 @@ export const getUserProfilePosts = (userId) => async (dispatch) => {
     const { data } = await api.get(`/api/posts/user/${userId}/profile`);
     dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get user profile posts failed:', error);
+    dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: errorMsg });
   }
 };
 
@@ -320,7 +344,9 @@ export const getTimeline = () => async (dispatch) => {
     const { data } = await api.get('/api/posts/timeline');
     dispatch({ type: GET_TIMELINE_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: GET_TIMELINE_FAILURE, payload: error.response?.data?.message || error.message });
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    console.error('Get timeline failed:', error);
+    dispatch({ type: GET_TIMELINE_FAILURE, payload: errorMsg });
   }
 };
 

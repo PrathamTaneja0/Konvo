@@ -30,6 +30,40 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    return Promise.reject(error);
+    const errorMessage = error.response?.data?.message || error.message;
+    const statusCode = error.response?.status;
+    
+    // Log errors for debugging
+    console.error(`API Error ${statusCode}:`, errorMessage);
+    
+    // Handle specific error types
+    if (statusCode === 401) {
+      // Handle unauthorized - redirect to login
+      localStorage.removeItem('jwt');
+      window.location.href = '/auth';
+    }
+    
+    return Promise.reject({
+      ...error,
+      userMessage: getErrorMessage(statusCode, errorMessage)
+    });
   }
 );
+
+// Helper function to get user-friendly error messages
+const getErrorMessage = (statusCode, serverMessage) => {
+  switch (statusCode) {
+    case 400:
+      return serverMessage || 'Invalid request. Please check your input.';
+    case 401:
+      return 'Please log in to continue.';
+    case 403:
+      return 'You do not have permission to perform this action.';
+    case 404:
+      return 'The requested resource was not found.';
+    case 500:
+      return 'Server error. Please try again later.';
+    default:
+      return serverMessage || 'An unexpected error occurred.';
+  }
+};

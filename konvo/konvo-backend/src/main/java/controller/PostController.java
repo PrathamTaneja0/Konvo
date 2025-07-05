@@ -85,7 +85,6 @@ public class PostController {
         User user = userService.findUserProfileByJwt(jwt);
         List<Post> posts = postService.findAllPosts();
         List<PostDto> postDtos = PostDtoMapper.toPostDtos(posts, user);
-        System.out.println("why error");
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 

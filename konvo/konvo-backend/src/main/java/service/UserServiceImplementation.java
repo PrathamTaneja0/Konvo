@@ -3,6 +3,8 @@ package service;
 import config.JwtProvider;
 import exception.UserException;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.Optional;
 @Service
 public class UserServiceImplementation implements UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImplementation.class);
+
     @Autowired
     private UserRepository userRepository;
     
@@ -22,21 +26,27 @@ public class UserServiceImplementation implements UserService {
     
     @Override
     public User findUserById(Long userId) throws UserException {
+        logger.debug("Finding user by ID: {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException("User not found with id: " + userId));
+                .orElseThrow(() -> {
+                    logger.warn("User not found with ID: {}", userId);
+                    return new UserException("User not found with id: " + userId);
+                });
         return user;
     }
     
     @Override
     public User findUserProfileByJwt(String jwt) throws UserException {
+        logger.debug("Finding user profile by JWT");
         String email = jwtProvider.getEmailFromToken(jwt);
         User user = userRepository.findByEmail(email);
 
-        
         if (user == null) {
+            logger.warn("User not found with email: {}", email);
             throw new UserException("User not found with email: " + email);
         }
         
+        logger.debug("User profile found for email: {}", email);
         return user;
     }
     

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile, setJwt } from "./Store/Auth/Action.js";
 import NotFound from "./Components/NotFound";
+import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 
 function App() {
   // Get JWT from localStorage and Redux auth state
@@ -48,18 +49,20 @@ function App() {
 
   return (
     // App routes: show Authentication or HomePage based on auth state
-    <div>
-      <Routes>
-        <Route path="/signin" element={<Authentication />} />
-        <Route path="/signup" element={<Authentication />} />
-        <Route path="/home/*" element={<HomePage />} />
-        <Route path="/auth" element={<Authentication />} />
-        <Route
-          path="/*"
-          element={auth.user ? <HomePage /> : <NotFound />}
-        />
-      </Routes>
-    </div>
+    <ErrorBoundary>
+      <div>
+        <Routes>
+          <Route path="/signin" element={<Authentication />} />
+          <Route path="/signup" element={<Authentication />} />
+          <Route path="/home/*" element={<HomePage />} />
+          <Route path="/auth" element={<Authentication />} />
+          <Route
+            path="/*"
+            element={auth.user ? <HomePage /> : <NotFound />}
+          />
+        </Routes>
+      </div>
+    </ErrorBoundary>
   );
 }
 

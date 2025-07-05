@@ -1,36 +1,34 @@
-HELP.md
+# Maven build output
 target/
+build/
+
+# Maven wrapper
 .mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+# IDE/project files
+.idea/
 *.iws
 *.iml
 *.ipr
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-
+# Logs
 *.log
+
+# Local env files
+.env
+*.local

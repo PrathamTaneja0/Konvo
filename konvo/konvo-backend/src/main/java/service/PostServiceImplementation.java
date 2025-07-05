@@ -4,6 +4,8 @@ import exception.PostException;
 import exception.UserException;
 import model.Post;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.PostRepository;
@@ -15,23 +17,26 @@ import java.util.List;
 @Service
 public class PostServiceImplementation implements PostService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PostServiceImplementation.class);
+
     @Autowired
     private PostRepository postRepository;
 
     @Override
     public Post createPost(Post req, User user) throws UserException, PostException {
+        logger.info("Creating post for user: {}", user.getId());
         Post post = new Post();
-//        System.out.println(req.getContent());
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post.setPost(true);
         post.setImage(req.getImage());
         post.setReply(false);
         post.setVideo(req.getVideo());
-
         post.setContent(req.getContent());
 
-        return postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+        logger.info("Post created successfully with ID: {}", savedPost.getId());
+        return savedPost;
     }
 
     @Override
@@ -41,8 +46,12 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public Post findById(Long id) throws PostException {
+        logger.debug("Finding post by ID: {}", id);
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostException("Post not found with id: " + id));
+                .orElseThrow(() -> {
+                    logger.warn("Post not found with ID: {}", id);
+                    return new PostException("Post not found with id: " + id);
+                });
         return post;
     }
     
@@ -107,8 +116,10 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public void deletePostById(Long postId, Long userId) throws PostException, UserException {
+        logger.info("Attempting to delete post: {} by user: {}", postId, userId);
         Post post = findById(postId);
         if(!userId.equals(post.getUser().getId())){
+            logger.warn("User {} attempted to delete post {} owned by user {}", userId, postId, post.getUser().getId());
             throw new UserException("You are not allowed to delete this post");
         }
         // If this is a repost, update the original post's repostUser list and count
@@ -127,6 +138,7 @@ public class PostServiceImplementation implements PostService {
             postRepository.deleteById(reply.getId());
         }
         postRepository.deleteById(post.getId());
+        logger.info("Post {} deleted successfully", postId);
     }
     
     @Override
@@ -157,14 +169,12 @@ public class PostServiceImplementation implements PostService {
     @Override
     public List<Post> getUserOwnPosts(User user) throws UserException {
         if (user == null) {
+            logger.error("Attempted to get posts for null user");
             throw new UserException("User not found");
         }
+        logger.debug("Fetching posts for user: {}", user.getId());
         List<Post> posts = postRepository.findUserOwnPostsOrderByCreatedAtDesc(user.getId());
-        // Debug logging
-        System.out.println("Returning posts for user: " + user.getId());
-        for (Post p : posts) {
-            System.out.println("Post id: " + p.getId() + ", author: " + p.getUser().getId() + ", isRepost: " + p.isRepost());
-        }
+        logger.debug("Found {} posts for user: {}", posts.size(), user.getId());
         // Limit to 20 most recent posts
         return posts.stream().limit(20).toList();
     }

@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import { Typography, Avatar, Box } from "@mui/material";
 import PostCard from "./PostCard";
-import useColorMode from "../../theme/useColorMode";
 import { useSelector, useDispatch } from "react-redux";
 import { getFollowedUserPosts } from "../../Store/Post/Action";
 
 const UserPostsSection = ({ userId, userName }) => {
-  const { theme } = useColorMode();
   const post = useSelector((store) => store.post);
   const dispatch = useDispatch();
 

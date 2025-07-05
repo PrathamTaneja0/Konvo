@@ -27,6 +27,7 @@ const PostForm = ({ onPostSuccess }) => {
       if (onPostSuccess) onPostSuccess();
     } catch (err) {
       setErrorMsg(
+        err?.userMessage ||
         err?.response?.data?.message ||
         err?.message ||
         "Failed to create post. Please try again."

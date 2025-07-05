@@ -11,7 +11,7 @@ import * as Yup from "yup";
 import userIcon from "../../assets/userIcon.png";
 import { formatDistanceToNow } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { createPostReply, getAllPosts, findPostsById, getUserProfilePosts } from "../../Store/Post/Action";
+import { createPostReply, findPostsById, getUserProfilePosts } from "../../Store/Post/Action";
 
 const style = {
   position: "absolute",

@@ -41,19 +41,15 @@ public class LikeController {
     private PostService postService;
 
     @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<?> likePost(
+    public ResponseEntity<PostDto> likePost(
             @PathVariable Long postId,
             @RequestHeader("Authorization") String jwt) throws UserException, PostException {
 
         User user = userService.findUserProfileByJwt(jwt);
-        try {
-            likeService.likePost(postId, user);
-            Post post = postService.findById(postId);
-            PostDto postDto = PostDtoMapper.toPostDto(post, user);
-            return new ResponseEntity<>(postDto, HttpStatus.OK);
-        } catch (PostException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        likeService.likePost(postId, user);
+        Post post = postService.findById(postId);
+        PostDto postDto = PostDtoMapper.toPostDto(post, user);
+        return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
     @GetMapping("/posts/{postId}/likes")
