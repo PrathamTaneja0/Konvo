@@ -26,17 +26,23 @@ function App() {
   // Redirect based on authentication state and current route
   useEffect(() => {
     const currentPath = window.location.pathname;
-    const isAuthRoute = currentPath === "/signin" || currentPath === "/signup" || currentPath === "/auth";
+    const isAuthRoute =
+      currentPath === "/signin" ||
+      currentPath === "/signup" ||
+      currentPath === "/auth";
+    // Allow NotFound for random URLs (not /signin, /signup, /auth, or /home)
+    const isNotFound = !["/signin", "/signup", "/auth", "/home"].some((route) =>
+      currentPath.startsWith(route)
+    );
     if (auth.user) {
-      // If authenticated and on an auth route, redirect to home
       if (isAuthRoute) {
         navigate("/home");
       }
     } else {
-      // If not authenticated and not on an auth route, redirect to auth
-      if (!isAuthRoute) {
+      if (!isAuthRoute && !isNotFound) {
         navigate("/auth");
       }
+      // If isNotFound, do nothing (let NotFound render)
     }
   }, [auth.user, navigate]);
 
@@ -48,8 +54,10 @@ function App() {
         <Route path="/signup" element={<Authentication />} />
         <Route path="/home/*" element={<HomePage />} />
         <Route path="/auth" element={<Authentication />} />
-        <Route path="/*" element={auth.user ? <HomePage /> : <Authentication />} />
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="/*"
+          element={auth.user ? <HomePage /> : <NotFound />}
+        />
       </Routes>
     </div>
   );
