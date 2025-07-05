@@ -42,7 +42,6 @@ export const getAllPosts = () => async (dispatch) => {
     dispatch({ type: GET_ALL_POSTS_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get all posts failed:', error);
     dispatch({ type: GET_ALL_POSTS_FAILURE, payload: errorMsg });
   }
 };
@@ -80,7 +79,6 @@ export const createPost = (postData) => async (dispatch) => {
     dispatch({ type: POST_CREATE_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Create post failed:', error);
     dispatch({ type: POST_CREATE_FAILURE, payload: errorMsg });
   }
 };
@@ -118,7 +116,7 @@ export const updateSinglePost = (postId) => async (dispatch) => {
     const { data } = await api.get(`/api/posts/${postId}`);
     dispatch({ type: UPDATE_SINGLE_POST, payload: data });
   } catch (error) {
-    console.error(error);
+    // Handle error silently
   }
 };
 
@@ -153,7 +151,6 @@ export const repostPost = (postId, isProfile, userId, refreshType = "all") => as
     }
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Repost failed:', error);
     dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
@@ -189,7 +186,6 @@ export const undoRepost = (postId, isProfile, userId, refreshType = "all") => as
     }
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Undo repost failed:', error);
     dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
@@ -215,7 +211,6 @@ export const likePost = (postId, isProfile, userId) => async (dispatch, getState
     }
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data || error.message;
-    console.error('Like post failed:', error);
     dispatch({ type: LIKE_POST_FAILURE, payload: errorMsg });
   }
 };
@@ -234,7 +229,6 @@ export const dislikePost = (postId, isProfile, userId) => async (dispatch) => {
     }
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Dislike post failed:', error);
     dispatch({ type: LIKE_POST_FAILURE, payload: errorMsg });
   }
 };
@@ -271,7 +265,6 @@ export const deletePost = (postId, originalPostIdIfRepost, isProfile, userId, re
     }
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Delete post failed:', error);
     dispatch({ type: POST_DELETE_FAILURE, payload: errorMsg });
   }
 };
@@ -285,7 +278,6 @@ export const deleteRePost = (postId) => async (dispatch) => {
     dispatch(getAllPosts());
   } catch (error) {
     const errorMsg = error.userMessage || error.message;
-    console.error('Delete repost failed:', error);
     dispatch({ type: REPOST_FAILURE, payload: errorMsg });
   }
 };
@@ -297,7 +289,6 @@ export const getMyPosts = () => async (dispatch) => {
     dispatch({ type: GET_MY_POSTS_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get my posts failed:', error);
     dispatch({ type: GET_MY_POSTS_FAILURE, payload: errorMsg });
   }
 };
@@ -309,7 +300,6 @@ export const getMyAuthoredPosts = () => async (dispatch) => {
     dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get my authored posts failed:', error);
     dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: errorMsg });
   }
 };
@@ -321,7 +311,6 @@ export const getFollowedUserPosts = (userId) => async (dispatch) => {
     dispatch({ type: GET_FOLLOWED_USER_POSTS_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get followed user posts failed:', error);
     dispatch({ type: GET_FOLLOWED_USER_POSTS_FAILURE, payload: errorMsg });
   }
 };
@@ -333,7 +322,6 @@ export const getUserProfilePosts = (userId) => async (dispatch) => {
     dispatch({ type: GET_PROFILE_POSTS_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get user profile posts failed:', error);
     dispatch({ type: GET_PROFILE_POSTS_FAILURE, payload: errorMsg });
   }
 };
@@ -345,7 +333,6 @@ export const getTimeline = () => async (dispatch) => {
     dispatch({ type: GET_TIMELINE_SUCCESS, payload: data });
   } catch (error) {
     const errorMsg = error.userMessage || error.response?.data?.message || error.message;
-    console.error('Get timeline failed:', error);
     dispatch({ type: GET_TIMELINE_FAILURE, payload: errorMsg });
   }
 };

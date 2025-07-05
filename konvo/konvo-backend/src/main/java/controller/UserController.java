@@ -51,7 +51,7 @@ public class UserController {
             UserDto dto = userDtos.get(i);
             User user = users.get(i);
             dto.setFollowed(UserUtil.isFollowedByReqUser(reqUser, user));
-            dto.setFollowsYou(user.getFollowings().contains(reqUser));
+            dto.setFollowsYou(user.getFollowings() != null && user.getFollowings().contains(reqUser));
         }
 
         return new ResponseEntity<>(userDtos, HttpStatus.ACCEPTED);
@@ -98,7 +98,7 @@ public class UserController {
         for(UserDto followerDto : followerDtos) {
             for(User follower : followers) {
                 if(follower.getId().equals(followerDto.getId())) {
-                    boolean isFollowed = follower.getFollowers().contains(reqUser);
+                    boolean isFollowed = follower.getFollowers() != null && follower.getFollowers().contains(reqUser);
                     followerDto.setFollowed(isFollowed);
                     break;
                 }
@@ -119,7 +119,7 @@ public class UserController {
         for(UserDto followingDto : followingDtos) {
             for(User following : followings) {
                 if(following.getId().equals(followingDto.getId())) {
-                    boolean isFollowed = following.getFollowers().contains(reqUser);
+                    boolean isFollowed = following.getFollowers() != null && following.getFollowers().contains(reqUser);
                     followingDto.setFollowed(isFollowed);
                     break;
                 }

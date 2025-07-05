@@ -33,9 +33,6 @@ api.interceptors.response.use(
     const errorMessage = error.response?.data?.message || error.message;
     const statusCode = error.response?.status;
     
-    // Log errors for debugging
-    console.error(`API Error ${statusCode}:`, errorMessage);
-    
     // Handle specific error types
     if (statusCode === 401) {
       // Handle unauthorized - redirect to login

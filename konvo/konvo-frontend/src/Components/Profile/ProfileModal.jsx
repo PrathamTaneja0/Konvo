@@ -58,7 +58,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       if (onClose) onClose();
     } catch (err) {
       setError("Failed to save profile. Please try again.");
-      console.error(err);
     } finally {
       setSaving(false);
     }
@@ -105,7 +104,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       }
     } catch (err) {
       setError("Failed to upload image. Please try again.");
-      console.error(err);
     } finally {
       setUploading(false);
     }

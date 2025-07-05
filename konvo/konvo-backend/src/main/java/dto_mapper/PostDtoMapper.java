@@ -17,8 +17,10 @@ public class PostDtoMapper {
         boolean isReposted = PostUtil.isRepostedByReqUser(reqUser, post);
 
         List<Long> repostUserId = new ArrayList<>();
-        for(User user1 : post.getRepostUser()) {
-            repostUserId.add(user1.getId());
+        if (post.getRepostUser() != null) {
+            for(User user1 : post.getRepostUser()) {
+                repostUserId.add(user1.getId());
+            }
         }
 
         PostDto postDto = new PostDto();
@@ -27,9 +29,9 @@ public class PostDtoMapper {
         postDto.setImage(post.getImage());
         postDto.setVideo(post.getVideo());
         postDto.setContent(post.getContent());
-        postDto.setTotalLikes(post.getLikes().size());
-        postDto.setTotalReplies(post.getReplyPosts().size());
-        postDto.setTotalRePosts(post.getRepostUser().size());
+        postDto.setTotalLikes(post.getLikes() != null ? post.getLikes().size() : 0);
+        postDto.setTotalReplies(post.getReplyPosts() != null ? post.getReplyPosts().size() : 0);
+        postDto.setTotalRePosts(post.getRepostUser() != null ? post.getRepostUser().size() : 0);
         postDto.setUser(user);
         postDto.setLiked(isLiked);
         postDto.setReposted(isReposted);
@@ -60,8 +62,10 @@ public class PostDtoMapper {
         boolean isReposted = PostUtil.isRepostedByReqUser(reqUser, post);
 
         List<Long> repostUserId = new ArrayList<>();
-        for(User user1 : post.getRepostUser()) {
-            repostUserId.add(user1.getId());
+        if (post.getRepostUser() != null) {
+            for(User user1 : post.getRepostUser()) {
+                repostUserId.add(user1.getId());
+            }
         }
 
         PostDto postDto = new PostDto();
@@ -70,9 +74,9 @@ public class PostDtoMapper {
         postDto.setImage(post.getImage());
         postDto.setVideo(post.getVideo());
         postDto.setContent(post.getContent());
-        postDto.setTotalLikes(post.getLikes().size());
-        postDto.setTotalReplies(post.getReplyPosts().size());
-        postDto.setTotalRePosts(post.getRepostUser().size());
+        postDto.setTotalLikes(post.getLikes() != null ? post.getLikes().size() : 0);
+        postDto.setTotalReplies(post.getReplyPosts() != null ? post.getReplyPosts().size() : 0);
+        postDto.setTotalRePosts(post.getRepostUser() != null ? post.getRepostUser().size() : 0);
         postDto.setUser(user);
         postDto.setLiked(isLiked);
         postDto.setReposted(isReposted);

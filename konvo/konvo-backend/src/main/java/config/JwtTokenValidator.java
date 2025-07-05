@@ -28,14 +28,12 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        logger.debug("Processing JWT token for request: {}", request.getRequestURI());
 
         if (jwt != null) {
             int bearerIndex = jwt.indexOf("Bearer ");
             if (bearerIndex != -1) {
                 // Extract the token and aggressively remove ALL whitespace (visible or invisible)
                 jwt = jwt.substring(bearerIndex + "Bearer ".length()).replaceAll("\\s", "");
-                logger.debug("JWT token extracted successfully");
             } else {
                 // If "Bearer " prefix is not found, treat it as an invalid JWT header format
                 logger.warn("Bearer prefix not found in Authorization header");
@@ -52,7 +50,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 // Always give every user the 'USER' authority using SimpleGrantedAuthority
                 Authentication auth = new UsernamePasswordAuthenticationToken(email, null, java.util.Collections.singletonList(new SimpleGrantedAuthority("USER")));
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                logger.debug("Authentication set successfully for user: {}", email);
 
             } catch (Exception e) {
                 logger.error("JWT validation error: {}", e.getMessage());

@@ -8,6 +8,9 @@ public class PostUtil {
 
 
     public static boolean isLikedByReqUser(User reqUser, Post post) {
+        if (post.getLikes() == null) {
+            return false;
+        }
         for (Like like : post.getLikes()) {
             if (like.getUser().getId().equals(reqUser.getId())) {
                 return true;

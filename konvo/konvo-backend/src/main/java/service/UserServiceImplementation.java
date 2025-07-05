@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -24,7 +25,6 @@ public class UserServiceImplementation implements UserService {
     
     @Override
     public User findUserById(Long userId) throws UserException {
-        logger.debug("Finding user by ID: {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     logger.warn("User not found with ID: {}", userId);
@@ -35,7 +35,6 @@ public class UserServiceImplementation implements UserService {
     
     @Override
     public User findUserProfileByJwt(String jwt) throws UserException {
-        logger.debug("Finding user profile by JWT");
         String email = jwtProvider.getEmailFromToken(jwt);
         User user = userRepository.findByEmail(email);
 
@@ -44,7 +43,6 @@ public class UserServiceImplementation implements UserService {
             throw new UserException("User not found with email: " + email);
         }
         
-        logger.debug("User profile found for email: {}", email);
         return user;
     }
     
@@ -91,12 +89,19 @@ public class UserServiceImplementation implements UserService {
     public User followUser(Long userId, User user) throws UserException {
         User followToUser = findUserById(userId);
 
-        if (followToUser.getFollowers().contains(user) && user.getFollowings().contains(followToUser)) {
+        if (followToUser.getFollowers() != null && followToUser.getFollowers().contains(user) && 
+            user.getFollowings() != null && user.getFollowings().contains(followToUser)) {
             // Unfollow the user
             followToUser.getFollowers().remove(user);
             user.getFollowings().remove(followToUser);
         } else {
             // Follow the user
+            if (followToUser.getFollowers() == null) {
+                followToUser.setFollowers(new ArrayList<>());
+            }
+            if (user.getFollowings() == null) {
+                user.setFollowings(new ArrayList<>());
+            }
             followToUser.getFollowers().add(user);
             user.getFollowings().add(followToUser);
         }

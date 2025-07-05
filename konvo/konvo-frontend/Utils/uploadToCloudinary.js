@@ -18,8 +18,7 @@ const uploadToCloudinary = async (file) => {
         } else {
             throw new Error(result.error?.message || "Upload failed");
         }
-    } catch (err) {
-        console.error("Cloudinary upload error:", err);
+    } catch {
         return null;
     }
 };

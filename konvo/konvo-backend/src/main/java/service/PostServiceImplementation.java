@@ -13,6 +13,7 @@ import request.PostReplyRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class PostServiceImplementation implements PostService {
@@ -24,7 +25,6 @@ public class PostServiceImplementation implements PostService {
 
     @Override
     public Post createPost(Post req, User user) throws UserException, PostException {
-        logger.info("Creating post for user: {}", user.getId());
         Post post = new Post();
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
@@ -35,7 +35,6 @@ public class PostServiceImplementation implements PostService {
         post.setContent(req.getContent());
 
         Post savedPost = postRepository.save(post);
-        logger.info("Post created successfully with ID: {}", savedPost.getId());
         return savedPost;
     }
 
@@ -46,7 +45,6 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public Post findById(Long id) throws PostException {
-        logger.debug("Finding post by ID: {}", id);
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.warn("Post not found with ID: {}", id);
@@ -64,8 +62,10 @@ public class PostServiceImplementation implements PostService {
             // Undo repost: delete the repost post
             postRepository.deleteById(existingRepost.getId());
             // Remove user from repostUser list
-            originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
-            postRepository.save(originalPost);
+            if (originalPost.getRepostUser() != null) {
+                originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
+                postRepository.save(originalPost);
+            }
             return originalPost;
         } else {
             // Create a new repost post
@@ -80,6 +80,9 @@ public class PostServiceImplementation implements PostService {
             repost.setVideo(originalPost.getVideo());
             postRepository.save(repost);
             // Add user to repostUser list
+            if (originalPost.getRepostUser() == null) {
+                originalPost.setRepostUser(new ArrayList<>());
+            }
             if (originalPost.getRepostUser().stream().noneMatch(u -> u.getId().equals(user.getId()))) {
                 originalPost.getRepostUser().add(user);
                 postRepository.save(originalPost);
@@ -90,8 +93,22 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public Post removeFromRepost(Long postId, Long userId) throws PostException, UserException {
-        //
-        return null;
+        Post originalPost = findById(postId);
+        Post existingRepost = postRepository.findByUserIdAndRepostForId(userId, postId);
+        if (existingRepost != null) {
+            // Delete all nested reposts of this repost post
+            List<Post> nestedReposts = postRepository.findAllByRepostForId(existingRepost.getId());
+            for (Post nested : nestedReposts) {
+                postRepository.deleteById(nested.getId());
+            }
+            postRepository.deleteById(existingRepost.getId());
+            // Remove user from repostUser list
+            if (originalPost.getRepostUser() != null) {
+                originalPost.getRepostUser().removeIf(u -> u.getId().equals(userId));
+                postRepository.save(originalPost);
+            }
+        }
+        return originalPost;
     }
     
     @Override
@@ -108,6 +125,9 @@ public class PostServiceImplementation implements PostService {
 
         Post savedPost = postRepository.save(post);
 
+        if (replyFor.getReplyPosts() == null) {
+            replyFor.setReplyPosts(new ArrayList<>());
+        }
         replyFor.getReplyPosts().add(savedPost);
         postRepository.save(replyFor);
 
@@ -116,7 +136,6 @@ public class PostServiceImplementation implements PostService {
     
     @Override
     public void deletePostById(Long postId, Long userId) throws PostException, UserException {
-        logger.info("Attempting to delete post: {} by user: {}", postId, userId);
         Post post = findById(postId);
         if(!userId.equals(post.getUser().getId())){
             logger.warn("User {} attempted to delete post {} owned by user {}", userId, postId, post.getUser().getId());
@@ -125,8 +144,10 @@ public class PostServiceImplementation implements PostService {
         // If this is a repost, update the original post's repostUser list and count
         if (post.isRepost() && post.getRepostFor() != null) {
             Post original = post.getRepostFor();
-            original.getRepostUser().removeIf(u -> u.getId().equals(post.getUser().getId()));
-            postRepository.save(original);
+            if (original.getRepostUser() != null) {
+                original.getRepostUser().removeIf(u -> u.getId().equals(post.getUser().getId()));
+                postRepository.save(original);
+            }
         }
         // Delete all reposts of this post
         List<Post> reposts = postRepository.findAllByRepostForId(postId);
@@ -134,11 +155,12 @@ public class PostServiceImplementation implements PostService {
             postRepository.deleteById(repost.getId());
         }
         // Delete all replies to this post
-        for (Post reply : post.getReplyPosts()) {
-            postRepository.deleteById(reply.getId());
+        if (post.getReplyPosts() != null) {
+            for (Post reply : post.getReplyPosts()) {
+                postRepository.deleteById(reply.getId());
+            }
         }
         postRepository.deleteById(post.getId());
-        logger.info("Post {} deleted successfully", postId);
     }
     
     @Override
@@ -159,8 +181,10 @@ public class PostServiceImplementation implements PostService {
             }
             postRepository.deleteById(existingRepost.getId());
             // Remove user from repostUser list
-            originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
-            postRepository.save(originalPost);
+            if (originalPost.getRepostUser() != null) {
+                originalPost.getRepostUser().removeIf(u -> u.getId().equals(user.getId()));
+                postRepository.save(originalPost);
+            }
         }
         return originalPost;
     }
@@ -172,9 +196,7 @@ public class PostServiceImplementation implements PostService {
             logger.error("Attempted to get posts for null user");
             throw new UserException("User not found");
         }
-        logger.debug("Fetching posts for user: {}", user.getId());
         List<Post> posts = postRepository.findUserOwnPostsOrderByCreatedAtDesc(user.getId());
-        logger.debug("Found {} posts for user: {}", posts.size(), user.getId());
         // Limit to 20 most recent posts
         return posts.stream().limit(20).toList();
     }
@@ -198,7 +220,7 @@ public class PostServiceImplementation implements PostService {
         }
         
         // Check if current user is following the target user
-        boolean isFollowing = currentUser.getFollowings().stream()
+        boolean isFollowing = currentUser.getFollowings() != null && currentUser.getFollowings().stream()
                 .anyMatch(following -> following.getId().equals(targetUser.getId()));
         
         if (!isFollowing) {
