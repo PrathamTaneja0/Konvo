@@ -42,7 +42,9 @@ const Profile = () => {
     if (user.id) {
       loadPosts();
     }
-  }, [user.id]); // Only depend on user.id, not on post state
+  }, [user.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Note: Intentionally excluding loadPosts from dependencies to prevent infinite re-renders.
+  // loadPosts is defined in the same component and doesn't need to be in dependencies.
 
   // Separate useEffect to handle like/repost updates
   React.useEffect(() => {
@@ -50,7 +52,9 @@ const Profile = () => {
       // Only reload if we have a user and there was a like/repost action
       loadPosts();
     }
-  }, [post.like?.id, post.repost?.id]); // Only depend on the specific post IDs that changed
+  }, [post.like?.id, post.repost?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Note: Intentionally excluding loadPosts and user.id from dependencies to prevent unnecessary re-renders.
+  // Only tracking specific post interaction IDs that should trigger a reload.
 
   React.useEffect(() => {
     return () => {

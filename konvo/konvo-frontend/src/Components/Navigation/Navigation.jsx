@@ -22,7 +22,7 @@ const Navigation = ({ onNavItemClick }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
     handleClose();
-    dispatch(logout());
+    dispatch(logout(navigate));
   };
   const [postModalOpen, setPostModalOpen] = useState(false);
   const handleOpenPostModal = () => setPostModalOpen(true);

@@ -107,9 +107,12 @@ export const followUserAction = (userId) => async (dispatch, getState) => {
   }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = (navigate) => (dispatch) => {
   localStorage.removeItem('jwt');
   dispatch({ type: LOGOUT_USER });
+  if (navigate) {
+    navigate('/auth');
+  }
 };
 
 export const setJwt = (jwt) => (dispatch) => {
