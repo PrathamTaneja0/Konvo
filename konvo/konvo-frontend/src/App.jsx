@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import HomePage from "./Components/HomePage/HomePage";
 import Authentication from "./Components/Authentication/Authentication";
 import { useEffect } from "react";
@@ -52,6 +52,7 @@ function App() {
     <ErrorBoundary>
       <div>
         <Routes>
+          <Route path="/" element={<Navigate to="/auth" replace />} />
           <Route path="/signin" element={<Authentication />} />
           <Route path="/signup" element={<Authentication />} />
           <Route path="/home/*" element={<HomePage />} />
