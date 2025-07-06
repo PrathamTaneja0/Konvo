@@ -17,10 +17,10 @@ This Project was built with ❤️
 
 ## Extra Features
 • **Un-liking posts** - Users can unlike posts they previously liked (beyond F-L1 requirement)
-• **Repost/Retweet functionality** - Users can repost content from other users
+• **Repost/Retweet functionality**  - Users can repost content from other users
 • **News API integration** - Trending news feed from external API
 • **Dark/Light mode toggle** - Responsive theme switching
-• **Custom 404 page** - User-friendly error handling
+• **Custom 404 page** - If you are logged out and try to access a non-existent route, a custom 404 Not Found page will be shown.
 • **Commenting on posts** - Users can reply to posts (ReplyModal functionality)
 • **Deleting one's own posts** - Users can delete their own posts
 • **Managing one's own user profile** - Update profile with multiple attributes (full name, bio, location, birth date)
@@ -154,7 +154,6 @@ mvn clean test jacoco:report # Generate coverage report
 cd konvo-backend
 mvn spring-boot:run
 ```
-
 ### Frontend Development
 ```bash
 cd konvo-frontend
