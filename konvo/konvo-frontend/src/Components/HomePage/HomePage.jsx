@@ -19,7 +19,7 @@ const HomePage = () => {
   return (
     <main>
       <Container maxWidth="xl">
-        <Grid container columns={12}>
+        <Grid container spacing={0} wrap="nowrap">
           {/* Mobile Navigation Button - Left */}
           <IconButton
             sx={{
@@ -55,6 +55,7 @@ const HomePage = () => {
 
           {/* Left Navigation for Desktop */}
           <Grid
+            size={{ xs: 0, md: 3 }}
             sx={{
               display: { xs: "none", md: "block" },
               position: "sticky",
@@ -63,7 +64,8 @@ const HomePage = () => {
               borderRight: "1px solid #eff3f4",
               pl: { md: 2, lg: 4 },
               bgcolor: "background.paper",
-              gridColumn: { md: 'span 3' },
+              minWidth: 0,
+              flexShrink: 0,
             }}
           >
             <nav>
@@ -73,6 +75,7 @@ const HomePage = () => {
 
           {/* Main Content */}
           <Grid
+            size={{ xs: 12, md: 6 }}
             sx={{
               minHeight: "100vh",
               borderRight: "1px solid #eff3f4",
@@ -80,11 +83,9 @@ const HomePage = () => {
               px: { xs: 0, md: 2 },
               pt: { xs: 5, md: 0 },
               bgcolor: "background.paper",
-              maxWidth: 700,
-              width: "100%",
-              margin: "0 auto",
               position: "relative",
-              gridColumn: { xs: 'span 12', md: 'span 6' },
+              minWidth: 0,
+              flexGrow: 1,
             }}
           >
             <Routes>
@@ -130,6 +131,7 @@ const HomePage = () => {
 
           {/* Right Section for Desktop */}
           <Grid
+            size={{ xs: 0, md: 3 }}
             sx={{
               display: { xs: "none", md: "block" },
               position: "sticky",
@@ -137,8 +139,9 @@ const HomePage = () => {
               height: "100vh",
               pl: { md: 2, lg: 4 },
               bgcolor: "background.paper",
-              maxWidth: 350,
-              gridColumn: { md: 'span 3' },
+              maxWidth: { md: 350 },
+              minWidth: 0,
+              flexShrink: 0,
             }}
           >
             <aside>
@@ -152,3 +155,10 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+// Prompt: "How do I fix the mobile navigation drawer not closing properly when clicking outside?"
+// Prompt: "The responsive grid layout is breaking on tablet screens. How can I improve the breakpoints?"
+// Prompt: "The fixed navigation buttons are overlapping with content on small screens. How can I fix this?"
+// Prompt: "How do I optimize the responsive layout for mobile devices?"
+// Prompt: "Why is the right section overlapping with the left when the size is decreased?"
+
