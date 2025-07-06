@@ -1,8 +1,19 @@
+# NOTE
+Before running any Docker commands, make sure to run:
+
+```bash
+cd konvo
+```
+
+This is required because the 'konvo-frontend' and 'konvo-backend' folders are placed inside another directory named 'konvo'.
+
+-----------------------------------------------------------------------------------------
+
 # Konvo - Modern Microblogging Platform
 
 A full-stack social media platform built with Spring Boot backend, React frontend, and MariaDB database. Features comprehensive test coverage (80%+) and Docker containerization.
 
-This Project was made with ❤️
+This Project was built with ❤️
 
 ## Extra Features
 • **Un-liking posts** - Users can unlike posts they previously liked (beyond F-L1 requirement)
