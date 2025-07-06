@@ -18,8 +18,8 @@ public class Post {
     @ManyToOne
     private User user;
 
-    private String image;
-    private String video;
+    //    private String image; // Commented out: media attachments not supported
+    //    private String video; // Commented out: media attachments not supported
 
     private String content;
 

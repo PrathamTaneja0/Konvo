@@ -26,8 +26,8 @@ public class PostDtoMapper {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setCreatedAt(post.getCreatedAt());
-        postDto.setImage(post.getImage());
-        postDto.setVideo(post.getVideo());
+        // postDto.setImage(post.getImage()); // Commented out: media attachments not supported
+        // postDto.setVideo(post.getVideo()); // Commented out: media attachments not supported
         postDto.setContent(post.getContent());
         postDto.setTotalLikes(post.getLikes() != null ? post.getLikes().size() : 0);
         postDto.setTotalReplies(post.getReplyPosts() != null ? post.getReplyPosts().size() : 0);
@@ -37,7 +37,7 @@ public class PostDtoMapper {
         postDto.setReposted(isReposted);
         postDto.setRepostUserid(repostUserId);
         postDto.setReplyPosts(toPostDtos(post.getReplyPosts(), reqUser));
-        postDto.setVideo(post.getVideo());
+        // postDto.setVideo(post.getVideo());
         postDto.setRepost(post.isRepost());
         if (post.getRepostFor() != null) {
             postDto.setRepostFor(toPostDto(post.getRepostFor(), reqUser));
@@ -71,8 +71,8 @@ public class PostDtoMapper {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setCreatedAt(post.getCreatedAt());
-        postDto.setImage(post.getImage());
-        postDto.setVideo(post.getVideo());
+        // postDto.setImage(post.getImage()); // Commented out: media attachments not supported
+        // postDto.setVideo(post.getVideo()); // Commented out: media attachments not supported
         postDto.setContent(post.getContent());
         postDto.setTotalLikes(post.getLikes() != null ? post.getLikes().size() : 0);
         postDto.setTotalReplies(post.getReplyPosts() != null ? post.getReplyPosts().size() : 0);
@@ -81,7 +81,7 @@ public class PostDtoMapper {
         postDto.setLiked(isLiked);
         postDto.setReposted(isReposted);
         postDto.setRepostUserid(repostUserId);
-        postDto.setVideo(post.getVideo());
+        // postDto.setVideo(post.getVideo());
 
 
         return postDto;

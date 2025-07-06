@@ -29,9 +29,9 @@ public class PostServiceImplementation implements PostService {
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post.setPost(true);
-        post.setImage(req.getImage());
+        // post.setImage(req.getImage()); // Commented out: media attachments not supported
+        // post.setVideo(req.getVideo()); // Commented out: media attachments not supported
         post.setReply(false);
-        post.setVideo(req.getVideo());
         post.setContent(req.getContent());
 
         Post savedPost = postRepository.save(post);
@@ -76,8 +76,8 @@ public class PostServiceImplementation implements PostService {
             repost.setRepost(true);
             repost.setRepostFor(originalPost);
             repost.setContent(originalPost.getContent());
-            repost.setImage(originalPost.getImage());
-            repost.setVideo(originalPost.getVideo());
+            // repost.setImage(originalPost.getImage()); // Commented out: media attachments not supported
+            // repost.setVideo(originalPost.getVideo()); // Commented out: media attachments not supported
             postRepository.save(repost);
             // Add user to repostUser list
             if (originalPost.getRepostUser() == null) {
@@ -118,7 +118,7 @@ public class PostServiceImplementation implements PostService {
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post.setPost(false);
-        post.setImage(req.getImage());
+        // post.setImage(req.getImage()); // Commented out: media attachments not supported
         post.setReply(true);
         post.setReplyFor(replyFor);
         post.setContent(req.getContent());

@@ -113,13 +113,13 @@ const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = nu
               onClick={isReply ? undefined : () => navigate(`/post/${post.id}`)}
             >
               <p className="mb-2 p-0">{content}</p>
-              {post.image && (
+              {/* {post.image && (
                 <img
                   className="w-full max-w-2xl border border-gray-400 p-5 rounded-md"
                   src={post.image}
                   alt="Post"
                 />
-              )}
+              )} */}
             </div>
             <footer className="py-5 flex flex-wrap justify-between items-center">
               <div className="space-x-3 flex items-center text-gray-600">

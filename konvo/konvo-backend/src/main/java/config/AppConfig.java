@@ -29,7 +29,6 @@ public class AppConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/news", "/api/news/", "/api/news/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                // .requestMatchers("/api/posts/**/repost").authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);

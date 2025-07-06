@@ -84,13 +84,13 @@ const ReplyCard = ({ post, onReplyDeleted }) => {
           </header>
           <section className="mt-2">
             <p className="mb-2 p-0">{content}</p>
-            {post.image && (
+            {/* {post.image && (
               <img
                 className="w-full max-w-2xl border border-gray-400 p-5 rounded-md"
                 src={post.image}
                 alt="Reply"
               />
-            )}
+            )} */}
           </section>
         </div>
       </section>
