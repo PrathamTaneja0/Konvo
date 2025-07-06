@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile, setJwt } from "./Store/Auth/Action.js";
 import NotFound from "./Components/NotFoundPage/NotFound.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
-import React from "react";
 
 function App() {
   // Get JWT from localStorage and Redux auth state
@@ -14,7 +13,6 @@ function App() {
   const auth = useSelector(store => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [authChecked, setAuthChecked] = React.useState(false);
 
   // On mount: set JWT in Redux and fetch user profile if JWT exists
   useEffect(() => {
@@ -23,10 +21,6 @@ function App() {
     }
     if (jwt && !auth.user) {
       dispatch(getUserProfile(jwt));
-    }
-    // Mark auth as checked after a short delay or when user state changes
-    if (!jwt || auth.user || (!jwt && !auth.user)) {
-      setAuthChecked(true);
     }
   }, [jwt, dispatch, auth.user, auth.jwt]);
 
@@ -52,11 +46,6 @@ function App() {
       // If isNotFound, do nothing (let NotFound render)
     }
   }, [auth.user, navigate]);
-
-  // Add loading guard
-  if (!authChecked) {
-    return <div style={{textAlign: 'center', marginTop: '2rem'}}>Loading...</div>;
-  }
 
   return (
     // App routes: show Authentication or HomePage based on auth state
