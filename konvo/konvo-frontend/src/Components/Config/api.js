@@ -10,7 +10,6 @@ export const api = axios.create({
 // Add a request interceptor to set JWT dynamically
 api.interceptors.request.use(
   (config) => {
-    // Do not set Authorization header for public news endpoint
     if (config.url && config.url.includes('/api/news')) {
       delete config.headers["Authorization"];
     } else {
@@ -64,3 +63,6 @@ const getErrorMessage = (statusCode, serverMessage) => {
       return serverMessage || 'An unexpected error occurred.';
   }
 };
+
+// Prompt: "How do I implement automatic token refresh when the JWT expires?"
+// Prompt: "The API calls are failing with CORS errors. How can I fix this?"

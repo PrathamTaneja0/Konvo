@@ -257,3 +257,6 @@ public class PostServiceImplementation implements PostService {
         return posts.stream().limit(20).toList();
     }
 }
+
+// Prompt: "How do I implement pagination for the post service methods?"
+// Prompt: "The post creation is failing with database constraints. How can I debug this?"

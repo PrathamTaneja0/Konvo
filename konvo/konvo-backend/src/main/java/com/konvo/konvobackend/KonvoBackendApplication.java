@@ -17,3 +17,6 @@ public class KonvoBackendApplication {
     }
 
 }
+
+// Prompt: "How do I configure CORS for the Spring Boot application?"
+// Prompt: "The application is not starting properly. How can I debug the startup issues?"

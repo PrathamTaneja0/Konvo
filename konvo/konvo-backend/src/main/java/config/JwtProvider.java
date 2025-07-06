@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-// import java.util.Date;
 
 @Service
 public class JwtProvider {
@@ -44,3 +43,6 @@ public class JwtProvider {
                 .parseSignedClaims(jwt).getPayload().get("email").toString();
     }
 }
+
+// Prompt: "How do I implement JWT token refresh functionality?"
+// Prompt: "The JWT token validation is failing. How can I debug this issue?"

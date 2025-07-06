@@ -7,8 +7,11 @@ export default function useColorMode() {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   return {
-    theme, // MUI theme object
-    colorMode, // { toggleColorMode }
+    theme, 
+    colorMode, 
     mode: theme.palette.mode // 'light' or 'dark'
   };
 }
+
+// Prompt: "How do I implement theme persistence in localStorage?"
+// Prompt: "The theme context is not working properly. How can I debug this?"

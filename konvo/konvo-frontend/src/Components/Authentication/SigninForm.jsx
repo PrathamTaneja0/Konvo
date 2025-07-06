@@ -115,3 +115,6 @@ const SigninForm = ({ onSubmit }) => {
 };
 
 export default SigninForm;
+
+// Prompt: "How do I implement remember me functionality for the login form?"
+// Prompt: "The form validation is not working properly. How can I debug this?"

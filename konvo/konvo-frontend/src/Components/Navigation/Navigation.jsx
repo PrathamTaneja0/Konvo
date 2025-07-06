@@ -139,3 +139,6 @@ const Navigation = ({ onNavItemClick }) => {
 };
 
 export default Navigation;
+
+// Prompt: "How do I implement responsive navigation for mobile devices?"
+// Prompt: "The navigation menu is not highlighting the active route. How can I fix this?"

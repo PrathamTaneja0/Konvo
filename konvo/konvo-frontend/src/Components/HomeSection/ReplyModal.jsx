@@ -38,9 +38,9 @@ const ReplyModal = ({ open, onClose, post, refreshType = "all" }) => {
       postId: post?.id,
     };
     dispatch(createPostReply(replyData, refreshType)).then(() => {
-      dispatch(findPostsById(post.id)); // Refresh post details for immediate comment update
+      dispatch(findPostsById(post.id)); 
       if (post.user?.id) {
-        dispatch(getUserProfilePosts(post.user.id)); // Refresh profile posts after commenting
+        dispatch(getUserProfilePosts(post.user.id)); 
       }
       onClose();
     });
@@ -133,3 +133,5 @@ const ReplyModal = ({ open, onClose, post, refreshType = "all" }) => {
 };
 
 export default ReplyModal;
+
+// Prompt: "The modal is not closing properly after submission. How can I fix this?"

@@ -32,7 +32,7 @@ const Profile = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   React.useEffect(() => {
-    if (!id || !loggedInUser.id) return; // Wait until both are defined
+    if (!id || !loggedInUser.id) return; 
     if (String(loggedInUser.id) !== String(id)) {
       dispatch(findUserById(id));
     }
@@ -43,18 +43,12 @@ const Profile = () => {
       loadPosts();
     }
   }, [user.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  // Note: Intentionally excluding loadPosts from dependencies to prevent infinite re-renders.
-  // loadPosts is defined in the same component and doesn't need to be in dependencies.
 
-  // Separate useEffect to handle like/repost updates
   React.useEffect(() => {
     if (user.id && (post.like || post.repost)) {
-      // Only reload if we have a user and there was a like/repost action
       loadPosts();
     }
   }, [post.like?.id, post.repost?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  // Note: Intentionally excluding loadPosts and user.id from dependencies to prevent unnecessary re-renders.
-  // Only tracking specific post interaction IDs that should trigger a reload.
 
   React.useEffect(() => {
     return () => {
@@ -66,10 +60,8 @@ const Profile = () => {
     if (!user.id) return;
     
     if (isOwnProfile) {
-      // For own profile, use getMyAuthoredPosts() to show only authored posts (not reposts)
       dispatch(getMyAuthoredPosts());
     } else {
-      // For other users, use profile posts (more permissive than F-V2)
       dispatch(getUserProfilePosts(user.id));
     }
   };
@@ -83,7 +75,6 @@ const Profile = () => {
   };
 
   const handleSaveProfile = async (values) => {
-    // Ensure location defaults to 'Earth' if empty
     const updatedValues = { ...values, location: values.location || "Earth" };
     await dispatch(updateUserProfile(updatedValues));
     setModalOpen(false);
@@ -99,7 +90,6 @@ const Profile = () => {
   };
 
   const renderPosts = () => {
-    // Always use profilePosts for profile page
     const postsToShow = post.profilePosts;
     const isLoading = post.profilePostsLoading;
     const error = post.profilePostsError;
@@ -133,9 +123,12 @@ const Profile = () => {
         {postsToShow.slice(0, 20).map((postItem) => (
           <PostCard key={postItem.id} post={postItem} posts={postsToShow} isProfile={true} profileUserId={user.id} />
         ))}
-      </div>
-    );
-  };
+          </div>
+  );
+};
+
+// Prompt: "How do I implement profile image upload functionality?"
+// Prompt: "The profile update is not reflecting immediately. How can I fix this?"
 
   return (
     <div className="w-full">
@@ -258,7 +251,6 @@ const Profile = () => {
         </div>
       </section>
 
-      {/* Posts Section */}
       <section className="mt-6">
         <div className="border-b border-gray-200 pb-2 mb-4">
           <h2 className="text-lg font-semibold">Posts</h2>

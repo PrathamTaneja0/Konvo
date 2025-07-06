@@ -9,4 +9,7 @@ const NotFound = () => (
   </div>
 );
 
-export default NotFound; 
+export default NotFound;
+
+// Prompt: "How do I implement a custom 404 page with navigation back to home?"
+// Prompt: "The dark mode is not working on the 404 page. How can I fix this?" 

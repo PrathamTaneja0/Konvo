@@ -48,3 +48,5 @@ public class Post {
     public Post() {
     }
 }
+
+// Prompt: "The post entity relationships are causing performance issues. How can I optimize this?"

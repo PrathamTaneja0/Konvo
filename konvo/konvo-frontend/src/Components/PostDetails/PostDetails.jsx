@@ -57,3 +57,6 @@ function PostDetails() {
 }
 
 export default PostDetails
+
+// Prompt: "How do I implement real-time updates for post details when replies are added?"
+// Prompt: "The post details page is not refreshing after a reply is deleted. How can I fix this?"

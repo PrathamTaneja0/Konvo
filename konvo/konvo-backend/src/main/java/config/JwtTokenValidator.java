@@ -67,3 +67,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     }
 }
 
+// Prompt: "How do I implement JWT token refresh functionality?"
+// Prompt: "The JWT validation is failing for some tokens. How can I debug this?"
+

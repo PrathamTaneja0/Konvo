@@ -56,3 +56,6 @@ public class User {
     private List<User> followings = new ArrayList<>();
 
 }
+
+// Prompt: "How do I implement email verification for user registration?"
+// Prompt: "The user entity is causing circular reference issues in JSON serialization. How can I fix this?"

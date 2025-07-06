@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import store from './Store/store.js';
 import ThemeProvider from './theme/ThemeProvider';
 
-// App entry point: wraps App with Router, Redux, and Theme providers
+// App entry point
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Provider store={store}>

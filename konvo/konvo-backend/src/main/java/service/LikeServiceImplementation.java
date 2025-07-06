@@ -61,3 +61,6 @@ public class LikeServiceImplementation implements LikeService {
         }
     }
 }
+
+// Prompt: "How do I implement like notifications for users?"
+// Prompt: "The like count is not updating correctly. How can I debug this?"

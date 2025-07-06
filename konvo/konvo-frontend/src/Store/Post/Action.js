@@ -116,7 +116,8 @@ export const updateSinglePost = (postId) => async (dispatch) => {
     const { data } = await api.get(`/api/posts/${postId}`);
     dispatch({ type: UPDATE_SINGLE_POST, payload: data });
   } catch (error) {
-    // Handle error silently
+    const errorMsg = error.userMessage || error.response?.data?.message || error.message;
+    dispatch({ type: FIND_POST_BY_ID_FAILURE, payload: errorMsg });
   }
 };
 
@@ -126,7 +127,6 @@ export const repostPost = (postId, isProfile, userId, refreshType = "all") => as
     const { data } = await api.put(`/api/posts/${postId}/repost`);
     dispatch({ type: REPOST_SUCCESS, payload: data });
     dispatch(updateSinglePost(postId));
-    // Only refresh the relevant posts based on refreshType
     switch (refreshType) {
       case "timeline":
         dispatch(getTimeline());
@@ -340,4 +340,9 @@ export const getTimeline = () => async (dispatch) => {
 export const clearProfilePosts = () => (dispatch) => {
   dispatch({ type: CLEAR_PROFILE_POSTS });
 };
+
+// Prompt: "How do I implement optimistic updates for like/unlike actions?"
+// Prompt: "The Redux actions are causing infinite re-renders. How can I fix this?"
+// Prompt: "How do I add loading states for all post actions?"
+// Prompt: "The error handling is not consistent across all actions. How can I standardize it?"
 

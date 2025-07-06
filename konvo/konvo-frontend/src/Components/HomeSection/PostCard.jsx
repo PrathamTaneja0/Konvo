@@ -180,3 +180,6 @@ const PostCard = ({ post, isReply = false, isProfile = false, profileUserId = nu
 };
 
 export default PostCard;
+
+// Prompt: "How do I implement infinite scroll for the post feed?"
+// Prompt: "The like button is not updating the UI immediately. How can I fix this?"

@@ -21,12 +21,7 @@ public class UserDtoMapper {
         userDto.setBirthDate(user.getBirthDate());
         userDto.setLocation(user.getLocation());
 
-        // REMOVE any mapping or reference to is_verified
-
-//        userDto.setWebsite(user.getWebsite());
-//        userDto.setMobile(user.getMobile());
-//        userDto.setReq_user(user.isReq_user());
-
+ 
         // Map followers to UserDtos
         userDto.setFollowers(toUserDtos(user.getFollowers()));
 
@@ -54,3 +49,6 @@ public class UserDtoMapper {
         return userDtos;
     }
 }
+
+// Prompt: "How do I prevent infinite recursion when mapping nested user relationships?"
+// Prompt: "The DTO mapping is not including all user fields. How can I fix this?"

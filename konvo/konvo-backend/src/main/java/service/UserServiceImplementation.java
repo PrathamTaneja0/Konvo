@@ -149,3 +149,7 @@ public class UserServiceImplementation implements UserService {
         }
     }
 }
+
+// Prompt: "How do I implement user search with fuzzy matching?"
+// Prompt: "The follow/unfollow functionality is causing database deadlocks. How can I fix this?"
+// Prompt: "Why is the username validation not working properly?"

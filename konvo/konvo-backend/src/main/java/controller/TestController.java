@@ -53,3 +53,6 @@ public class TestController {
         }
     }
 }
+
+// Prompt: "The async News API call is timing out. How can I fix this?"
+// Prompt: "How do I implement proper error handling for external API calls?"

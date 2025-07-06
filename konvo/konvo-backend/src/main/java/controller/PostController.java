@@ -115,7 +115,6 @@ public class PostController {
         return new ResponseEntity<>(postDto, HttpStatus.OK);
     }
 
-    // F-V1: Get user's own posts (20 most recent)
     @GetMapping("/my-posts")
     public ResponseEntity<List<PostDto>> getMyPosts(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User user = userService.findUserProfileByJwt(jwt);
@@ -124,7 +123,6 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
-    // Get user's own authored posts (excluding reposts) - for profile
     @GetMapping("/my-authored-posts")
     public ResponseEntity<List<PostDto>> getMyAuthoredPosts(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User user = userService.findUserProfileByJwt(jwt);
@@ -133,7 +131,6 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
-    // F-V2: Get specific followed user's posts (20 most recent)
     @GetMapping("/user/{userId}/posts")
     public ResponseEntity<List<PostDto>> getFollowedUserPosts(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User currentUser = userService.findUserProfileByJwt(jwt);
@@ -143,7 +140,6 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
-    // Get any user's posts (for profile viewing) - more permissive than F-V2
     @GetMapping("/user/{userId}/profile-posts")
     public ResponseEntity<List<PostDto>> getUserProfilePosts(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User currentUser = userService.findUserProfileByJwt(jwt);
@@ -153,13 +149,11 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
-    // Alias mapping for frontend compatibility
     @GetMapping("/user/{userId}/profile")
     public ResponseEntity<List<PostDto>> getUserProfilePostsAlias(@PathVariable Long userId, @RequestHeader("Authorization") String jwt) throws UserException, PostException {
         return getUserProfilePosts(userId, jwt);
     }
 
-    // F-V3: Get aggregated timeline of all followed users' posts (20 most recent)
     @GetMapping("/timeline")
     public ResponseEntity<List<PostDto>> getTimeline(@RequestHeader("Authorization") String jwt) throws UserException, PostException {
         User user = userService.findUserProfileByJwt(jwt);
@@ -168,3 +162,6 @@ public class PostController {
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 }
+
+// Prompt: "How do I implement pagination for posts to limit them to 20 per page?"
+// Prompt: "The post creation is failing with validation errors. How can I debug this?"

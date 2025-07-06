@@ -56,7 +56,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
       // Place your backend API call here if needed
       if (onSave) onSave(values);
       if (onClose) onClose();
-    } catch (err) {
+    } catch {
       setError("Failed to save profile. Please try again.");
     } finally {
       setSaving(false);
@@ -102,7 +102,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
           formik.setFieldValue(field, "");
         }
       }
-    } catch (err) {
+    } catch {
       setError("Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
@@ -208,7 +208,6 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
                 type="date"
                 value={formik.values.birthDate || ''}
                 onChange={formik.handleChange}
-                InputLabelProps={{ shrink: true }}
                 margin="normal"
               />
             </div>
@@ -218,3 +217,7 @@ export default function ProfileModal({ open, onClose, initialValues, onSave }) {
     </Modal>
   );
 }
+
+// Prompt: "How do I implement drag and drop for image uploads?"
+// Prompt: "The Cloudinary upload is failing. How can I debug this issue?"
+// Prompt: "Why is the image preview not showing immediately after selection?"

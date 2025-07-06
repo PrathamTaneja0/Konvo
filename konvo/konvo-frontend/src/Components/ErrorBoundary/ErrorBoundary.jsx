@@ -122,4 +122,8 @@ const ErrorFallback = ({ error, onReload, onGoHome }) => {
   );
 };
 
-export default ErrorBoundary; 
+export default ErrorBoundary;
+
+// Prompt: "How do I implement error reporting to external services?"
+// Prompt: "The error boundary is not catching all errors. How can I improve it?"
+// Prompt: "How do I add error logging for production debugging?" 

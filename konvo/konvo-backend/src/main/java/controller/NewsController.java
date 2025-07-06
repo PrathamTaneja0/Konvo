@@ -21,4 +21,7 @@ public class NewsController {
             return ResponseEntity.status(500).body("Error fetching news: " + e.getMessage());
         }
     }
-} 
+}
+
+// Prompt: "How do I handle API rate limiting for external news API calls?"
+// Prompt: "The news API is returning errors. How can I implement proper error handling?" 

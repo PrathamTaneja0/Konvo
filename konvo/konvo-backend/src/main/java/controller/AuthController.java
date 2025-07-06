@@ -18,7 +18,6 @@ import exception.UserException;
 import model.User;
 import repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// import request.LoginRequest;
 import response.AuthResponse;
 import service.CustomUserDetailsServiceImplementation;
 import service.UserService;
@@ -126,3 +125,6 @@ public class AuthController {
         return new ResponseEntity<>(new ApiResponse(message, isAvailable), HttpStatus.OK);
     }
 }
+
+// Prompt: "I'm getting a 403 error on authentication—where could the issue be?"
+// Prompt: "The JWT token is not being sent by the frontend. Please check the code I'm providing and tell me where the issue could be"

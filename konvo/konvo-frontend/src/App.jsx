@@ -68,3 +68,6 @@ function App() {
 }
 
 export default App;
+
+// Prompt: "How do I implement protected routes with proper authentication checks?"
+// Prompt: "The routing is not working properly after login. How can I debug this?"

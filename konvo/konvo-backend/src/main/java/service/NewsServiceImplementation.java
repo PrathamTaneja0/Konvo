@@ -31,4 +31,7 @@ public class NewsServiceImplementation implements NewsService {
         }
         return Collections.emptyList();
     }
-} 
+}
+
+// Prompt: "How do I implement caching for the news API to avoid rate limits?"
+// Prompt: "The news API is returning empty results. How can I debug this?" 

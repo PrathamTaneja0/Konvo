@@ -106,4 +106,7 @@ const PostForm = ({ onPostSuccess }) => {
   );
 };
 
-export default PostForm; 
+export default PostForm;
+
+// Prompt: "How do I implement character count validation for the post form?"
+// Prompt: "The form submission is not working properly. How can I debug the API call?" 

@@ -241,4 +241,8 @@ class AuthControllerTest {
 
         verify(userRepository).findByEmail("existing@example.com");
     }
-} 
+}
+
+// Prompt: "How do I write integration tests for authentication endpoints?"
+// Prompt: "The JWT token tests are failing. How can I debug this?"
+// Prompt: "How do I mock external dependencies in unit tests?" 

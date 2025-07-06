@@ -75,3 +75,6 @@ public class LikeController {
     }
 
 }
+
+// Prompt: "How do I prevent users from liking their own posts?"
+// Prompt: "The like/unlike functionality is not working properly. What could be the issue?"

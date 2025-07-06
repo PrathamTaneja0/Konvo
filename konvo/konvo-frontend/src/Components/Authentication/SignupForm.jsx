@@ -405,3 +405,7 @@ const SignupForm = ({ onSubmit }) => {
 };
 
 export default SignupForm;
+
+// Prompt: "How do I set age validation while taking birthday input during registration?"
+// Prompt: "The username availability check is not working properly. How can I debug this?"
+// Prompt: "Why is the form validation not showing proper error messages?"

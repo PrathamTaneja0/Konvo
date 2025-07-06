@@ -130,3 +130,6 @@ const RightPart = () => {
 };
 
 export default RightPart;
+
+// Prompt: "How do I implement real-time search functionality?"
+// Prompt: "The dark mode toggle is not persisting across page refreshes. How can I fix this?"
