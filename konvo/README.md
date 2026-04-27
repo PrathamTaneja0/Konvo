@@ -182,36 +182,3 @@ docker-compose down
 2. Database issues: Restart with `docker-compose restart db`
 3. Frontend not loading: Check logs with `docker-compose logs frontend`
 
-## 📝 Sources & Prompts
-
-### Documentation & Resources Used
-• **ChatGPT** - General coding assistance and debugging
-• **Gemini** - Alternative AI assistance for complex problems
-• **Material-UI Documentation** - Component usage and theming
-• **Tailwind CSS Documentation** - Utility classes and responsive design
-• **Spring Boot Documentation** - Framework setup and best practices
-• **Spring Security Documentation** - Authentication and authorization
-• **Formik Documentation** - Form handling patterns
-• **Yup Documentation** - Validation schemas and error handling
-• **Redux Toolkit Documentation** - State management patterns
-• **News API Documentation** - External API integration
-• **Cloudinary Documentation** - Image upload and transformation
-• **JWT.io** - Token structure and validation
-• **React Router Documentation** - Navigation and routing
-• **Axios Documentation** - HTTP client configuration
-
-### General Prompts Used
-• "Why is this code not working?"
-• "What's the error in this code?"
-• "Why am I getting this error?"
-• "How do I fix this authentication issue?"
-• "What's wrong with my API call?"
-• "How do I implement this feature?"
-• "Why is my component not rendering?"
-• "How do I debug this database issue?"
-• "What's causing this validation error?"
-• "How do I optimize this code?"
-• "Why is my test failing?"
-• "How do I handle this edge case?"
-• "What's the best practice for this?"
-• "How do I fix this CORS issue?" 
