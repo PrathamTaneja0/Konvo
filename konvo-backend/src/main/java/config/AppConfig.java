@@ -1,5 +1,6 @@
 package config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +23,13 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // CSRF only threatens credentials the browser attaches on its own (cookies, sessions).
+            // Signup/signin carry none, and a bearer header can't be set cross-site without passing CORS,
+            // so those are exempt; anything else still needs a CSRF token.
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/auth/**")
+                .ignoringRequestMatchers(AppConfig::hasBearerToken)
+            )
             .cors(withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
@@ -33,6 +41,11 @@ public class AppConfig {
             .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);
         
         return http.build();
+    }
+
+    private static boolean hasBearerToken(HttpServletRequest request) {
+        String header = request.getHeader(JwtConstant.JWT_HEADER);
+        return header != null && header.startsWith("Bearer ");
     }
 
     @Bean
