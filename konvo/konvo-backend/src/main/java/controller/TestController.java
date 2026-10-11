@@ -3,6 +3,8 @@ package controller;
 import com.kwabenaberko.newsapilib.NewsApiClient;
 import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/test")
 public class TestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     private final NewsApiClient newsApiClient = new NewsApiClient("52e9f153d4cd42eb9c9e70b1c3fb0774");
 
     @GetMapping("/news")
@@ -49,7 +52,11 @@ public class TestController {
             // Wait for the async operation to complete
             return ResponseEntity.ok(future.get());
         } catch (InterruptedException | ExecutionException e) {
-            return ResponseEntity.status(500).body("Error fetching news: " + e.getMessage());
+            logger.error("Failed to fetch news from external API", e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return ResponseEntity.status(500).body("Error fetching news");
         }
     }
 }
