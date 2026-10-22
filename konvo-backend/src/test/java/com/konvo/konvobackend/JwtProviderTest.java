@@ -11,11 +11,18 @@ import static org.mockito.Mockito.*;
 
 class JwtProviderTest {
 
+    /** Test-only signing secret; real deployments read KONVO_JWT_SECRET from the environment. */
+    static final String TEST_SECRET = "test-only-jwt-secret-not-used-outside-unit-tests";
+
+    static JwtProvider testProvider() {
+        return new JwtProvider(TEST_SECRET);
+    }
+
     private JwtProvider jwtProvider;
 
     @BeforeEach
     void setUp() {
-        jwtProvider = new JwtProvider();
+        jwtProvider = testProvider();
     }
 
     @Test
@@ -71,4 +78,25 @@ class JwtProviderTest {
             jwtProvider.getEmailFromToken(null);
         });
     }
+    @Test
+    void testMissingSecret_FailsFast() {
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> new JwtProvider(""));
+        assertTrue(e.getMessage().contains("KONVO_JWT_SECRET is not set"));
+        assertThrows(IllegalStateException.class, () -> new JwtProvider(null));
+    }
+
+    @Test
+    void testShortSecret_IsRejected() {
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> new JwtProvider("too-short"));
+        assertTrue(e.getMessage().contains("too short"));
+    }
+
+    @Test
+    void testTokenFromAnotherSecret_IsRejected() {
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getName()).thenReturn("test@example.com");
+        String foreign = new JwtProvider(TEST_SECRET + "-other").generateToken(authentication);
+        assertThrows(Exception.class, () -> jwtProvider.getEmailFromToken(foreign));
+    }
+
 } 

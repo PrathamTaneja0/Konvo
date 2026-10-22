@@ -48,14 +48,14 @@ class AppConfigTest {
 
     @Test
     void testJwtTokenValidator_NotNull() {
-        JwtTokenValidator jwtTokenValidator = appConfig.jwtTokenValidator();
+        JwtTokenValidator jwtTokenValidator = appConfig.jwtTokenValidator(JwtProviderTest.testProvider());
         
         assertNotNull(jwtTokenValidator);
     }
 
     @Test
     void testJwtTokenValidator_IsInstanceOf() {
-        JwtTokenValidator jwtTokenValidator = appConfig.jwtTokenValidator();
+        JwtTokenValidator jwtTokenValidator = appConfig.jwtTokenValidator(JwtProviderTest.testProvider());
         
         assertTrue(jwtTokenValidator instanceof JwtTokenValidator);
     }
@@ -84,7 +84,7 @@ class AppConfigTest {
     void testAppConfig_BeanMethods() {
         assertDoesNotThrow(() -> {
             appConfig.passwordEncoder();
-            appConfig.jwtTokenValidator();
+            appConfig.jwtTokenValidator(JwtProviderTest.testProvider());
             appConfig.corsConfigurationSource();
         });
     }

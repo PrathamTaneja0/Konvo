@@ -136,6 +136,17 @@ mvn clean test jacoco:report # Generate coverage report
 • `GET /api/users/followings/{userId}` - Get user followings
 • `GET /api/news` - Get trending news (News API integration)
 
+## 🔐 Configuration
+Secrets are never committed. Copy the template and fill in your own values:
+```bash
+cp .env.example .env
+```
+• `KONVO_DB_PASSWORD`: MariaDB root password (any value for local development)
+• `KONVO_JWT_SECRET`: random string of at least 32 characters for signing login tokens (`openssl rand -hex 32`); the backend refuses to start without it
+• `KONVO_NEWS_API_KEY`: optional [NewsAPI](https://newsapi.org/register) key; without it the news feed is simply empty
+
+`docker-compose` reads `.env` automatically, and `mvn spring-boot:run` imports it from the repository root.
+
 ## 🔧 Development
 
 ### Backend Development

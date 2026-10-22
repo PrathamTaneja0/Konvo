@@ -5,6 +5,8 @@ import com.kwabenaberko.newsapilib.models.request.EverythingRequest;
 import com.kwabenaberko.newsapilib.models.response.ArticleResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +20,23 @@ import java.util.concurrent.ExecutionException;
 public class TestController {
 
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
-    private final NewsApiClient newsApiClient = new NewsApiClient("52e9f153d4cd42eb9c9e70b1c3fb0774");
+    private final NewsApiClient newsApiClient;
+
+    @Autowired
+    public TestController(@Value("${konvo.news.api-key:}") String apiKey) {
+        this(apiKey == null || apiKey.isBlank() ? null : new NewsApiClient(apiKey));
+    }
+
+    /** For tests: pass a (mock) client, or null when no API key is configured. */
+    public TestController(NewsApiClient newsApiClient) {
+        this.newsApiClient = newsApiClient;
+    }
 
     @GetMapping("/news")
     public ResponseEntity<String> getNews() {
+        if (newsApiClient == null) {
+            return ResponseEntity.status(503).body("News feed disabled: KONVO_NEWS_API_KEY is not set");
+        }
         try {
             CompletableFuture<String> future = new CompletableFuture<>();
 

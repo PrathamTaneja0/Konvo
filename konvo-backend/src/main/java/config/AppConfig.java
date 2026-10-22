@@ -21,7 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class AppConfig {    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenValidator jwtTokenValidator) throws Exception {
         http
             // CSRF only threatens credentials the browser attaches on its own (cookies, sessions).
             // Signup/signin carry none, and a bearer header can't be set cross-site without passing CORS,
@@ -38,7 +38,7 @@ public class AppConfig {
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtTokenValidator(), BasicAuthenticationFilter.class);
+            .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class);
         
         return http.build();
     }
@@ -54,8 +54,8 @@ public class AppConfig {
     }
 
     @Bean
-    public JwtTokenValidator jwtTokenValidator() {
-        return new JwtTokenValidator();
+    public JwtTokenValidator jwtTokenValidator(JwtProvider jwtProvider) {
+        return new JwtTokenValidator(jwtProvider.getKey());
     }
 
     @Bean

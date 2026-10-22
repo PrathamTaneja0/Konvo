@@ -10,7 +10,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +21,12 @@ import java.io.IOException;
 public class JwtTokenValidator extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenValidator.class);
+
+    private final SecretKey key;
+
+    public JwtTokenValidator(SecretKey key) {
+        this.key = key;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -43,7 +48,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         if (jwt != null && !jwt.isEmpty()) {
             try {
-                SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
                 Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
 
                 String email = String.valueOf(claims.get("email"));
