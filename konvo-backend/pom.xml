@@ -40,6 +40,10 @@
         <!-- 3.5.8 -> 3.5.11: CVE-2026-55856, CVE-2026-55857, CVE-2026-55858, CVE-2026-61700 (3.5.9+);
              3.5.11 also fixes the 3.5.10 password exposure via DatabaseMetaData#getURL() (CONJ-1345) -->
         <mariadb.version>3.5.11</mariadb.version>
+        <!-- 3.17.0 -> 3.18.0: CVE-2025-48924 (uncontrolled recursion in ClassUtils.getClass) -->
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <!-- 2.24.3 -> 2.25.5: CVE-2026-49844 (log4j-api) -->
+        <log4j2.version>2.25.5</log4j2.version>
     </properties>
     <dependencies>
         <dependency>
