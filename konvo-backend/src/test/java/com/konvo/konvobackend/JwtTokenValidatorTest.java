@@ -21,6 +21,10 @@ import static org.mockito.Mockito.*;
 class JwtTokenValidatorTest {
 
     static class TestableJwtTokenValidator extends JwtTokenValidator {
+        TestableJwtTokenValidator() {
+            super(JwtProviderTest.testProvider().getKey());
+        }
+
         public boolean callShouldNotFilter(HttpServletRequest request) throws ServletException {
             return super.shouldNotFilter(request);
         }
@@ -50,7 +54,7 @@ class JwtTokenValidatorTest {
     @BeforeEach
     void setUp() {
         jwtTokenValidator = new TestableJwtTokenValidator();
-        jwtProvider = new JwtProvider();
+        jwtProvider = JwtProviderTest.testProvider();
         // Clear security context before each test
         SecurityContextHolder.clearContext();
     }
